@@ -1,0 +1,1524 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IkigAI — MVP-Phased Roadmap (Master Document)</title>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Syne:wght@600;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        :root {
+            --bg: #0d0d0d;
+            --surface: #111111;
+            --surface-2: #161616;
+            --border: #1e1e1e;
+            --border-strong: #2a2a2a;
+            --text: #e8e8e2;
+            --text-dim: #8a8a84;
+            --text-muted: #5a5a55;
+            --accent: #c8f135;
+            --accent-dim: rgba(200, 241, 53, 0.15);
+            --accent-soft: rgba(200, 241, 53, 0.06);
+            --today: #4caf50;
+            --week: #ff9800;
+            --compound: #64b5f6;
+            --reference: #9e9e9e;
+        }
+        body {
+            font-family: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+            background: var(--bg);
+            color: var(--text);
+            display: flex;
+            height: 100vh;
+            overflow: hidden;
+            font-size: 13px;
+            line-height: 1.6;
+        }
+        .sidebar {
+            width: 320px;
+            background: var(--surface);
+            border-right: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+            transition: all 0.3s ease;
+        }
+        .sidebar.collapsed { width: 0; min-width: 0; overflow: hidden; }
+        .collapse-toggle {
+            position: fixed;
+            left: 300px;
+            top: 20px;
+            width: 36px;
+            height: 36px;
+            background: var(--accent);
+            border: none;
+            border-radius: 50%;
+            color: var(--bg);
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            z-index: 1000;
+            transition: left 0.3s ease;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.5);
+        }
+        .sidebar.collapsed + .collapse-toggle { left: 10px; }
+        .sidebar-header {
+            padding: 24px 20px;
+            border-bottom: 1px solid var(--border);
+        }
+        .sidebar-header h1 {
+            font-family: 'Syne', sans-serif;
+            font-size: 28px;
+            font-weight: 800;
+            letter-spacing: -0.02em;
+            margin-bottom: 6px;
+            color: var(--text);
+        }
+        .sidebar-header h1 span { color: var(--accent); }
+        .sidebar-header .subtitle {
+            font-size: 10px;
+            color: var(--text-dim);
+            line-height: 1.5;
+            margin-bottom: 14px;
+            letter-spacing: 0.02em;
+        }
+        .search-box {
+            width: 100%;
+            padding: 9px 12px;
+            background: var(--bg);
+            border: 1px solid var(--border-strong);
+            border-radius: 4px;
+            color: var(--text);
+            font-family: inherit;
+            font-size: 12px;
+        }
+        .search-box::placeholder { color: var(--text-muted); }
+        .search-box:focus { outline: none; border-color: var(--accent); }
+        .search-results { max-height: 380px; overflow-y: auto; margin-top: 10px; display: none; }
+        .search-results.show { display: block; }
+        .search-result {
+            padding: 9px 11px;
+            margin: 4px 0;
+            background: var(--surface-2);
+            border-radius: 4px;
+            cursor: pointer;
+            border-left: 2px solid transparent;
+            transition: all 0.15s;
+        }
+        .search-result:hover { background: var(--accent-soft); border-left-color: var(--accent); }
+        .search-result-title { color: var(--accent); font-weight: 600; font-size: 11px; margin-bottom: 4px; }
+        .search-result-snippet { color: var(--text-dim); font-size: 10px; line-height: 1.4; }
+        .search-highlight { background: var(--accent-dim); color: var(--text); padding: 1px 2px; }
+        .nav-items { flex: 1; padding: 8px 0 40px; }
+        .phase-divider {
+            padding: 18px 20px 8px;
+            font-size: 9px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.2em;
+            color: var(--text-dim);
+            border-top: 1px solid var(--border);
+        }
+        .phase-divider:first-child { border-top: none; }
+        .phase-today { color: var(--today); }
+        .phase-week { color: var(--week); }
+        .phase-compound { color: var(--compound); }
+        .phase-reference { color: var(--reference); }
+        .nav-item {
+            padding: 10px 20px;
+            cursor: pointer;
+            transition: all 0.15s;
+            border-left: 2px solid transparent;
+            font-size: 12px;
+            color: var(--text-dim);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .nav-item:hover { background: var(--surface-2); color: var(--text); }
+        .nav-item.active {
+            background: var(--accent-soft);
+            border-left-color: var(--accent);
+            color: var(--accent);
+        }
+        .phase-badge {
+            margin-left: auto;
+            font-size: 8px;
+            padding: 3px 6px;
+            border-radius: 2px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+        .badge-today { background: rgba(76,175,80,0.15); color: var(--today); }
+        .badge-week { background: rgba(255,152,0,0.15); color: var(--week); }
+        .badge-compound { background: rgba(100,181,246,0.15); color: var(--compound); }
+        .badge-reference { background: rgba(158,158,158,0.15); color: var(--reference); }
+        .main-content {
+            flex: 1;
+            overflow-y: auto;
+            padding: 48px 64px 120px;
+        }
+        .tab-content { display: none; max-width: 1200px; }
+        .tab-content.active { display: block; animation: fadeUp 0.4s ease; }
+        @keyframes fadeUp { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+        .segment-header { margin-bottom: 28px; padding-bottom: 24px; border-bottom: 1px solid var(--border); }
+        .segment-header h2 {
+            font-family: 'Syne', sans-serif;
+            font-size: 38px;
+            font-weight: 800;
+            letter-spacing: -0.02em;
+            margin-bottom: 14px;
+            color: var(--text);
+        }
+        .segment-header h2 .accent { color: var(--accent); }
+        .segment-header .meta { display: flex; gap: 18px; margin-bottom: 14px; flex-wrap: wrap; }
+        .meta-item {
+            font-size: 11px;
+            color: var(--text-dim);
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            padding: 6px 10px;
+            border: 1px solid var(--border-strong);
+            background: var(--surface);
+        }
+        .meta-item strong { color: var(--accent); margin-right: 6px; }
+        .segment-header .tagline {
+            font-size: 16px;
+            color: var(--text);
+            line-height: 1.6;
+            margin-top: 8px;
+            max-width: 800px;
+        }
+        .section { margin: 36px 0; }
+        .section h3 {
+            font-family: 'Syne', sans-serif;
+            font-size: 22px;
+            font-weight: 700;
+            letter-spacing: -0.01em;
+            margin-bottom: 16px;
+            color: var(--accent);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .section h3 .num {
+            font-size: 12px;
+            color: var(--text-dim);
+            font-family: 'JetBrains Mono', monospace;
+            letter-spacing: 0;
+            font-weight: 500;
+        }
+        .section h4 {
+            font-size: 13px;
+            font-weight: 700;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: var(--text);
+            margin: 22px 0 10px;
+        }
+        .section p { margin-bottom: 14px; color: var(--text); }
+        .section ul, .section ol { margin: 12px 0 16px 22px; }
+        .section li { margin-bottom: 8px; color: var(--text); }
+        .section li strong { color: var(--accent); }
+        code {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            padding: 2px 6px;
+            font-size: 11px;
+            color: var(--accent);
+            border-radius: 2px;
+        }
+        pre {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-left: 2px solid var(--accent);
+            padding: 18px 22px;
+            font-size: 11px;
+            color: var(--text);
+            overflow-x: auto;
+            margin: 16px 0;
+            line-height: 1.55;
+        }
+        pre code { background: transparent; border: none; padding: 0; color: inherit; }
+        .callout {
+            padding: 18px 22px;
+            margin: 20px 0;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-left: 2px solid var(--accent);
+        }
+        .callout-label {
+            font-size: 9px;
+            font-weight: 700;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            color: var(--accent);
+            margin-bottom: 8px;
+        }
+        .callout p { margin: 6px 0; }
+        .callout.warn { border-left-color: var(--week); }
+        .callout.warn .callout-label { color: var(--week); }
+        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 16px 0; }
+        .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; margin: 16px 0; }
+        .card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            padding: 18px;
+            border-top: 2px solid var(--accent);
+        }
+        .card h5 {
+            font-family: 'Syne', sans-serif;
+            font-size: 14px;
+            font-weight: 700;
+            margin-bottom: 8px;
+            color: var(--text);
+        }
+        .card p { font-size: 12px; color: var(--text-dim); margin: 4px 0; }
+        .card .num {
+            font-size: 9px;
+            color: var(--text-muted);
+            font-family: 'JetBrains Mono', monospace;
+            letter-spacing: 0.1em;
+            margin-bottom: 10px;
+            display: block;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 16px 0;
+            font-size: 12px;
+        }
+        th, td {
+            padding: 10px 14px;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+        }
+        th {
+            color: var(--accent);
+            font-weight: 600;
+            font-size: 11px;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            background: var(--surface);
+        }
+        td { color: var(--text); }
+        td.dim { color: var(--text-dim); }
+        .checkpoint {
+            background: linear-gradient(180deg, var(--accent-soft) 0%, transparent 100%);
+            border: 1px solid var(--accent);
+            border-left-width: 2px;
+            padding: 18px 22px;
+            margin: 20px 0;
+        }
+        .checkpoint-label {
+            font-size: 9px;
+            font-weight: 700;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            color: var(--accent);
+            margin-bottom: 10px;
+        }
+        .checkpoint ul { margin-top: 6px; }
+        .deliverable {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            padding: 14px 18px;
+            margin: 16px 0;
+            font-size: 12px;
+            color: var(--text);
+        }
+        .deliverable .label {
+            font-size: 9px;
+            font-weight: 700;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            color: var(--text-dim);
+            margin-right: 10px;
+        }
+        .mermaid { background: var(--surface); padding: 24px; border: 1px solid var(--border); margin: 20px 0; }
+        .pipeline {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 2px;
+            margin: 24px 0;
+        }
+        .pipeline-stage {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            padding: 16px;
+            position: relative;
+        }
+        .pipeline-stage .num {
+            font-size: 9px;
+            color: var(--text-muted);
+            letter-spacing: 0.2em;
+            font-weight: 600;
+            margin-bottom: 6px;
+        }
+        .pipeline-stage h5 {
+            font-family: 'Syne', sans-serif;
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--text);
+            margin-bottom: 8px;
+        }
+        .pipeline-stage p { font-size: 11px; color: var(--accent); }
+        .ikigai-venn {
+            display: flex;
+            justify-content: center;
+            margin: 28px 0;
+        }
+        .ikigai-venn svg { max-width: 380px; height: auto; }
+        .stage-progress {
+            display: flex;
+            gap: 6px;
+            margin: 16px 0 24px;
+            font-size: 10px;
+            color: var(--text-muted);
+            letter-spacing: 0.1em;
+        }
+        .stage-dot {
+            width: 28px;
+            height: 4px;
+            background: var(--border-strong);
+        }
+        .stage-dot.done { background: var(--today); }
+        .stage-dot.current { background: var(--accent); }
+        a { color: var(--accent); text-decoration: none; border-bottom: 1px dashed var(--accent); }
+        a:hover { background: var(--accent-soft); }
+        .footer-meta {
+            margin-top: 60px;
+            padding-top: 24px;
+            border-top: 1px solid var(--border);
+            font-size: 10px;
+            color: var(--text-muted);
+            display: flex;
+            justify-content: space-between;
+            letter-spacing: 0.1em;
+        }
+        .cursor {
+            display: inline-block;
+            width: 7px;
+            height: 13px;
+            background: var(--accent);
+            margin-left: 3px;
+            vertical-align: middle;
+            animation: blink 1.1s step-end infinite;
+        }
+        @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
+    </style>
+</head>
+<body>
+    <div class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <h1>ikig<span>AI</span></h1>
+            <p class="subtitle">A self-owned coach grounded in everything you know.<br>Built on the ABENAKI engine. Lensed by Brusselbach. Yours.</p>
+            <input type="text" id="searchBox" class="search-box" placeholder="search the roadmap..." oninput="handleSearch()">
+            <div id="searchResults" class="search-results"></div>
+        </div>
+        <div class="nav-items">
+            <div class="nav-item active" onclick="showTab('overview')">📖 Overview &amp; Vision</div>
+            <div class="nav-item" onclick="showTab('pipeline')">⚙ The Pipeline</div>
+            <div class="nav-item" onclick="showTab('architecture')">🏗 Architecture</div>
+            <div class="nav-item" onclick="showTab('lens')">🎯 Ikigai Lens</div>
+            <div class="nav-item" onclick="showTab('gears')">🎚 Retrieval Gears</div>
+
+            <div class="phase-divider phase-today">● Today</div>
+            <div class="nav-item" onclick="showTab('s0')">
+                Stage 0 — Foundation
+                <span class="phase-badge badge-today">2H</span>
+            </div>
+            <div class="nav-item" onclick="showTab('s1')">
+                Stage 1 — Round Trip
+                <span class="phase-badge badge-today">1H</span>
+            </div>
+
+            <div class="phase-divider phase-week">● This Week</div>
+            <div class="nav-item" onclick="showTab('s2')">
+                Stage 2 — NUC Live
+                <span class="phase-badge badge-week">6H</span>
+            </div>
+            <div class="nav-item" onclick="showTab('s3')">
+                Stage 3 — Coach Experience
+                <span class="phase-badge badge-week">4H</span>
+            </div>
+
+            <div class="phase-divider phase-compound">● Compounding</div>
+            <div class="nav-item" onclick="showTab('s4')">
+                Stage 4 — Learning Loop
+                <span class="phase-badge badge-compound">3H</span>
+            </div>
+            <div class="nav-item" onclick="showTab('s5')">
+                Stage 5 — Friend-Ready
+                <span class="phase-badge badge-compound">2H</span>
+            </div>
+
+            <div class="phase-divider phase-reference">● Reference</div>
+            <div class="nav-item" onclick="showTab('schema')">
+                Schema v0.2
+                <span class="phase-badge badge-reference">REF</span>
+            </div>
+            <div class="nav-item" onclick="showTab('daemons')">
+                Daemons
+                <span class="phase-badge badge-reference">REF</span>
+            </div>
+            <div class="nav-item" onclick="showTab('loop')">
+                Cognitive Loop
+                <span class="phase-badge badge-reference">REF</span>
+            </div>
+            <div class="nav-item" onclick="showTab('glossary')">
+                Glossary
+                <span class="phase-badge badge-reference">REF</span>
+            </div>
+        </div>
+    </div>
+
+    <button class="collapse-toggle" id="collapseBtn" onclick="toggleSidebar()">◀</button>
+
+    <div class="main-content">
+
+        <!-- ============== OVERVIEW ============== -->
+        <div id="overview" class="tab-content active">
+            <div class="segment-header">
+                <h2>ikig<span class="accent">AI</span> — the personal coach that lives on your brain<span class="cursor"></span></h2>
+                <div class="meta">
+                    <div class="meta-item"><strong>Total effort</strong> ~18h</div>
+                    <div class="meta-item"><strong>Today</strong> 3h</div>
+                    <div class="meta-item"><strong>This week</strong> 10h</div>
+                    <div class="meta-item"><strong>Schema</strong> v0.2</div>
+                </div>
+                <p class="tagline">A self-owned, idea-to-action engine grounded in everything you know. You drop ideas in. The machine canonicalises, links, surfaces, coaches, and schedules. You make and iterate. Better every day.</p>
+            </div>
+
+            <div class="section">
+                <h3><span class="num">00.1</span> Purpose</h3>
+                <p>IkigAI runs on your always-on home device, ingests anything you send it from anywhere, and helps you turn ideas into action against the life you're actually trying to build.</p>
+                <p>It owns your knowledge. It explains everything you've ever sent it. It tells you how you got to a thought, what you might be missing, and what to do next. It knows your calendar, your projects, and your Ikigai gaps — so when you drop an idea in, it returns a phased plan and offers you the time to start.</p>
+            </div>
+
+            <div class="section">
+                <h3><span class="num">00.2</span> Core principles</h3>
+                <ul>
+                    <li><strong>You own everything.</strong> Markdown vault on your NUC. Git is the memory trail. No vendor lock-in.</li>
+                    <li><strong>Capture is frictionless.</strong> Any device, any medium, share-sheet to inbox. Zero thought between brain fart and saved.</li>
+                    <li><strong>Canonicalisation is sacred.</strong> The dedup engine is what makes the system functional day one. Multi-key matching converges every messy capture on one record per concept.</li>
+                    <li><strong>Ikigai regions are the lens.</strong> Every page carries every region it touches as a flat, explicit list. A single capture compounds across passion, mission, vocation, profession, centre.</li>
+                    <li><strong>Retrieval has gears.</strong> Links / synthesis / debaiser. Choose per query. The system remembers per context.</li>
+                    <li><strong>The daily brief is the hook.</strong> Every day starts with "what do you want to work on today?" — across active projects, promoted ideas, and recent calendar reality.</li>
+                    <li><strong>Productionised idea flows.</strong> Idea in → phased plan out → calendar slots offered → work begins.</li>
+                    <li><strong>Local-first inference, cloud where it earns it.</strong> Ollama for ingest and drafts; Claude for synthesis polish and Debaiser-on-self.</li>
+                    <li><strong>Phase 0 is a one-time bridge.</strong> Brain dump from messaging apps and tab piles, copy-paste only, never again.</li>
+                    <li><strong>Bespoke per user, universal under the hood.</strong> Core (schema, prompts, daemons) is shared. Me (vocabulary, vault, calendar links) is yours. Friend's version is a fork point, not a refactor.</li>
+                </ul>
+            </div>
+
+            <div class="section">
+                <h3><span class="num">00.3</span> What's different from ABENAKI</h3>
+                <div class="callout">
+                    <div class="callout-label">Why this isn't ABENAKI v2</div>
+                    <p>ABENAKI was the December 2025 plan. The OSS landscape caught up: Karpathy's LLM Wiki pattern, the rohitg00 v2 lifecycle gist, llm-wiki-agent, swarmvault, LightRAG. Your own production engines — canonicalisation, gargAIntuan, context-injection synthesis — proved out in council-document work.</p>
+                    <p>IkigAI keeps ABENAKI's cognitive loop but rebuilds the substrate with patterns proven since: explicit Ikigai region tagging instead of derived booleans, retrieval-score evolution from observed use instead of decay alone, three-gear retrieval instead of one synthesis output, productionised idea flow with calendar offers instead of just backlog extraction. Same intent. Sharper foundations. Bespoke from day one.</p>
+                </div>
+            </div>
+
+            <div class="section">
+                <h3><span class="num">00.4</span> Total timeline</h3>
+                <table>
+                    <thead><tr><th>When</th><th>Stages</th><th>Effort</th><th>End state</th></tr></thead>
+                    <tbody>
+                        <tr><td>Today</td><td>S0 + S1</td><td>3h</td><td>Foundation laid. Manual round trip validated. Ready to commit S2 effort.</td></tr>
+                        <tr><td>This week</td><td>S2 + S3</td><td>10h</td><td>NUC live, daemons running, coach experience real. Daily brief. Phased ideas.</td></tr>
+                        <tr><td>Week 2</td><td>S4</td><td>3h</td><td>ADDIE loop closed. System learns from observed use.</td></tr>
+                        <tr><td>Week 3</td><td>S5</td><td>2h</td><td>Friend onboarded via conversation. Bespoke proven scalable.</td></tr>
+                        <tr><td><strong>Total</strong></td><td><strong>S0 → S5</strong></td><td><strong>~18h</strong></td><td><strong>A coach for the rest of your life.</strong></td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="footer-meta">
+                <span>Schema v0.2 · Roadmap v1.0 · 2026-04-30</span>
+                <span>Written by the system it describes.</span>
+            </div>
+        </div>
+
+        <!-- ============== PIPELINE ============== -->
+        <div id="pipeline" class="tab-content">
+            <div class="segment-header">
+                <h2>The pipeline — <span class="accent">five stages, three reused engines</span></h2>
+                <p class="tagline">Every operation in IkigAI runs on the same underlying pipeline. The differentiator between user experiences is scope and endorsement depth, not technology. The engines are already proven in your council-document work; IkigAI retargets them at your own brain.</p>
+            </div>
+
+            <div class="pipeline">
+                <div class="pipeline-stage">
+                    <div class="num">01</div>
+                    <h5>Ingest</h5>
+                    <p>TinyFish · PDF · M365 · share-sheet · voice · chat-paste · manual</p>
+                </div>
+                <div class="pipeline-stage">
+                    <div class="num">02</div>
+                    <h5>Dedup</h5>
+                    <p>Canonicalisation engine — multi-key matching with confidence-scored merging</p>
+                </div>
+                <div class="pipeline-stage">
+                    <div class="num">03</div>
+                    <h5>Classify</h5>
+                    <p>gargAIntuan multi-agent orchestration — parallel classification, linkage, reflection</p>
+                </div>
+                <div class="pipeline-stage">
+                    <div class="num">04</div>
+                    <h5>Regenerate</h5>
+                    <p>Context-injection synthesis engine — Gear 2/3 coach output, role-aware</p>
+                </div>
+                <div class="pipeline-stage">
+                    <div class="num">05</div>
+                    <h5>Deploy</h5>
+                    <p>Daily brief · web viewer · MCP chat · schedule offers · gear-1/2/3 retrieval</p>
+                </div>
+            </div>
+
+            <div class="section">
+                <h3><span class="num">01.1</span> The three reused engines</h3>
+                <div class="grid-3">
+                    <div class="card">
+                        <span class="num">ENGINE 01</span>
+                        <h5>Canonicalisation &amp; dedup</h5>
+                        <p>Multi-key matching: title fuzzy, version, content hash, semantic similarity. Confidence-scored merging across source systems.</p>
+                        <p><strong style="color:var(--accent)">Already productionised</strong> in multi-source data-intelligence work. Retargeted here at messy personal captures arriving from chrome dumps, voice memos, chat-pastes.</p>
+                    </div>
+                    <div class="card">
+                        <span class="num">ENGINE 02</span>
+                        <h5>gargAIntuan orchestrator</h5>
+                        <p>Parallel Claude-agent dispatch, job queue with streamed execution logs, tier-gated methodology framework, full messaging audit trail.</p>
+                        <p><strong style="color:var(--accent)">Already productionised</strong> for local-government compliance evidence. Retargeted here as the orchestration spine for parallel classification + linkage + reflection at ingest.</p>
+                    </div>
+                    <div class="card">
+                        <span class="num">ENGINE 03</span>
+                        <h5>Context-injection synthesis</h5>
+                        <p>Claude with context-injection patterns for role-aware output generation.</p>
+                        <p><strong style="color:var(--accent)">Already productionised</strong> in B2B personalisation. Retargeted here to produce audience-specific Gear 2 synthesis, Gear 3 Debaiser panels, and morning brief copy in the user's chosen voice.</p>
+                    </div>
+                </div>
+                <div class="callout">
+                    <div class="callout-label">Why this matters</div>
+                    <p>Roughly 80% of the technical lift for IkigAI is already written. The fee structure on this build reflects retargeting effort and integration work, not three months of from-scratch engineering. That's why the timeline compresses from quarters to weeks.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- ============== ARCHITECTURE ============== -->
+        <div id="architecture" class="tab-content">
+            <div class="segment-header">
+                <h2>Architecture — <span class="accent">thin clients, one brain</span></h2>
+                <p class="tagline">Your devices capture and retrieve; the NUC is the only thing that holds state. Tailscale meshes everything. MCP exposes operations as tools to any client.</p>
+            </div>
+
+            <div class="section">
+                <h3><span class="num">02.1</span> The diagram</h3>
+                <pre>                    YOU (any device, anywhere)
+                              │
+              ┌───────────────┼───────────────┐
+              │               │               │
+         CAPTURE         RETRIEVE        REFLECT
+       share-sheet    natural language   coach output
+       voice memo      "what do I        five sections,
+       quote, link     know about X"     always
+       chat dump
+              │               │               │
+              └───────────────┼───────────────┘
+                              │
+                  Tailscale mesh + MCP/SSH
+                              │
+              ╔═══════════════╧═══════════════╗
+              ║   NUC (i7) — always on        ║
+              ║                               ║
+              ║   inbox watcher               ║
+              ║      │                        ║
+              ║   UNDERSTAND pipeline         ║
+              ║      fetch → dedup →          ║
+              ║      regions → entities →     ║
+              ║      concepts → linkages      ║
+              ║      │                        ║
+              ║   markdown vault   ──────►  graph + vector indexes
+              ║      │                        ║
+              ║   Claw daemons (always on):   ║
+              ║   linkage-scout, decay-keeper,║
+              ║   brief-generator, debaiser,  ║
+              ║   ingest-watcher              ║
+              ║      │                        ║
+              ║   COACH layer                 ║
+              ║   five-section output,        ║
+              ║   debaiser-on-self,           ║
+              ║   ADDIE feedback              ║
+              ╚═══════════════════════════════╝</pre>
+            </div>
+
+            <div class="section">
+                <h3><span class="num">02.2</span> The five layers, named in IkigAI dialect</h3>
+                <table>
+                    <thead><tr><th>Layer</th><th>Purpose</th><th>Components</th></tr></thead>
+                    <tbody>
+                        <tr><td><strong>Capture</strong></td><td>Frictionless. Any medium. Any device.</td><td>share-sheet, voice memo, hotkey, email, MCP, manual paste</td></tr>
+                        <tr><td><strong>Understand</strong></td><td>Read, fetch, summarise, classify, link.</td><td>canonicalisation engine, gargAIntuan, TinyFish fallback, Ollama</td></tr>
+                        <tr><td><strong>Retain</strong></td><td>Markdown vault is canonical. Indexes derive.</td><td>vault, vector index (Chroma), graph index (NetworkX)</td></tr>
+                        <tr><td><strong>Surface</strong></td><td>Always-on daemons walk the graph.</td><td>linkage-scout, brief-generator, decay-keeper, debaiser</td></tr>
+                        <tr><td><strong>Grow</strong></td><td>ADDIE loop closes. Outcomes feed retrieval.</td><td>application capture, retrieval-score evolution, context-modifiers</td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="section">
+                <h3><span class="num">02.3</span> Repo split</h3>
+                <pre>ikigAI-core/      universal — schema, prompts, daemons, scripts, templates, ui
+                  shared across all users; safe to upgrade in place
+
+ikigAI-me/        personal — your vault, vocabulary, calendar links, feedback log
+                  imports core like a library; never modifies it
+
+friend-me/        added in S5 — sibling fork, same core, different brain</pre>
+                <div class="callout">
+                    <div class="callout-label">No-refactor guarantee</div>
+                    <p>Splitting now is one extra hour at S0. Splitting later means migrating every prompt, script, and config across user vaults. The split is the precondition for "scale with bespoke" — your CLAUDE.md never collides with your friend's.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- ============== IKIGAI LENS ============== -->
+        <div id="lens" class="tab-content">
+            <div class="segment-header">
+                <h2>The Ikigai lens — <span class="accent">flat, explicit, compounding</span></h2>
+                <p class="tagline">Every captured page carries every region it touches as a flat list. A single contribution lights up every region simultaneously. Click any region in the viewer; see everything that ever contributed.</p>
+            </div>
+
+            <div class="section">
+                <h3><span class="num">03.1</span> The Brusselbach four-axis Venn</h3>
+                <div class="ikigai-venn">
+                    <svg viewBox="0 0 380 380" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="155" cy="120" r="100" fill="#4caf50" fill-opacity="0.35" stroke="#4caf50" stroke-width="1"/>
+                        <circle cx="225" cy="120" r="100" fill="#e91e63" fill-opacity="0.35" stroke="#e91e63" stroke-width="1"/>
+                        <circle cx="155" cy="190" r="100" fill="#ffc107" fill-opacity="0.35" stroke="#ffc107" stroke-width="1"/>
+                        <circle cx="225" cy="190" r="100" fill="#ff5722" fill-opacity="0.35" stroke="#ff5722" stroke-width="1"/>
+                        <text x="190" y="40" text-anchor="middle" fill="#e8e8e2" font-size="11" font-family="JetBrains Mono">love</text>
+                        <text x="60" y="160" text-anchor="middle" fill="#e8e8e2" font-size="11" font-family="JetBrains Mono">good_at</text>
+                        <text x="335" y="160" text-anchor="middle" fill="#e8e8e2" font-size="11" font-family="JetBrains Mono">world_needs</text>
+                        <text x="190" y="345" text-anchor="middle" fill="#e8e8e2" font-size="11" font-family="JetBrains Mono">paid_for</text>
+                        <text x="125" y="120" text-anchor="middle" fill="#e8e8e2" font-size="9" font-family="JetBrains Mono">passion</text>
+                        <text x="255" y="120" text-anchor="middle" fill="#e8e8e2" font-size="9" font-family="JetBrains Mono">mission</text>
+                        <text x="125" y="200" text-anchor="middle" fill="#e8e8e2" font-size="9" font-family="JetBrains Mono">profession</text>
+                        <text x="255" y="200" text-anchor="middle" fill="#e8e8e2" font-size="9" font-family="JetBrains Mono">vocation</text>
+                        <text x="190" y="160" text-anchor="middle" fill="#c8f135" font-size="14" font-weight="700" font-family="Syne">IkigAI</text>
+                    </svg>
+                </div>
+            </div>
+
+            <div class="section">
+                <h3><span class="num">03.2</span> The flat-list rule</h3>
+                <p>A page touching <code>love</code> and <code>world_needs</code> writes <em>both</em> the axes <em>and</em> the implied intersection in <code>ikigai_regions</code>:</p>
+                <pre>ikigai_regions: [love, world_needs, mission]</pre>
+                <p>The intersection is written explicitly even though it's derivable. Because:</p>
+                <ul>
+                    <li><strong>Filtering becomes one operation</strong>, not a join</li>
+                    <li><code>wiki/ikigai/mission.md</code> rolls up everything tagged <code>mission</code> directly</li>
+                    <li>A single contribution compounds across every region it touches</li>
+                    <li>Click any region in the viewer → see everything that contributed (including pages already counted under other regions)</li>
+                </ul>
+            </div>
+
+            <div class="section">
+                <h3><span class="num">03.3</span> The centre case</h3>
+                <pre>ikigai_regions: [love, good_at, world_needs, paid_for, passion, mission, profession, vocation, centre]</pre>
+                <p>This is rare and worth flagging. The <code>centre.md</code> rollup page should never have many entries. If it does, either the tagging is too generous or you've actually found your Ikigai. Lint will warn either way.</p>
+                <div class="callout">
+                    <div class="callout-label">For Benji specifically</div>
+                    <p>The bAIj+IkigAI build itself is a centre case in your corpus right now. You love it, you're good at it, the world needs it, there's a paid path. That's why this project pulls so hard — the lens is showing you what your gut already knows.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- ============== GEARS ============== -->
+        <div id="gears" class="tab-content">
+            <div class="segment-header">
+                <h2>Three retrieval gears — <span class="accent">the AI opt-in slider</span></h2>
+                <p class="tagline">Same query, three depths. Gear inferred from phrasing; user can override. Local model handles 1 and drafts 2. Cloud model handles polish of 2 and all of 3.</p>
+            </div>
+
+            <div class="section">
+                <div class="grid-3">
+                    <div class="card">
+                        <span class="num">GEAR 01 · LINKS</span>
+                        <h5>Pure retrieval</h5>
+                        <p>Vector + graph + BM25 search. Returns ranked list of pages with summaries. No synthesis.</p>
+                        <p><strong style="color:var(--accent)">Local only. Free, instant.</strong></p>
+                        <p style="margin-top:12px;font-style:italic;color:var(--text-dim)">"Just give me what I sent myself about X."</p>
+                    </div>
+                    <div class="card">
+                        <span class="num">GEAR 02 · SYNTHESIS</span>
+                        <h5>Five-section coach output</h5>
+                        <p>Answer · trail · action · blind spot · biases. Local model drafts; cloud model polishes if asked.</p>
+                        <p><strong style="color:var(--accent)">Default gear.</strong></p>
+                        <p style="margin-top:12px;font-style:italic;color:var(--text-dim)">"What do I think about X, and how did I get there?"</p>
+                    </div>
+                    <div class="card">
+                        <span class="num">GEAR 03 · DEBAISER</span>
+                        <h5>Contrarian panel on yourself</h5>
+                        <p>Five analyst voices on your own corpus: confirmer, contrarian, source-skeptic, bias-watcher, blind-spot mapper. Synthesis pass.</p>
+                        <p><strong style="color:var(--accent)">Cloud required. Slower, deliberate.</strong></p>
+                        <p style="margin-top:12px;font-style:italic;color:var(--text-dim)">"Push back on me about X."</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section">
+                <h3><span class="num">04.1</span> Phrasing inference</h3>
+                <table>
+                    <thead><tr><th>Markers</th><th>Gear</th></tr></thead>
+                    <tbody>
+                        <tr><td class="dim">"just give me", "find me", "show me", "what links", "anything on"</td><td>Gear 1</td></tr>
+                        <tr><td class="dim">"what do I think", "tell me about", "explain", "how did I get to"</td><td>Gear 2 (default)</td></tr>
+                        <tr><td class="dim">"stress-test", "push back", "what am I missing", "challenge me"</td><td>Gear 3</td></tr>
+                    </tbody>
+                </table>
+                <p>Override syntax: <code>--gear 1</code>, <code>--gear 2</code>, <code>--gear 3</code>, <code>--minimal</code>, <code>--save</code>.</p>
+            </div>
+
+            <div class="section">
+                <h3><span class="num">04.2</span> Gear 2 output shape (the default)</h3>
+                <pre><strong>Answer:</strong> &lt;direct, ≤3 sentences&gt;
+
+<strong>Trail:</strong> how I got here from your corpus
+- &lt;claim&gt; — [[source-id]] (confidence 0.X, reinforced N times)
+- &lt;claim&gt; — [[concept-id]]
+
+<strong>Action:</strong> what you can do with this
+- &lt;concrete next move, framed against your active projects&gt;
+
+<strong>Blind spot:</strong> what you might not be considering
+- &lt;a contrarian source from your own corpus, or a wiki gap&gt;
+
+<strong>Biases:</strong> what may have shaped this thinking
+- &lt;flagged on the chain — recency, confirmation, sunk-cost&gt;</pre>
+            </div>
+        </div>
+
+        <!-- ============== STAGE 0 ============== -->
+        <div id="s0" class="tab-content">
+            <div class="segment-header">
+                <h2>Stage 0 — <span class="accent">Foundation</span></h2>
+                <div class="meta">
+                    <div class="meta-item"><strong>Effort</strong> ~2 hours</div>
+                    <div class="meta-item"><strong>When</strong> Today</div>
+                    <div class="meta-item"><strong>Depends on</strong> Nothing</div>
+                </div>
+                <div class="stage-progress">
+                    <div class="stage-dot current"></div>
+                    <div class="stage-dot"></div>
+                    <div class="stage-dot"></div>
+                    <div class="stage-dot"></div>
+                    <div class="stage-dot"></div>
+                    <div class="stage-dot"></div>
+                </div>
+                <p class="tagline">Schema, prompts, repo split. No infra yet. Validatable end-to-end through Claude manually.</p>
+            </div>
+
+            <div class="section">
+                <h3><span class="num">S0.1</span> Goal</h3>
+                <p>Lay the foundation correctly so every stage afterwards builds without refactor. The data layer is plain markdown; the schema is the contract; the prompts are model-agnostic.</p>
+            </div>
+
+            <div class="section">
+                <h3><span class="num">S0.2</span> Components</h3>
+                <ol>
+                    <li><strong>Repo split.</strong> <code>ikigAI-core/</code> (universal) and <code>ikigAI-me/</code> (yours) as siblings. <code>me/</code> imports <code>core/</code> like a library.</li>
+                    <li><strong>Schema v0.2.</strong> Frontmatter spec with explicit <code>ikigai_regions</code> flat list, provenance fields, retrieval signals, lifecycle states.</li>
+                    <li><strong>Operation prompts.</strong> understand · retrieve · debaiser · phase-an-idea · brief · surface · lint · why-did-i · onboard.</li>
+                    <li><strong>Page templates.</strong> source · entity · concept · project · idea · output, all with valid v0.2 frontmatter.</li>
+                    <li><strong>Ikigai dimension pages.</strong> 9 rollup pages (4 axes + 5 intersections) ready to populate from first ingest.</li>
+                    <li><strong>Personal vocabulary.</strong> CLAUDE.md populated with your projects, people, tools, concepts, voice preferences.</li>
+                    <li><strong>Ikigai aspiration.</strong> ikigai.md with current vs aspirational mapping for the classifier to read.</li>
+                    <li><strong>Config.</strong> config.yml with voice routing, brief cadence, daemon schedules, model providers.</li>
+                </ol>
+            </div>
+
+            <div class="section">
+                <h3><span class="num">S0.3</span> What you do NOT create</h3>
+                <ul>
+                    <li>No infrastructure</li>
+                    <li>No daemons running</li>
+                    <li>No vault content beyond templates and skeletons</li>
+                    <li>No NUC provisioning</li>
+                    <li>No bulk ingest</li>
+                </ul>
+            </div>
+
+            <div class="checkpoint">
+                <div class="checkpoint-label">✓ Competence Checkpoint</div>
+                <p>You can read <code>CLAUDE.md</code> and recognise the contract. You can paste any source plus the <code>understand</code> prompt into a Claude chat and a properly-shaped page comes back. The schema feels right.</p>
+            </div>
+
+            <div class="deliverable">
+                <span class="label">Deliverable</span>
+                <code>ikigAI-v0.2.zip</code> — git-init-able bundle. Already shipped.
+            </div>
+        </div>
+
+        <!-- ============== STAGE 1 ============== -->
+        <div id="s1" class="tab-content">
+            <div class="segment-header">
+                <h2>Stage 1 — <span class="accent">Single round trip</span></h2>
+                <div class="meta">
+                    <div class="meta-item"><strong>Effort</strong> ~1 hour</div>
+                    <div class="meta-item"><strong>When</strong> Today (after S0)</div>
+                    <div class="meta-item"><strong>Depends on</strong> S0</div>
+                </div>
+                <div class="stage-progress">
+                    <div class="stage-dot done"></div>
+                    <div class="stage-dot current"></div>
+                    <div class="stage-dot"></div>
+                    <div class="stage-dot"></div>
+                    <div class="stage-dot"></div>
+                    <div class="stage-dot"></div>
+                </div>
+                <p class="tagline">Validate the schema with one real source through the full pipeline manually before any infra. Catch schema bugs cheap.</p>
+            </div>
+
+            <div class="section">
+                <h3><span class="num">S1.1</span> Goal</h3>
+                <p>Confirm the schema works on a real example, not a smoke test. If anything feels wrong here, fix it now — fixing later means migrating every page in the vault.</p>
+            </div>
+
+            <div class="section">
+                <h3><span class="num">S1.2</span> The round trip</h3>
+                <ol>
+                    <li><strong>Pick one real source.</strong> Article you'd normally tab-stash, voice memo you've been meaning to action, copy-paste from a chat, project idea you've been circling. Don't pick something fake.</li>
+                    <li><strong>Drop it in <code>inbox/unsorted/</code></strong> as a markdown file. No frontmatter needed — the pipeline writes it.</li>
+                    <li><strong>Run /understand manually</strong> through Claude. Paste the prompt + your CLAUDE.md + ikigai.md + the source. Inspect the output.</li>
+                    <li><strong>Save the resulting page</strong> to <code>wiki/sources/&lt;id&gt;.md</code>.</li>
+                    <li><strong>Run /retrieve at all three gears</strong> against the corpus-of-one. Validate the output shape for each gear.</li>
+                    <li><strong>Adjust the schema if needed</strong>. Bump <code>schema_hash</code> if you change anything structural.</li>
+                </ol>
+            </div>
+
+            <div class="section">
+                <h3><span class="num">S1.3</span> What to inspect on the output</h3>
+                <table>
+                    <thead><tr><th>Field</th><th>Question</th></tr></thead>
+                    <tbody>
+                        <tr><td>Title</td><td class="dim">Retrieval-friendly? 5–10 words?</td></tr>
+                        <tr><td>Summary</td><td class="dim">2–4 sentences capturing what matters?</td></tr>
+                        <tr><td><code>ikigai_regions</code></td><td class="dim">Match how <em>you</em> feel about the regions this content touches?</td></tr>
+                        <tr><td>Tags</td><td class="dim">Match your CLAUDE.md vocabulary, not generic?</td></tr>
+                        <tr><td>Entities/concepts</td><td class="dim">Propose the right things? Match Personal Vocabulary first?</td></tr>
+                        <tr><td>Drivers/biases</td><td class="dim">Honest, not fabricated?</td></tr>
+                        <tr><td>Confidence</td><td class="dim">Defensible? (default 0.5; not 1.0 ever)</td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="section">
+                <h3><span class="num">S1.4</span> What you do NOT create</h3>
+                <ul>
+                    <li>Don't ingest more than one source. Validate shape, not volume.</li>
+                    <li>Don't try to bulk-anything yet.</li>
+                    <li>Don't over-tweak. Most "wrong" outputs are vocabulary gaps in CLAUDE.md, not schema bugs.</li>
+                </ul>
+            </div>
+
+            <div class="checkpoint">
+                <div class="checkpoint-label">✓ Competence Checkpoint</div>
+                <p>You believe the foundation is right. You'd bet S2's six hours on this schema. You can articulate, in your own words, why the explicit Ikigai region list matters and what it unlocks downstream.</p>
+            </div>
+
+            <div class="deliverable">
+                <span class="label">Deliverable</span>
+                Schema v0.2.x (post-feedback fixes if any) and one real page committed to <code>wiki/sources/</code>.
+            </div>
+        </div>
+
+        <!-- ============== STAGE 2 ============== -->
+        <div id="s2" class="tab-content">
+            <div class="segment-header">
+                <h2>Stage 2 — <span class="accent">NUC live, brain on</span></h2>
+                <div class="meta">
+                    <div class="meta-item"><strong>Effort</strong> ~6 hours</div>
+                    <div class="meta-item"><strong>When</strong> This week</div>
+                    <div class="meta-item"><strong>Depends on</strong> S1</div>
+                </div>
+                <div class="stage-progress">
+                    <div class="stage-dot done"></div>
+                    <div class="stage-dot done"></div>
+                    <div class="stage-dot current"></div>
+                    <div class="stage-dot"></div>
+                    <div class="stage-dot"></div>
+                    <div class="stage-dot"></div>
+                </div>
+                <p class="tagline">The heart of the build. Everything else depends on this. NUC running everything stateful. Reachable from your devices via Tailscale. Phase 0 brain dump complete and canonicalised.</p>
+            </div>
+
+            <div class="section">
+                <h3><span class="num">S2.1</span> Part A — NUC provisioning</h3>
+                <ol>
+                    <li>Linux confirmed (Ubuntu LTS recommended; whatever you're already on works)</li>
+                    <li>Tailscale installed on NUC and your devices, mesh confirmed</li>
+                    <li>Docker + Docker Compose for daemon containerisation</li>
+                    <li>Ollama installed natively, <code>llama3.2:latest</code> pulled (your Model Wars winner)</li>
+                    <li>Vault dir at <code>~/ikigAI-me/</code> with the v0.2 layout, git-tracked</li>
+                    <li>Vector index initialised (Chroma — simplest local, swappable later)</li>
+                    <li>Graph index initialised (NetworkX in <code>state/graph.json</code>)</li>
+                    <li>SSH config from your Mac and laptop verified end-to-end</li>
+                </ol>
+            </div>
+
+            <div class="section">
+                <h3><span class="num">S2.2</span> Part B — Engines deployed (the three reused production components)</h3>
+                <ol>
+                    <li><strong>Canonicalisation &amp; dedup engine</strong> containerised. Multi-key matching. Configured to run on every inbox file.</li>
+                    <li><strong>gargAIntuan orchestrator</strong> containerised. Job queue. Parallel agent dispatch. Streamed logs.</li>
+                    <li><strong>Context-injection synthesis engine</strong> containerised. Configured for Gear 2/3 calls to Claude API. API key in env, not repo. Token-spend logging.</li>
+                </ol>
+            </div>
+
+            <div class="section">
+                <h3><span class="num">S2.3</span> Part C — Daemons running</h3>
+                <ul>
+                    <li><code>inbox-watcher</code> — inotify on <code>inbox/</code>, triggers /understand</li>
+                    <li><code>decay-keeper</code> — cron, daily, confidence + retrieval-score upkeep</li>
+                </ul>
+            </div>
+
+            <div class="section">
+                <h3><span class="num">S2.4</span> Part D — MCP server</h3>
+                <pre>Tools exposed to any client:
+  ikigai_capture          drop content into inbox
+  ikigai_retrieve         three-gear retrieval
+  ikigai_phase_an_idea    idea → phased plan
+  ikigai_brief_today      daily brief on demand
+  ikigai_debaiser         contrarian panel</pre>
+                <p>Configured in Claude Desktop and Claude Code on your devices via Tailscale URL.</p>
+            </div>
+
+            <div class="section">
+                <h3><span class="num">S2.5</span> Part E — Google integration</h3>
+                <ol>
+                    <li>Google Calendar OAuth, two-way scope, primary account</li>
+                    <li>Gmail OAuth, read-only on label <code>IkigAI/Inbox</code></li>
+                    <li>Daemon: gmail-watcher polls labelled items, pulls into <code>inbox/gmail/</code>, removes label</li>
+                    <li>Daemon: calendar-sync caches today + next 14 days for brief generator</li>
+                </ol>
+            </div>
+
+            <div class="section">
+                <h3><span class="num">S2.6</span> Part F — Phase 0 brain dump (one-time bridge)</h3>
+                <ol>
+                    <li><strong>Chrome tabs</strong> — Android long-press → Select all → Share → Copy. Paste per device into <code>inbox/chrome/dump-&lt;device&gt;.md</code>. Run the URL exploder script.</li>
+                    <li><strong>Saved Instagram / Twitter / LinkedIn</strong> — copy salient items (URL + your reason) into <code>inbox/social/dump.md</code>.</li>
+                    <li><strong>Quotes from messaging apps</strong> — copy individual items you want preserved into <code>inbox/chat-paste/dump.md</code>. <strong>Never reference the channel, sender, or thread.</strong> One-way bridge.</li>
+                    <li><strong>Voice memos</strong> — whisper.cpp pass over your folder, transcripts into <code>inbox/voice/</code>.</li>
+                    <li>Watcher processes everything as it lands. Canonicalisation merges duplicates. Classifier tags Ikigai regions. Linker builds the graph.</li>
+                </ol>
+                <div class="callout warn">
+                    <div class="callout-label">⚠ The privacy boundary</div>
+                    <p>From the moment Phase 0 ends, messaging apps never touch IkigAI again. No exports. No references to channels or senders. Future-you uses IkigAI as the destination. Past-you's content gets a one-way ticket in. This boundary is sacred.</p>
+                </div>
+            </div>
+
+            <div class="checkpoint">
+                <div class="checkpoint-label">✓ Competence Checkpoint</div>
+                <ul>
+                    <li>You SSH into the NUC, see daemons running healthy</li>
+                    <li>You open Claude Desktop on your phone, use <code>ikigai_retrieve</code> over the dump</li>
+                    <li>You paste a new article into <code>inbox/</code> via Tailscale-mounted path; it processes within a minute</li>
+                    <li>You query "what have I been thinking about Mac Studios" and get back canonicalised pages from your past dumps</li>
+                </ul>
+            </div>
+
+            <div class="deliverable">
+                <span class="label">Deliverable</span>
+                A working brain. Real corpus. Reachable from every device. Daemons quiet, indexes warm.
+            </div>
+        </div>
+
+        <!-- ============== STAGE 3 ============== -->
+        <div id="s3" class="tab-content">
+            <div class="segment-header">
+                <h2>Stage 3 — <span class="accent">Coach experience</span></h2>
+                <div class="meta">
+                    <div class="meta-item"><strong>Effort</strong> ~4 hours</div>
+                    <div class="meta-item"><strong>When</strong> This week (after S2)</div>
+                    <div class="meta-item"><strong>Depends on</strong> S2</div>
+                </div>
+                <div class="stage-progress">
+                    <div class="stage-dot done"></div>
+                    <div class="stage-dot done"></div>
+                    <div class="stage-dot done"></div>
+                    <div class="stage-dot current"></div>
+                    <div class="stage-dot"></div>
+                    <div class="stage-dot"></div>
+                </div>
+                <p class="tagline">When it stops being infrastructure and starts being a coach. Three retrieval gears live. Web viewer running. Daily brief delivered. Coach voice configured. Idea flow productionised — drop an idea, get a phased plan with calendar offers.</p>
+            </div>
+
+            <div class="section">
+                <h3><span class="num">S3.1</span> Part A — Three-gear retrieval</h3>
+                <ol>
+                    <li>Gear inference from phrasing (rules + LLM classifier fallback)</li>
+                    <li>Per-context gear preference learned (override remembered)</li>
+                    <li>Gear 1 — local, instant, free</li>
+                    <li>Gear 2 — local draft + Claude polish</li>
+                    <li>Gear 3 — Debaiser-on-self panel via Claude</li>
+                </ol>
+            </div>
+
+            <div class="section">
+                <h3><span class="num">S3.2</span> Part B — Web viewer</h3>
+                <ul>
+                    <li>Static-served from NUC at <code>http://nuc.tailnet/</code></li>
+                    <li>ABENAKI-shaped sidebar nav over your wiki structure (<em>this UI pattern</em>, applied to live data)</li>
+                    <li>Brusselbach Ikigai diagram, interactive — click any region, see everything tagged</li>
+                    <li>Search across the whole vault with snippet highlighting</li>
+                    <li>ijneb.dev tokens applied (#0d0d0d, #c8f135, JetBrains Mono + Syne)</li>
+                    <li>Brief panel always accessible — today's recommended work</li>
+                </ul>
+            </div>
+
+            <div class="section">
+                <h3><span class="num">S3.3</span> Part C — Daily brief in the multi-project options format</h3>
+                <pre>Good morning. Here are your build options today:
+
+— <strong>Stage 2 of PrepAIred</strong>
+  Focus: &lt;what&gt;. You could use that for: &lt;why&gt;.
+  Effort: 2h. Risk: &lt;what might go wrong&gt;.
+
+— <strong>Stage 3 of ABENAKI Lab</strong>
+  Focus: &lt;what&gt;. You could use that for: &lt;why&gt;.
+
+— <strong>Stage 5 of IkigAI</strong>
+  Focus: &lt;what&gt;. You could use that for: &lt;why&gt;.
+
+<strong>My recommendation given your focus on &lt;X&gt;:</strong> &lt;pick + reasoning&gt;.
+
+<strong>Best calendar slot:</strong> &lt;slot&gt;. Want me to book it?
+Other options: &lt;…&gt;</pre>
+                <p>Three signals weighted equally at first: active projects, promoted ideas, recent calendar reality. Learns over time which signal predicts engagement.</p>
+            </div>
+
+            <div class="section">
+                <h3><span class="num">S3.4</span> Part D — Coach voice</h3>
+                <table>
+                    <thead><tr><th>Voice</th><th>When</th></tr></thead>
+                    <tbody>
+                        <tr><td>warm</td><td class="dim">Soft prompting, encouragement</td></tr>
+                        <tr><td>helpful (default)</td><td class="dim">Clear, direct, no filler</td></tr>
+                        <tr><td>aggressive</td><td class="dim">Pushes hard, doesn't accept first-pass</td></tr>
+                        <tr><td>roasty</td><td class="dim">Affectionate teasing, accountability moments</td></tr>
+                        <tr><td>prepaired</td><td class="dim">Calm, structured, slightly clinical</td></tr>
+                        <tr><td>accountantability</td><td class="dim">Direct, accountability-heavy, asks back</td></tr>
+                        <tr><td>ijneb-dev</td><td class="dim">Sharp, declarative, no fluff</td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="section">
+                <h3><span class="num">S3.5</span> Part E — Productionised idea flow</h3>
+                <ol>
+                    <li>New page type <code>idea</code> in <code>wiki/ideas/</code></li>
+                    <li><code>/phase-an-idea</code> reads idea + entire vault + active projects + Ikigai axes + calendar load</li>
+                    <li>Writes a phased plan in IkigAI's own format (this very document is the template)</li>
+                    <li>Identifies dependencies, what each phase delivers</li>
+                    <li>Proposes calendar slots for Phase 1 against your real availability</li>
+                    <li>You accept → daemon writes the event to Google Calendar with description linking back to the plan page</li>
+                </ol>
+            </div>
+
+            <div class="checkpoint">
+                <div class="checkpoint-label">✓ Competence Checkpoint</div>
+                <ul>
+                    <li>Daily brief lands in your morning, recommends across your projects, offers calendar slots</li>
+                    <li>You drop a fresh idea into <code>inbox/ideas/</code>; within minutes you have a phased plan</li>
+                    <li>You open the web viewer on your phone, click <code>mission</code>, see everything you've ever sent that touched mission</li>
+                    <li>Gear 3 retrieval on a load-bearing belief returns a Debaiser panel that surfaces something you'd genuinely missed</li>
+                </ul>
+            </div>
+
+            <div class="deliverable">
+                <span class="label">Deliverable</span>
+                A coach. A real one. Yours.
+            </div>
+        </div>
+
+        <!-- ============== STAGE 4 ============== -->
+        <div id="s4" class="tab-content">
+            <div class="segment-header">
+                <h2>Stage 4 — <span class="accent">Learning loop</span></h2>
+                <div class="meta">
+                    <div class="meta-item"><strong>Effort</strong> ~3 hours</div>
+                    <div class="meta-item"><strong>When</strong> Week 2</div>
+                    <div class="meta-item"><strong>Depends on</strong> S3</div>
+                </div>
+                <div class="stage-progress">
+                    <div class="stage-dot done"></div>
+                    <div class="stage-dot done"></div>
+                    <div class="stage-dot done"></div>
+                    <div class="stage-dot done"></div>
+                    <div class="stage-dot current"></div>
+                    <div class="stage-dot"></div>
+                </div>
+                <p class="tagline">The system learns from how you use it. Application captured. Outcomes observed. Retrieval ranking moves with reality, not just decay.</p>
+            </div>
+
+            <div class="section">
+                <h3><span class="num">S4.1</span> Components</h3>
+                <ol>
+                    <li><strong>Application capture mechanic.</strong> When a coach output gets acted on, you tell it (or it asks 24 hours later). Three modes layered: explicit <code>applied:&lt;output-id&gt;</code> note, agent follow-up, calendar event completion as implicit signal.</li>
+                    <li><strong>Outcome observation.</strong> When an applied idea ships / fails / iterates, capture that back as a source. Outcome links back to the original idea page; supersedes if learnings change the plan.</li>
+                    <li><strong>Retrieval-score evolution.</strong> Surface events logged. Citations in coach outputs reinforce. Ignored surfaces decay. Per-context modifiers learned.</li>
+                    <li><strong>Linkage-scout daemon active.</strong> Nightly walk. Top discoveries surfaced in next brief.</li>
+                    <li><strong>Debaiser auto-trigger.</strong> When a load-bearing claim accumulates &gt;5 reinforcements without contradiction, debaiser runs unprompted. Output goes into the next morning's brief: "I think you might be in an echo chamber on X."</li>
+                </ol>
+            </div>
+
+            <div class="checkpoint">
+                <div class="checkpoint-label">✓ Competence Checkpoint</div>
+                <ul>
+                    <li>A page you cited two weeks ago shows visibly higher rank in fresh retrievals on related queries</li>
+                    <li>The system has caught at least one echo-chamber pattern and surfaced it in a morning brief</li>
+                    <li>Linkage-scout has proposed at least one connection that genuinely surprised you</li>
+                </ul>
+            </div>
+
+            <div class="deliverable">
+                <span class="label">Deliverable</span>
+                A system that gets better the more you use it, without you grading anything.
+            </div>
+        </div>
+
+        <!-- ============== STAGE 5 ============== -->
+        <div id="s5" class="tab-content">
+            <div class="segment-header">
+                <h2>Stage 5 — <span class="accent">Friend-ready</span></h2>
+                <div class="meta">
+                    <div class="meta-item"><strong>Effort</strong> ~2 hours</div>
+                    <div class="meta-item"><strong>When</strong> Week 3, when a friend's ready</div>
+                    <div class="meta-item"><strong>Depends on</strong> S4</div>
+                </div>
+                <div class="stage-progress">
+                    <div class="stage-dot done"></div>
+                    <div class="stage-dot done"></div>
+                    <div class="stage-dot done"></div>
+                    <div class="stage-dot done"></div>
+                    <div class="stage-dot done"></div>
+                    <div class="stage-dot current"></div>
+                </div>
+                <p class="tagline">Onboarding conversation built. Bespoke proven scalable by spinning up a second me. Friend's first capture lands cleanly.</p>
+            </div>
+
+            <div class="section">
+                <h3><span class="num">S5.1</span> Components</h3>
+                <ol>
+                    <li><strong>Conversational onboarder.</strong> Walks new user through current Ikigai → aspirational Ikigai → vocabulary seed → capture preferences → coach voice → brief cadence. 15 minutes for a technical user; longer for non-technical. Same conversation tree, depth follows user signal.</li>
+                    <li><strong>Second me repo.</strong> <code>friend-me/</code> next to <code>ikigAI-me/</code>. Same <code>core/</code> import. Their vault, their tags, their voice. First capture validates clean handoff.</li>
+                    <li><strong>Multi-tenant access.</strong> MCP server reads <code>me</code> from auth context. Tailscale ACL keeps friend's vault isolated. Daemons run per-vault.</li>
+                    <li><strong>Comparison pass.</strong> Their experience vs yours. Anything that needs governance / operationalising surfaces here. Core upgrade benefits both.</li>
+                </ol>
+            </div>
+
+            <div class="section">
+                <h3><span class="num">S5.2</span> What you do NOT create</h3>
+                <ul>
+                    <li>Don't productise. This is proof-of-concept for bespoke-at-scale, not a launch.</li>
+                    <li>Don't open beyond your friend.</li>
+                    <li>Don't try to make their experience match yours — bespoke means different.</li>
+                </ul>
+            </div>
+
+            <div class="checkpoint">
+                <div class="checkpoint-label">✓ Competence Checkpoint</div>
+                <ul>
+                    <li>Your friend captures their first thing</li>
+                    <li>Their first retrieval works</li>
+                    <li>Their daily brief, in their voice, lands the next morning</li>
+                    <li>You haven't refactored anything in your own setup to make theirs work</li>
+                </ul>
+            </div>
+
+            <div class="deliverable">
+                <span class="label">Deliverable</span>
+                Two people, one core, two brains. Bespoke scales.
+            </div>
+        </div>
+
+        <!-- ============== SCHEMA ============== -->
+        <div id="schema" class="tab-content">
+            <div class="segment-header">
+                <h2>Schema v0.2 — <span class="accent">the contract</span></h2>
+                <p class="tagline">Every page in every vault adheres to this. Bump <code>schema_hash</code> on breaking changes; lint flags stale pages.</p>
+            </div>
+
+            <div class="section">
+                <h3><span class="num">R1.1</span> Universal frontmatter (every page)</h3>
+                <pre>---
+id: 2026-04-30-&lt;slug&gt;
+type: source              # source | entity | concept | project | idea | output
+created: 2026-04-30T08:54:00+11:00
+updated: 2026-04-30T08:54:00+11:00
+
+# Ikigai regions — flat, explicit list
+# Both axes and intersections written out
+ikigai_regions: []
+
+summary: ""               # agent-written, ≤4 sentences, mandatory
+
+tags: []
+
+# Provenance (the reverse brain-fart trail)
+sources_raw: []
+derived_from: []
+supersedes: []
+superseded_by: null
+confidence: 0.5
+last_reinforced: 2026-04-30
+drivers: []
+biases: []
+
+# Retrieval signal (ADDIE feedback)
+retrieval_score: 0.5
+last_surfaced: null
+last_used: null
+context_modifiers: {}
+surface_count: 0
+use_count: 0
+
+# Lifecycle
+status: inbox             # inbox | canonical | evergreen | superseded | archived
+schema_hash: v0.2
+---</pre>
+            </div>
+
+            <div class="section">
+                <h3><span class="num">R1.2</span> Type extensions</h3>
+                <table>
+                    <thead><tr><th>Type</th><th>Adds</th></tr></thead>
+                    <tbody>
+                        <tr><td>source</td><td class="dim"><code>source_type</code>, <code>source_url</code>, <code>source_date</code>, <code>captured_from</code>, <code>extracted_entities</code>, <code>extracted_concepts</code>, <code>fetched_via</code></td></tr>
+                        <tr><td>entity</td><td class="dim"><code>entity_type</code>, <code>aliases</code>, <code>relationships</code></td></tr>
+                        <tr><td>concept</td><td class="dim"><code>domain</code>, <code>maturity</code></td></tr>
+                        <tr><td>project</td><td class="dim"><code>project_status</code>, <code>linked_concepts</code>, <code>linked_sources</code>, <code>linked_ideas</code></td></tr>
+                        <tr><td>idea</td><td class="dim"><code>idea_status</code>, <code>phased_plan</code>, <code>calendar_offered</code>, <code>calendar_event_ids</code>, <code>parent_project</code></td></tr>
+                        <tr><td>output</td><td class="dim"><code>output_type</code>, <code>in_response_to</code>, <code>gear_used</code>, <code>voice</code>, <code>sources_cited</code>, <code>applied</code>, <code>applied_at</code>, <code>outcome_notes</code></td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="section">
+                <h3><span class="num">R1.3</span> Lifecycle states</h3>
+                <table>
+                    <tbody>
+                        <tr><td><strong>inbox</strong></td><td class="dim">Just captured. Waiting for /understand.</td></tr>
+                        <tr><td><strong>canonical</strong></td><td class="dim">Pipeline ran. Frontmatter complete. Linked into graph.</td></tr>
+                        <tr><td><strong>evergreen</strong></td><td class="dim">Reinforced ≥5 times. Confidence ≥0.8. No decay events in 60 days.</td></tr>
+                        <tr><td><strong>superseded</strong></td><td class="dim">Replaced. Kept for audit. Points at replacement.</td></tr>
+                        <tr><td><strong>archived</strong></td><td class="dim">Manually retired. Out of default retrieval.</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- ============== DAEMONS ============== -->
+        <div id="daemons" class="tab-content">
+            <div class="segment-header">
+                <h2>Daemons — <span class="accent">always on, mostly quiet</span></h2>
+                <p class="tagline">Specs at v0.2; S2 implements them. Each is a Claw worker on the NUC, exposed via MCP, surfacing into the web viewer.</p>
+            </div>
+
+            <div class="section">
+                <table>
+                    <thead><tr><th>Daemon</th><th>Trigger</th><th>Purpose</th></tr></thead>
+                    <tbody>
+                        <tr><td><strong>inbox-watcher</strong></td><td class="dim">inotify on inbox/</td><td class="dim">Processes captures as they land. Routes ideas → /phase-an-idea, others → /understand.</td></tr>
+                        <tr><td><strong>scout</strong></td><td class="dim">cron 02:00</td><td class="dim">Nightly graph walk. Non-obvious linkages. Echo-chamber detection. Decay candidates.</td></tr>
+                        <tr><td><strong>brief-generator</strong></td><td class="dim">cron 07:30</td><td class="dim">Daily brief in multi-project options format.</td></tr>
+                        <tr><td><strong>decay-keeper</strong></td><td class="dim">cron Sun 03:00</td><td class="dim">Confidence decay. Retrieval-score decay. Promotion checks.</td></tr>
+                        <tr><td><strong>debaiser</strong></td><td class="dim">on demand or auto</td><td class="dim">Contrarian panel. Auto-runs on echo-chamber flag. Manual via Gear 3.</td></tr>
+                        <tr><td><strong>gmail-watcher</strong></td><td class="dim">poll 15min</td><td class="dim">Reads labelled inbox items, pulls into vault, removes label.</td></tr>
+                        <tr><td><strong>calendar-sync</strong></td><td class="dim">poll 15min + on demand</td><td class="dim">Read today + 14 days. Write events on idea-flow accept.</td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="section">
+                <h3><span class="num">R2.1</span> Health endpoint</h3>
+                <pre>GET http://nuc.tailnet:8900/health
+
+{
+  "inbox_watcher": "running",
+  "scout": "last_run: 2026-04-30T02:00:00, status: ok",
+  "brief_generator": "last_run: 2026-04-30T07:30:00, status: ok",
+  "decay_keeper": "last_run: 2026-04-28T03:00:00, status: ok",
+  "gmail_watcher": "running",
+  "calendar_sync": "running",
+  "ollama": "running",
+  "vector_index": "running",
+  "graph_index": "ok"
+}</pre>
+                <p>Becomes the brain's heartbeat. Web viewer shows it on the home screen.</p>
+            </div>
+        </div>
+
+        <!-- ============== COGNITIVE LOOP ============== -->
+        <div id="loop" class="tab-content">
+            <div class="segment-header">
+                <h2>The IkigAI cognitive loop — <span class="accent">the engine</span></h2>
+                <p class="tagline">It runs whether you're at the keyboard or not. Capture in, action out, outcomes observed, brain learns.</p>
+            </div>
+
+            <div class="section">
+                <pre>1.  You capture a thought, link, voice memo, quote — from anywhere.
+2.  Inbox-watcher picks it up on the NUC.
+3.  Canonicalisation engine merges with existing records or creates new.
+4.  gargAIntuan runs classification, linkage, reflection in parallel.
+5.  Page lands in vault with Ikigai regions, summary, provenance, linkages.
+6.  Linkage-scout walks the graph that night, finds non-obvious connections.
+7.  Brief-generator builds tomorrow's options across your projects.
+8.  Morning: you read the brief on your phone or web viewer.
+9.  You pick what to work on. Calendar event lands in Google Cal.
+10. You retrieve at the gear that fits — links, synthesis, or coach.
+11. You act on what landed.
+12. Application capture closes the ADDIE loop.
+13. Outcome observed; retrieval_score and context_modifiers update.
+14. Tomorrow's brief is shaped by today's reality.</pre>
+            </div>
+
+            <div class="section">
+                <div class="callout">
+                    <div class="callout-label">The compounding property</div>
+                    <p>Every step feeds the next iteration. Capture compounds (canonicalisation merges duplicates into one record that gets stronger). Classification compounds (more sources tagged with a region make that region's rollup richer). Retrieval compounds (use shapes rank, rank shapes use). Phased plans compound (each shipped phase unlocks the next without re-planning). The system gets smarter as a function of being used, not as a function of being trained.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- ============== GLOSSARY ============== -->
+        <div id="glossary" class="tab-content">
+            <div class="segment-header">
+                <h2>Glossary — <span class="accent">terms in this document</span></h2>
+                <p class="tagline">Project terms, engine terms, concept terms. Start here when something feels unfamiliar.</p>
+            </div>
+
+            <div class="section">
+                <h3><span class="num">G.1</span> Projects (Benji's universe)</h3>
+                <table>
+                    <tbody>
+                        <tr><td><strong>ABENAKI</strong></td><td class="dim">December 2025 cognitive engine spec. Now the engine layer of IkigAI.</td></tr>
+                        <tr><td><strong>IkigAI</strong></td><td class="dim">This system. Personal coach over the ABENAKI engine, framed by Brusselbach.</td></tr>
+                        <tr><td><strong>bAIj</strong></td><td class="dim">Autonomous AI venture studio cofounded April 2026.</td></tr>
+                        <tr><td><strong>TheInstrumAInt</strong></td><td class="dim">Unified personal command centre. IkigAI is its ABENAKI module.</td></tr>
+                        <tr><td><strong>Digiquarium</strong></td><td class="dim">AIthropology research platform. 17 tanks, 21 daemons. Phase 0 migration to Mac Mini in flight.</td></tr>
+                        <tr><td><strong>PoliticalDebAIser</strong></td><td class="dim">Multi-agent ideological analysis on news. The Debaiser-on-self pattern inherits from this.</td></tr>
+                        <tr><td><strong>PrepAIred</strong></td><td class="dim">Active product. Voice option for IkigAI coach.</td></tr>
+                        <tr><td><strong>AccountantAbilityBuddy</strong></td><td class="dim">ERPNext × MCP financial intelligence. Voice option for IkigAI.</td></tr>
+                        <tr><td><strong>of Arc</strong></td><td class="dim">Joan of Arc screenplay project.</td></tr>
+                        <tr><td><strong>Knife Fight</strong></td><td class="dim">Card game, 10 characters, 8-player.</td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="section">
+                <h3><span class="num">G.2</span> Engines (yours, retargeted)</h3>
+                <table>
+                    <tbody>
+                        <tr><td><strong>Canonicalisation &amp; dedup engine</strong></td><td class="dim">Multi-key matching with confidence-scored merging. Production-grade from council-document work.</td></tr>
+                        <tr><td><strong>gargAIntuan</strong></td><td class="dim">Multi-agent orchestrator. Parallel agent dispatch, job queue, streamed logs.</td></tr>
+                        <tr><td><strong>Context-injection synthesis engine</strong></td><td class="dim">Claude with role-aware context patterns. From B2B personalisation work.</td></tr>
+                        <tr><td><strong>OpenClaw</strong></td><td class="dim">Agent framework (gateway port 18789).</td></tr>
+                        <tr><td><strong>ClawTeam</strong></td><td class="dim">Multi-agent orchestrator on top of OpenClaw.</td></tr>
+                        <tr><td><strong>SecureClaw</strong></td><td class="dim">Security audit layer (56 audit checks, OWASP LLM Top 10 2025).</td></tr>
+                        <tr><td><strong>Crucix</strong></td><td class="dim">Signal sweep engine (15-minute cycle).</td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="section">
+                <h3><span class="num">G.3</span> Concepts</h3>
+                <table>
+                    <tbody>
+                        <tr><td><strong>Reverse brain fart</strong></td><td class="dim">Retrieval that surfaces the trail of how you got to a thought, not just the thought.</td></tr>
+                        <tr><td><strong>Three retrieval gears</strong></td><td class="dim">Links / synthesis / debaiser. Same query, three depths.</td></tr>
+                        <tr><td><strong>Debaiser-on-self</strong></td><td class="dim">Five-analyst contrarian panel pointed at your own corpus. Inherits from PoliticalDebAIser.</td></tr>
+                        <tr><td><strong>Productionised idea flow</strong></td><td class="dim">The verb of IkigAI. Idea in → phased plan out → calendar offered → work begins.</td></tr>
+                        <tr><td><strong>ADDIE loop</strong></td><td class="dim">Application + outcome capture closes the learning loop. Retrieval-score evolves.</td></tr>
+                        <tr><td><strong>Brusselbach Ikigai</strong></td><td class="dim">The four-axis Venn (love / good_at / world_needs / paid_for) and five intersections.</td></tr>
+                        <tr><td><strong>AIthropology</strong></td><td class="dim">Digiquarium's research thesis: AI specimens diverging from identical starting conditions.</td></tr>
+                        <tr><td><strong>Sovereignty</strong></td><td class="dim">Local-first, self-owned, vendor-independent. Core principle.</td></tr>
+                        <tr><td><strong>Phase 0 bridge</strong></td><td class="dim">One-time copy-paste from messaging apps into IkigAI. Never again after.</td></tr>
+                        <tr><td><strong>Centre case</strong></td><td class="dim">A page touching all four Ikigai axes. Rare; worth flagging.</td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="footer-meta">
+                <span>Schema v0.2 · Roadmap v1.0 · 2026-04-30</span>
+                <span>ikigAI · ijneb.dev</span>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        function showTab(id) {
+            document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.nav-item').forEach(t => t.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
+            event.target.closest('.nav-item').classList.add('active');
+            const sr = document.getElementById('searchResults');
+            if (sr) { sr.classList.remove('show'); sr.innerHTML = ''; }
+            document.querySelector('.main-content').scrollTop = 0;
+        }
+
+        function toggleSidebar() {
+            const sb = document.getElementById('sidebar');
+            const btn = document.getElementById('collapseBtn');
+            sb.classList.toggle('collapsed');
+            btn.textContent = sb.classList.contains('collapsed') ? '▶' : '◀';
+        }
+
+        function handleSearch() {
+            const term = document.getElementById('searchBox').value.toLowerCase().trim();
+            const rc = document.getElementById('searchResults');
+            if (!term) { rc.classList.remove('show'); rc.innerHTML = ''; return; }
+            const tabs = document.querySelectorAll('.tab-content');
+            const results = [];
+            tabs.forEach(tab => {
+                const title = tab.querySelector('h2')?.textContent || 'Section';
+                const content = tab.textContent.toLowerCase();
+                const idx = content.indexOf(term);
+                if (idx !== -1) {
+                    const start = Math.max(0, idx - 80);
+                    const end = Math.min(content.length, idx + term.length + 80);
+                    results.push({ id: tab.id, title, snippet: '...' + content.substring(start, end) + '...' });
+                }
+            });
+            rc.innerHTML = '';
+            if (results.length) {
+                results.forEach(r => {
+                    const div = document.createElement('div');
+                    div.className = 'search-result';
+                    div.onclick = () => {
+                        document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+                        document.querySelectorAll('.nav-item').forEach(t => t.classList.remove('active'));
+                        document.getElementById(r.id).classList.add('active');
+                        rc.classList.remove('show');
+                        document.getElementById('searchBox').value = '';
+                        document.querySelector('.main-content').scrollTop = 0;
+                    };
+                    const hl = r.snippet.replace(new RegExp(term, 'gi'), m => `<span class="search-highlight">${m}</span>`);
+                    div.innerHTML = `<div class="search-result-title">${r.title}</div><div class="search-result-snippet">${hl}</div>`;
+                    rc.appendChild(div);
+                });
+                rc.classList.add('show');
+            } else {
+                rc.innerHTML = '<div style="padding:14px;text-align:center;color:#5a5a55;font-size:11px;">No results</div>';
+                rc.classList.add('show');
+            }
+        }
+    </script>
+</body>
+</html>
