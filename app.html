@@ -1,0 +1,1437 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
+<meta name="theme-color" content="#0d0d0d"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+<meta name="apple-mobile-web-app-title" content="IkigAI"/>
+<meta name="description" content="Your brain, coached. Capture anything. Retrieve at depth. Productionise idea flows."/>
+<link rel="manifest" href="manifest.json"/>
+<title>IkigAI — App</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&family=Syne:wght@700;800&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+<style>
+:root{--bg:#0d0d0d;--surface:#0f0f0f;--surface2:#141414;--card:#161616;--border:#1e1e1e;--border2:#2a2a2a;--muted:#1a1a1a;--sub:#8a8a84;--text:#e8e8e2;--text-dim:#5a5a55;--text-bright:#f9fafb;--accent:#c8f135;--accent-dim:rgba(200,241,53,0.15);--accent-soft:rgba(200,241,53,0.06);--cyan:#00d4ff;--green:#00ff88;--orange:#ff8c42;--coral:#ff6b6b;--purple:#a78bfa;--yellow:#eab308;--red:#ef4444;--blue:#00aaff;--safe-b:env(safe-area-inset-bottom,0px);--radius:6px;--radius-sm:3px;--mono:'JetBrains Mono',monospace;--display:'Syne',sans-serif;--body:'DM Sans',sans-serif}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--text);font-family:var(--body)}
+#app{display:flex;flex-direction:column;height:100%;height:100dvh}
+.colour-bar{height:2px;background:linear-gradient(90deg,var(--accent) 0%,var(--green) 35%,var(--cyan) 70%,var(--purple) 100%);opacity:.6;flex-shrink:0}
+.header{background:var(--surface);border-bottom:1px solid var(--border);padding:10px 14px;display:flex;align-items:center;gap:10px;flex-shrink:0}
+.logo-dot{width:7px;height:7px;border-radius:50%;background:var(--accent);box-shadow:0 0 8px var(--accent)}
+.logo-text{font-family:var(--display);font-size:14px;font-weight:800;color:var(--text);letter-spacing:.02em}
+.logo-text .accent{color:var(--accent)}
+.logo-sub{color:var(--sub);font-size:8px;letter-spacing:.1em;font-family:var(--mono);margin-left:auto}
+.main{flex:1;overflow-y:auto;overflow-x:hidden;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;padding:14px 14px 8px}
+.nav{display:flex;background:var(--surface);border-top:1px solid var(--border);flex-shrink:0;padding-bottom:var(--safe-b);position:relative;z-index:400}
+.nav-btn{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:9px 2px;gap:3px;border:none;background:none;cursor:pointer;color:var(--sub);font-family:var(--mono);font-size:7.5px;letter-spacing:.08em;text-transform:uppercase;position:relative;transition:color .15s}
+.nav-btn.active{color:var(--accent)}
+.nav-btn.active::before{content:'';position:absolute;top:0;left:15%;right:15%;height:2px;background:var(--accent);box-shadow:0 0 6px var(--accent)}
+.nav-icon{font-size:16px;line-height:1}
+.nav-overlay{color:var(--sub)}.nav-overlay:active{opacity:.7}
+.nav-overlay.panel-open{color:var(--orange)}
+.nav-overlay.panel-open::before{content:'';position:absolute;top:0;left:15%;right:15%;height:2px;background:var(--orange);box-shadow:0 0 8px var(--orange)}
+
+/* Cards & layout */
+.card{background:var(--card);border-radius:var(--radius);padding:14px;margin-bottom:10px;border:1px solid var(--border)}
+.card.gc{border-color:rgba(200,241,53,0.25)}
+.card.go{border-color:rgba(255,140,66,0.25)}
+.card.gg{border-color:rgba(0,255,136,0.25)}
+.card.gp{border-color:rgba(167,139,250,0.25)}
+.card.gr{border-color:rgba(239,68,68,0.25)}
+.card.gy{border-color:rgba(234,179,8,0.25)}
+.sl{font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:var(--sub);margin-bottom:10px;font-family:var(--mono)}
+.kg{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px}
+.kg3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:10px}
+.kpi{background:var(--card);border-radius:var(--radius);padding:12px 14px;border:1px solid var(--border)}
+.kpi .lbl{font-size:9px;letter-spacing:.15em;text-transform:uppercase;color:var(--sub);margin-bottom:4px;font-family:var(--mono)}
+.kpi .val{font-size:22px;font-weight:700;line-height:1;font-family:var(--display)}
+.kpi .sub{font-size:10px;color:var(--sub);margin-top:4px}
+.pb{height:5px;background:var(--muted);border-radius:3px;overflow:hidden;margin:6px 0}
+.pbi{height:100%;border-radius:3px;transition:width .5s ease;background:var(--accent)}
+
+/* Headings */
+h1,h2,h3,h4,h5{font-family:var(--display);letter-spacing:-0.01em}
+.view-title{font-size:24px;font-weight:800;margin-bottom:4px}
+.view-sub{font-size:11px;color:var(--sub);font-family:var(--mono);letter-spacing:.1em;text-transform:uppercase;margin-bottom:18px}
+
+/* Buttons */
+.btn{padding:9px 14px;border-radius:var(--radius);border:1px solid var(--border);background:var(--card);color:var(--text);font-family:var(--mono);font-size:11px;font-weight:600;letter-spacing:.05em;cursor:pointer;transition:all .15s;text-transform:uppercase}
+.btn:hover{border-color:var(--accent)}
+.btn-p{background:var(--accent);color:var(--bg);border-color:var(--accent)}
+.btn-p:hover{opacity:0.85}
+.btn-g{background:transparent}
+.btn-r{background:var(--red);color:#fff;border-color:var(--red)}
+.btn-r:hover{opacity:0.85}
+.btn-sm{padding:6px 10px;font-size:10px}
+.brow{display:flex;gap:8px;flex-wrap:wrap}
+
+/* Inputs */
+.inp{width:100%;padding:10px 12px;border-radius:var(--radius);border:1px solid var(--border);background:var(--card);color:var(--text);font-family:var(--body);font-size:13px;transition:border-color .15s}
+.inp:focus{outline:none;border-color:var(--accent)}
+.inp::placeholder{color:var(--text-dim)}
+textarea.inp{resize:vertical;min-height:60px;font-family:var(--body)}
+
+/* Stages & tasks */
+.stage{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);margin-bottom:10px;overflow:hidden;transition:border-color .15s}
+.stage.expanded{border-color:var(--accent)}
+.stage-head{padding:14px;cursor:pointer;display:flex;align-items:center;gap:12px;user-select:none}
+.stage-num{font-family:var(--mono);font-size:10px;color:var(--sub);letter-spacing:.15em}
+.stage-title{flex:1;font-family:var(--display);font-size:15px;font-weight:700}
+.stage-meta{display:flex;gap:8px;font-family:var(--mono);font-size:9px;color:var(--sub);letter-spacing:.1em}
+.stage-meta .effort{color:var(--accent)}
+.stage-prog{font-family:var(--mono);font-size:11px;color:var(--accent);font-weight:600}
+.stage-chev{color:var(--sub);font-size:14px;transition:transform .2s}
+.stage.expanded .stage-chev{transform:rotate(90deg)}
+.stage-body{display:none;padding:0 14px 14px;border-top:1px solid var(--border)}
+.stage.expanded .stage-body{display:block}
+.stage-tagline{padding:12px 0;color:var(--text);font-size:13px;line-height:1.6}
+.stage-section{margin-top:14px}
+.stage-section-title{font-family:var(--mono);font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:var(--sub);margin-bottom:8px}
+
+.task{display:flex;align-items:flex-start;gap:10px;padding:10px;background:var(--surface);border-radius:var(--radius-sm);border:1px solid var(--border);margin-bottom:6px;transition:all .15s}
+.task:hover{border-color:var(--border2)}
+.task.done{opacity:0.55}
+.task.done .task-text{text-decoration:line-through;color:var(--sub)}
+.task-check{width:18px;height:18px;border:1.5px solid var(--border2);border-radius:3px;flex-shrink:0;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .15s;margin-top:1px;background:var(--bg)}
+.task-check:hover{border-color:var(--accent)}
+.task-check.checked{background:var(--accent);border-color:var(--accent)}
+.task-check.checked::after{content:'✓';color:var(--bg);font-size:13px;font-weight:700}
+.task-body{flex:1;min-width:0}
+.task-text{font-size:13px;line-height:1.5;color:var(--text);cursor:pointer}
+.task-meta{display:flex;gap:8px;margin-top:4px;font-family:var(--mono);font-size:9px;color:var(--text-dim);letter-spacing:.05em;align-items:center;flex-wrap:wrap}
+.task-meta .ts{color:var(--sub)}
+.task-actions{display:flex;gap:4px;flex-shrink:0;opacity:0.4;transition:opacity .15s}
+.task:hover .task-actions{opacity:1}
+.task-act{background:none;border:none;color:var(--sub);cursor:pointer;font-size:14px;padding:2px 6px;border-radius:3px}
+.task-act:hover{background:var(--muted);color:var(--text)}
+
+/* Toast */
+.toast{position:fixed;bottom:80px;left:50%;transform:translateX(-50%) translateY(100px);background:var(--accent);color:var(--bg);padding:10px 18px;border-radius:6px;font-family:var(--mono);font-size:11px;font-weight:700;letter-spacing:.05em;z-index:9999;transition:transform .25s;text-transform:uppercase}
+.toast.show{transform:translateX(-50%) translateY(0)}
+
+/* Sheet / drawer / overlay */
+.sheet-overlay{position:fixed;top:0;left:0;right:0;bottom:calc(60px + var(--safe-b));background:rgba(0,0,0,0.6);z-index:200;display:none;opacity:0;transition:opacity .25s}
+.sheet-overlay.show{display:block;opacity:1}
+.sheet{position:fixed;bottom:calc(60px + var(--safe-b));left:0;right:0;background:var(--surface);border-radius:14px 14px 0 0;z-index:201;transform:translateY(100%);transition:transform .3s cubic-bezier(.4,0,.2,1);max-height:calc(92dvh - 60px);display:flex;flex-direction:column;border-top:1px solid var(--border)}
+.sheet.show{transform:translateY(0)}
+.sheet-head{padding:14px 18px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px}
+.sheet-title{font-family:var(--display);font-size:15px;font-weight:700;flex:1}
+.sheet-close{background:none;border:none;color:var(--sub);cursor:pointer;font-size:22px;line-height:1;padding:0;width:28px;height:28px}
+.sheet-body{overflow-y:auto;-webkit-overflow-scrolling:touch;flex:1;padding:14px 18px;padding-bottom:calc(var(--safe-b) + 22px)}
+.sheet-body label{display:block;font-family:var(--mono);font-size:9px;letter-spacing:.15em;text-transform:uppercase;color:var(--sub);margin:14px 0 6px}
+.sheet-body label:first-child{margin-top:0}
+
+/* Drawer */
+.drawer-overlay{position:fixed;top:0;left:0;right:0;bottom:calc(60px + var(--safe-b));background:rgba(0,0,0,0.6);z-index:150;display:none;opacity:0;transition:opacity .25s}
+.drawer-overlay.show{display:block;opacity:1}
+.drawer{position:fixed;bottom:calc(60px + var(--safe-b));left:0;right:0;background:var(--surface);border-radius:14px 14px 0 0;z-index:151;transform:translateY(100%);transition:transform .3s cubic-bezier(.4,0,.2,1);padding:14px 0 22px;border-top:1px solid var(--border)}
+.drawer.show{transform:translateY(0)}
+.drawer-grid{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:1px;background:var(--border)}
+.drawer-btn{background:var(--surface);border:none;color:var(--text);padding:18px 8px;display:flex;flex-direction:column;align-items:center;gap:8px;cursor:pointer;font-family:var(--mono);font-size:9px;letter-spacing:.08em;text-transform:uppercase;transition:background .15s}
+.drawer-btn:hover{background:var(--card)}
+.drawer-icon{font-size:20px}
+
+/* Empty states */
+.empty{text-align:center;padding:60px 20px;color:var(--sub)}
+.empty .icon{font-size:42px;margin-bottom:14px;opacity:0.4}
+.empty h3{font-family:var(--display);font-size:18px;font-weight:700;color:var(--text);margin-bottom:6px}
+.empty p{font-size:13px;line-height:1.6;max-width:320px;margin:0 auto}
+
+/* Tags */
+.tag{display:inline-block;padding:3px 8px;border-radius:3px;font-family:var(--mono);font-size:9px;letter-spacing:.1em;text-transform:uppercase;background:var(--muted);color:var(--sub);margin-right:4px}
+.tag.tg{background:rgba(0,255,136,0.15);color:var(--green)}
+.tag.tc{background:var(--accent-dim);color:var(--accent)}
+.tag.to{background:rgba(255,140,66,0.15);color:var(--orange)}
+.tag.tp{background:rgba(167,139,250,0.15);color:var(--purple)}
+.tag.tr{background:rgba(239,68,68,0.15);color:var(--red)}
+.tag.ty{background:rgba(234,179,8,0.15);color:var(--yellow)}
+
+/* Note items */
+.note{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:12px;margin-bottom:8px}
+.note-head{display:flex;align-items:center;gap:8px;margin-bottom:6px;font-family:var(--mono);font-size:9px;color:var(--sub);letter-spacing:.1em;text-transform:uppercase}
+.note-body{font-size:13px;line-height:1.6;white-space:pre-wrap}
+.note-actions{margin-top:8px;display:flex;gap:6px}
+
+/* Capture quick */
+.cap-quick{background:var(--card);border:1px dashed var(--border2);border-radius:var(--radius);padding:18px;text-align:center;margin-bottom:14px;cursor:pointer;transition:all .15s}
+.cap-quick:hover{border-color:var(--accent);background:var(--accent-soft)}
+.cap-quick .icon{font-size:24px;margin-bottom:8px;display:block}
+.cap-quick .text{font-family:var(--mono);font-size:10px;letter-spacing:.15em;text-transform:uppercase;color:var(--sub)}
+
+/* Timeline */
+.timeline-week{margin-bottom:18px}
+.timeline-week-head{font-family:var(--mono);font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:var(--accent);margin-bottom:8px}
+.timeline-bar{display:flex;background:var(--muted);height:36px;border-radius:var(--radius-sm);overflow:hidden;margin-bottom:8px}
+.timeline-seg{display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:10px;font-weight:600;color:var(--bg);overflow:hidden;white-space:nowrap;padding:0 6px}
+.timeline-seg.s0{background:var(--accent)}
+.timeline-seg.s1{background:var(--green)}
+.timeline-seg.s2{background:var(--orange)}
+.timeline-seg.s3{background:var(--cyan)}
+.timeline-seg.s4{background:var(--purple)}
+.timeline-seg.s5{background:var(--yellow)}
+
+/* Help text */
+.help{padding:12px;background:var(--accent-soft);border:1px solid var(--accent-dim);border-radius:var(--radius);font-size:12px;line-height:1.6;color:var(--text);margin-bottom:14px}
+.help strong{color:var(--accent)}
+
+/* Filter chips */
+.chips{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px;overflow-x:auto;padding-bottom:4px}
+.chip{padding:6px 12px;background:var(--card);border:1px solid var(--border);border-radius:14px;font-family:var(--mono);font-size:10px;letter-spacing:.05em;color:var(--sub);cursor:pointer;white-space:nowrap;transition:all .15s;text-transform:uppercase}
+.chip:hover{border-color:var(--accent);color:var(--text)}
+.chip.active{background:var(--accent);color:var(--bg);border-color:var(--accent)}
+
+/* Settings rows */
+.setting-row{padding:12px 0;border-bottom:1px solid var(--border)}
+.setting-row:last-child{border-bottom:none}
+.setting-row .label{font-size:13px;font-weight:600;margin-bottom:4px}
+.setting-row .desc{font-size:11px;color:var(--sub);line-height:1.5;margin-bottom:8px}
+
+/* Switch */
+.switch{position:relative;display:inline-block;width:42px;height:22px}
+.switch input{opacity:0;width:0;height:0}
+.switch-track{position:absolute;cursor:pointer;top:0;left:0;right:0;bottom:0;background:var(--muted);border:1px solid var(--border2);border-radius:22px;transition:.2s}
+.switch-track:before{position:absolute;content:"";height:14px;width:14px;left:3px;bottom:3px;background:var(--sub);border-radius:50%;transition:.2s}
+.switch input:checked + .switch-track{background:var(--accent-dim);border-color:var(--accent)}
+.switch input:checked + .switch-track:before{transform:translateX(20px);background:var(--accent)}
+
+@media(min-width:768px){.main{padding:18px 18px 10px}.kg{grid-template-columns:1fr 1fr 1fr 1fr}.kg3{grid-template-columns:repeat(3,1fr)}}
+</style>
+</head>
+<body>
+<div id="app">
+  <div class="colour-bar"></div>
+  <div class="header">
+    <div class="logo-dot"></div>
+    <div class="logo-text">ikig<span class="accent">AI</span></div>
+    <div class="logo-sub" id="hdr-sub">// your brain, coached</div>
+    <div id="sync-status" style="font-size:9px;font-family:var(--mono);color:var(--sub);letter-spacing:.05em" onclick="openSettings()"></div>
+  </div>
+  <div class="main" id="mc"></div>
+  <nav class="nav">
+    <button class="nav-btn active" data-view="today" onclick="showV('today')"><span class="nav-icon">◐</span>Today</button>
+    <button class="nav-btn" data-view="roadmap" onclick="showV('roadmap')"><span class="nav-icon">▦</span>Roadmap</button>
+    <button class="nav-btn" data-view="tasks" onclick="showV('tasks')"><span class="nav-icon">☑</span>Tasks</button>
+    <button class="nav-btn" data-view="captures" onclick="showV('captures')"><span class="nav-icon">⊕</span>Captures</button>
+    <button class="nav-btn" data-view="timeline" onclick="showV('timeline')"><span class="nav-icon">▤</span>Timeline</button>
+    <button class="nav-btn" data-view="notes" onclick="showV('notes')"><span class="nav-icon">✎</span>Notes</button>
+    <button class="nav-btn nav-overlay" onclick="toggleDrawer()"><span class="nav-icon">⋯</span>More</button>
+  </nav>
+</div>
+
+<div class="toast"></div>
+
+<div class="drawer-overlay" id="drawer-overlay" onclick="closeDrawer()"></div>
+<div class="drawer" id="drawer">
+  <div class="drawer-grid">
+    <button class="drawer-btn" onclick="closeDrawer();openSettings()"><span class="drawer-icon">⚙</span>Settings</button>
+    <button class="drawer-btn" onclick="closeDrawer();driveSave()"><span class="drawer-icon">⬆</span>Push to Drive</button>
+    <button class="drawer-btn" onclick="closeDrawer();driveLoad()"><span class="drawer-icon">⬇</span>Pull from Drive</button>
+    <button class="drawer-btn" onclick="closeDrawer();exportJSON()"><span class="drawer-icon">⤓</span>Export JSON</button>
+    <button class="drawer-btn" onclick="closeDrawer();importJSON()"><span class="drawer-icon">⤒</span>Import JSON</button>
+    <button class="drawer-btn" onclick="window.open('roadmap-reference.html','_blank')"><span class="drawer-icon">📖</span>Spec Doc</button>
+    <button class="drawer-btn" onclick="closeDrawer();openAbout()"><span class="drawer-icon">ⓘ</span>About</button>
+    <button class="drawer-btn" onclick="closeDrawer();confirmReset()"><span class="drawer-icon">↺</span>Reset</button>
+  </div>
+</div>
+
+<div class="sheet-overlay" id="sheet-overlay" onclick="closeSheet()"></div>
+<div class="sheet" id="sheet">
+  <div class="sheet-head">
+    <div class="sheet-title" id="sheet-title"></div>
+    <button class="sheet-close" onclick="closeSheet()">✕</button>
+  </div>
+  <div class="sheet-body" id="sheet-body"></div>
+</div>
+
+<input type="file" id="file-import" accept="application/json" style="display:none" onchange="handleImport(event)"/>
+
+<script>
+// ═══════════════════════════════════════════════════════════════════════════
+// IkigAI App — single-file SPA
+// State model forked from RenovAIter, repointed at the IkigAI roadmap.
+// ═══════════════════════════════════════════════════════════════════════════
+
+const SK = 'ikigai_v0_2';
+const DRIVE_FILE_NAME = 'ikigai-state.json';
+const SCHEMA_VERSION = 'v0.2';
+
+// ─── Stage definitions (canonical, from IkigAI Roadmap v1.0) ──────────────
+const STAGES_CANONICAL = [
+  {
+    id: 's0',
+    num: '00',
+    title: 'Foundation',
+    when: 'Today',
+    effort: '2h',
+    deps: 'Nothing',
+    tagline: 'Schema, prompts, repo split. No infra yet. Validatable end-to-end through Claude manually.',
+    components: [
+      'Repo split: ikigAI-core/ (universal) and ikigAI-me/ (yours) as siblings',
+      'Schema v0.2: explicit ikigai_regions flat list, provenance fields, retrieval signals',
+      'Operation prompts: understand, retrieve, debaiser, phase-an-idea, brief, surface, lint',
+      'Page templates: source, entity, concept, project, idea, output (valid v0.2 frontmatter)',
+      'Ikigai dimension pages: 9 rollups (4 axes + 5 intersections)',
+      'Personal vocabulary: CLAUDE.md populated with projects, people, tools, concepts',
+      'Ikigai aspiration: ikigai.md with current vs aspirational mapping',
+      'Config: config.yml with voice routing, brief cadence, daemon schedules'
+    ],
+    checkpoint: 'You can read CLAUDE.md and recognise the contract. Pasting any source plus the understand prompt into Claude returns a properly-shaped page.',
+    deliverable: 'ikigAI-v0.2.zip — git-init-able bundle'
+  },
+  {
+    id: 's1',
+    num: '01',
+    title: 'Single Round Trip',
+    when: 'Today (after S0)',
+    effort: '1h',
+    deps: 'S0',
+    tagline: 'Validate the schema with one real source through the full pipeline manually before any infra. Catch schema bugs cheap.',
+    components: [
+      'Pick one real source (article, voice memo, chat-paste, or idea)',
+      'Drop in inbox/unsorted/ as markdown — no frontmatter needed',
+      'Run /understand manually through Claude with CLAUDE.md + ikigai.md context',
+      'Save the resulting page to wiki/sources/<id>.md',
+      'Run /retrieve at all three gears against the corpus-of-one',
+      'Adjust schema if any field felt wrong; bump schema_hash',
+      'Commit to git: "S1 round trip: first real source ingested"'
+    ],
+    checkpoint: 'You believe the foundation is right. You would bet S2 effort on this schema.',
+    deliverable: 'Schema v0.2.x post-feedback fixes, one real page committed'
+  },
+  {
+    id: 's2',
+    num: '02',
+    title: 'NUC Live, Brain On',
+    when: 'This week',
+    effort: '6h',
+    deps: 'S1',
+    tagline: 'The heart of the build. Everything else depends on this. NUC running stateful. Reachable via Tailscale. Phase 0 brain dump complete.',
+    components: [
+      'Linux confirmed on NUC (Ubuntu LTS or current)',
+      'Tailscale installed on NUC and your devices, mesh confirmed',
+      'Docker + Docker Compose for daemon containerisation',
+      'Ollama installed natively, llama3.2:latest pulled',
+      'Vault dir at ~/ikigAI-me/ with v0.2 layout, git-tracked',
+      'Vector index initialised (Chroma)',
+      'Graph index initialised (NetworkX in state/graph.json)',
+      'SSH config from Mac and laptop verified end-to-end',
+      'Canonicalisation engine containerised and configured',
+      'gargAIntuan orchestrator containerised',
+      'Context-injection synthesis engine containerised',
+      'inbox-watcher daemon (inotify on inbox/)',
+      'decay-keeper daemon (cron daily)',
+      'MCP server: ikigai_capture, ikigai_retrieve, ikigai_phase_an_idea, ikigai_brief_today, ikigai_debaiser',
+      'MCP configured in Claude Desktop and Claude Code',
+      'Google Calendar OAuth two-way scope',
+      'Gmail OAuth read-only on label IkigAI/Inbox',
+      'gmail-watcher and calendar-sync daemons running',
+      'Phase 0 brain dump: Chrome tabs from each device',
+      'Phase 0 brain dump: Saved Instagram/Twitter/LinkedIn',
+      'Phase 0 brain dump: Quotes from messaging apps (NEVER reference channel/sender/thread)',
+      'Phase 0 brain dump: Voice memos via whisper.cpp',
+      'Watcher processes everything; canonicalisation merges duplicates'
+    ],
+    checkpoint: 'SSH into NUC, daemons healthy. Claude Desktop on phone runs ikigai_retrieve over the dump. New article in inbox processes within a minute. Query "what have I been thinking about Mac Studios" returns canonicalised pages from past dumps.',
+    deliverable: 'A working brain. Real corpus. Reachable from every device.'
+  },
+  {
+    id: 's3',
+    num: '03',
+    title: 'Coach Experience',
+    when: 'This week (after S2)',
+    effort: '4h',
+    deps: 'S2',
+    tagline: 'When it stops being infrastructure and starts being a coach. Three retrieval gears. Web viewer. Daily brief. Coach voice. Productionised idea flow.',
+    components: [
+      'Gear inference from phrasing (rules + LLM classifier fallback)',
+      'Per-context gear preference learned (override remembered)',
+      'Gear 1 — local model, instant, free',
+      'Gear 2 — local draft + Claude polish (default)',
+      'Gear 3 — Debaiser-on-self panel via Claude',
+      'Web viewer static-served from NUC at http://nuc.tailnet/',
+      'ABENAKI-shaped sidebar nav over wiki structure',
+      'Brusselbach Ikigai diagram interactive — click region, see all tagged',
+      'Search across whole vault with snippet highlighting',
+      'ijneb.dev tokens applied (#0d0d0d, #c8f135, JetBrains + Syne)',
+      'Brief panel always accessible — today\u2019s recommended work',
+      'brief-generator daemon scheduled at 07:30 local',
+      'Daily brief format: 3 stage options, recommendation with reasoning, calendar offer',
+      'Coach voice configured: helpful default, warm/aggressive/roasty/prepaired/etc selectable',
+      'Idea page type live in wiki/ideas/',
+      '/phase-an-idea reads idea + vault + projects + ikigai + calendar, writes phased plan',
+      'Calendar offer mechanism: propose Phase 1 slots against real availability',
+      'Accept slot writes Google Calendar event with description linking to plan'
+    ],
+    checkpoint: 'Daily brief lands in your morning, recommends across projects, offers calendar slots. Drop fresh idea into inbox/ideas/, get phased plan within minutes. Click mission region in viewer, see everything ever sent that touched mission. Gear 3 retrieval surfaces something you missed.',
+    deliverable: 'A coach. A real one. Yours.'
+  },
+  {
+    id: 's4',
+    num: '04',
+    title: 'Learning Loop',
+    when: 'Week 2',
+    effort: '3h',
+    deps: 'S3',
+    tagline: 'The system learns from how you use it. Application captured. Outcomes observed. Retrieval ranking moves with reality.',
+    components: [
+      'Application capture mechanic: explicit applied:<output-id> note',
+      'Application capture: 24-hour follow-up DM from agent',
+      'Application capture: calendar event completion as implicit signal',
+      'Outcome observation: shipped/failed/iterated captured back as source',
+      'Outcome links back to original idea page; supersedes if learnings change plan',
+      'retrieval_score evolution: surface events logged in feedback.jsonl',
+      'Citations in coach outputs reinforce; ignored surfaces decay',
+      'Per-context modifiers learned (work-strategy vs creative differs)',
+      'linkage-scout daemon active nightly — top discoveries surface in next brief',
+      'Debaiser auto-trigger on >5 reinforcements without contradiction'
+    ],
+    checkpoint: 'A page cited two weeks ago shows visibly higher rank in fresh retrievals. System has caught at least one echo-chamber pattern. Linkage-scout proposed at least one connection that genuinely surprised you.',
+    deliverable: 'A system that gets better the more you use it, without grading anything.'
+  },
+  {
+    id: 's5',
+    num: '05',
+    title: 'Friend-Ready',
+    when: 'Week 3',
+    effort: '2h',
+    deps: 'S4',
+    tagline: 'Onboarding conversation built. Bespoke proven scalable by spinning up a second me. Friend\u2019s first capture lands cleanly.',
+    components: [
+      'Conversational onboarder operation prompt',
+      'Walks user through current Ikigai → aspirational → vocabulary seed',
+      'Captures preferences → coach voice → brief cadence',
+      'Same conversation tree, depth follows user signal',
+      'friend-me/ created next to ikigAI-me/ on shared infra (or own NUC)',
+      'Same core/ import; their vault, their tags, their voice',
+      'Multi-tenant MCP: server reads me from auth context',
+      'Tailscale ACL keeps friend\u2019s vault isolated',
+      'Daemons run per-vault',
+      'Comparison pass: their experience vs yours, governance gaps surfaced'
+    ],
+    checkpoint: 'Friend captures their first thing. Their first retrieval works. Their daily brief in their voice lands next morning. You haven\u2019t refactored anything in your own setup.',
+    deliverable: 'Two people, one core, two brains. Bespoke scales.'
+  }
+];
+
+// ─── State management ─────────────────────────────────────────────────────
+function emptyData() {
+  // Auto-seed tasks from canonical stages
+  const tasks = [];
+  STAGES_CANONICAL.forEach(stage => {
+    stage.components.forEach((comp, i) => {
+      tasks.push({
+        id: stage.id + '-t' + i,
+        stageId: stage.id,
+        text: comp,
+        status: 'pending',
+        priority: 'normal',
+        notes: '',
+        createdAt: Date.now(),
+        completedAt: null
+      });
+    });
+  });
+
+  return {
+    settings: {
+      voicePref: 'helpful',
+      driveClientId: '',
+      driveToken: null,
+      driveSync: false,
+      onboardedAt: null
+    },
+    stages: STAGES_CANONICAL.map(s => ({
+      id: s.id,
+      expanded: s.id === 's0' || s.id === 's1', // Today's stages expanded by default
+      startedAt: null,
+      completedAt: null
+    })),
+    tasks: tasks,
+    captures: [],
+    notes: [],
+    meta: {
+      schemaVersion: SCHEMA_VERSION,
+      createdAt: Date.now(),
+      lastSyncedAt: null
+    }
+  };
+}
+
+function loadS() {
+  try {
+    const raw = localStorage.getItem(SK);
+    if (raw) {
+      const d = JSON.parse(raw);
+      // Backfill any missing structure on schema bumps
+      if (!d.captures) d.captures = [];
+      if (!d.notes) d.notes = [];
+      if (!d.stages) d.stages = STAGES_CANONICAL.map(s => ({ id: s.id, expanded: false, startedAt: null, completedAt: null }));
+      if (!d.meta) d.meta = { schemaVersion: SCHEMA_VERSION, createdAt: Date.now(), lastSyncedAt: null };
+      return d;
+    }
+  } catch (e) { console.error('loadS error:', e); }
+  return emptyData();
+}
+
+function saveS() {
+  try {
+    localStorage.setItem(SK, JSON.stringify(S));
+    syncToDrive();
+  } catch (e) { toast('Save failed'); console.error(e); }
+}
+
+let S = loadS();
+let CV = 'today';
+let _filterStage = 'all';
+let _filterStatus = 'all';
+
+// ─── Helpers ──────────────────────────────────────────────────────────────
+function uid() { return Date.now() + '-' + Math.floor(Math.random() * 1000); }
+function fmtDate(ts) { if (!ts) return ''; const d = new Date(ts); return d.toLocaleDateString('en-AU', { day: 'numeric', month: 'short' }); }
+function fmtTime(ts) { if (!ts) return ''; const d = new Date(ts); return d.toLocaleTimeString('en-AU', { hour: '2-digit', minute: '2-digit' }); }
+function fmtRel(ts) {
+  if (!ts) return '';
+  const diff = Date.now() - ts;
+  const m = Math.floor(diff / 60000);
+  if (m < 1) return 'just now';
+  if (m < 60) return m + 'm ago';
+  const h = Math.floor(m / 60);
+  if (h < 24) return h + 'h ago';
+  const d = Math.floor(h / 24);
+  if (d < 7) return d + 'd ago';
+  return fmtDate(ts);
+}
+function escHtml(s) { return (s || '').toString().replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+function toast(m) {
+  const t = document.querySelector('.toast');
+  t.textContent = m;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2200);
+}
+function getStage(id) { return STAGES_CANONICAL.find(s => s.id === id); }
+function getStageState(id) { return S.stages.find(s => s.id === id); }
+function getStageTasks(id) { return S.tasks.filter(t => t.stageId === id); }
+function stageProgress(id) {
+  const tasks = getStageTasks(id);
+  if (!tasks.length) return { done: 0, total: 0, pct: 0 };
+  const done = tasks.filter(t => t.status === 'done').length;
+  return { done, total: tasks.length, pct: Math.round((done / tasks.length) * 100) };
+}
+function totalProgress() {
+  if (!S.tasks.length) return 0;
+  const done = S.tasks.filter(t => t.status === 'done').length;
+  return Math.round((done / S.tasks.length) * 100);
+}
+function totalEffortRemaining() {
+  // Estimate from canonical effort strings; very rough
+  let total = 0;
+  STAGES_CANONICAL.forEach(s => {
+    const p = stageProgress(s.id);
+    if (p.pct < 100) {
+      const h = parseFloat(s.effort);
+      if (!isNaN(h)) total += h * (1 - p.pct / 100);
+    }
+  });
+  return Math.round(total * 10) / 10;
+}
+function currentStage() {
+  // First stage with incomplete tasks
+  for (const s of STAGES_CANONICAL) {
+    const p = stageProgress(s.id);
+    if (p.pct < 100) return s;
+  }
+  return null;
+}
+function nextTask(stageId) {
+  return S.tasks.find(t => t.stageId === stageId && t.status !== 'done');
+}
+
+// ─── View router ──────────────────────────────────────────────────────────
+function showV(v) {
+  CV = v;
+  const mc = document.getElementById('mc');
+  mc.scrollTop = 0;
+  document.querySelectorAll('.nav-btn[data-view]').forEach(b => {
+    b.classList.toggle('active', b.dataset.view === v);
+  });
+  const renderers = {
+    today: rToday,
+    roadmap: rRoadmap,
+    tasks: rTasks,
+    captures: rCaptures,
+    timeline: rTimeline,
+    notes: rNotes
+  };
+  if (renderers[v]) renderers[v](mc);
+}
+
+// ─── TODAY view ───────────────────────────────────────────────────────────
+function rToday(el) {
+  const cs = currentStage();
+  const total = totalProgress();
+  const remaining = totalEffortRemaining();
+  const today = new Date().toLocaleDateString('en-AU', { weekday: 'long', day: 'numeric', month: 'long' });
+
+  let html = '<h1 class="view-title">Good morning.</h1>';
+  html += '<div class="view-sub">// ' + today + '</div>';
+
+  // Overall progress KPIs
+  html += '<div class="kg3">';
+  html += '<div class="kpi"><div class="lbl">Progress</div><div class="val" style="color:var(--accent)">' + total + '%</div><div class="sub">overall</div></div>';
+  html += '<div class="kpi"><div class="lbl">Effort left</div><div class="val">' + remaining + 'h</div><div class="sub">est. remaining</div></div>';
+  html += '<div class="kpi"><div class="lbl">Tasks</div><div class="val">' + S.tasks.filter(t => t.status === 'done').length + '/' + S.tasks.length + '</div><div class="sub">complete</div></div>';
+  html += '</div>';
+
+  // Current stage focus
+  if (cs) {
+    const p = stageProgress(cs.id);
+    const nt = nextTask(cs.id);
+    html += '<div class="card gc">';
+    html += '<div class="sl">Current stage</div>';
+    html += '<div style="font-family:var(--display);font-size:20px;font-weight:700;margin-bottom:4px">' + escHtml(cs.title) + '</div>';
+    html += '<div style="font-family:var(--mono);font-size:10px;color:var(--sub);letter-spacing:.1em;margin-bottom:10px">STAGE ' + cs.num + ' · ' + escHtml(cs.when) + ' · ' + escHtml(cs.effort) + '</div>';
+    html += '<div style="font-size:13px;line-height:1.6;margin-bottom:12px">' + escHtml(cs.tagline) + '</div>';
+    html += '<div class="pb"><div class="pbi" style="width:' + p.pct + '%"></div></div>';
+    html += '<div style="font-family:var(--mono);font-size:10px;color:var(--sub);letter-spacing:.1em;margin-bottom:14px">' + p.done + ' / ' + p.total + ' tasks · ' + p.pct + '% complete</div>';
+
+    if (nt) {
+      html += '<div class="sl">Next task</div>';
+      html += '<div style="padding:10px;background:var(--surface);border-radius:var(--radius-sm);border:1px solid var(--border);margin-bottom:12px">';
+      html += '<div style="font-size:13px;line-height:1.5">' + escHtml(nt.text) + '</div>';
+      html += '</div>';
+      html += '<div class="brow"><button class="btn btn-p" onclick="completeTask(\'' + nt.id + '\')">Mark Done</button>';
+      html += '<button class="btn btn-g" onclick="showV(\'roadmap\');setTimeout(()=>expandStage(\'' + cs.id + '\'),50)">Open stage</button></div>';
+    } else {
+      html += '<div style="text-align:center;padding:14px;color:var(--green);font-family:var(--mono);font-size:11px">✓ Stage complete</div>';
+    }
+    html += '</div>';
+  } else {
+    html += '<div class="card gg" style="text-align:center;padding:30px"><div style="font-size:42px;margin-bottom:10px">✦</div><h3 style="font-family:var(--display);font-size:18px;margin-bottom:6px">All stages complete</h3><p style="font-size:13px;color:var(--sub)">You\u2019ve shipped IkigAI. Use it for the rest of your life.</p></div>';
+  }
+
+  // Quick actions
+  html += '<div class="card">';
+  html += '<div class="sl">Quick actions</div>';
+  html += '<div class="brow">';
+  html += '<button class="btn btn-g" onclick="showV(\'roadmap\')">Roadmap</button>';
+  html += '<button class="btn btn-g" onclick="showV(\'tasks\')">All tasks</button>';
+  html += '<button class="btn btn-g" onclick="showV(\'timeline\')">Timeline</button>';
+  html += '<button class="btn btn-g" onclick="openCapture()">Capture idea</button>';
+  html += '</div>';
+  html += '</div>';
+
+  // Recent captures preview
+  if (S.captures.length) {
+    html += '<div class="card">';
+    html += '<div class="sl">Recent captures</div>';
+    S.captures.slice(0, 3).forEach(c => {
+      html += '<div style="padding:8px 0;border-bottom:1px solid var(--border);font-size:12px">' + escHtml(c.text.substring(0, 100)) + (c.text.length > 100 ? '…' : '') + '</div>';
+    });
+    html += '</div>';
+  }
+
+  el.innerHTML = html;
+}
+
+// ─── ROADMAP view ─────────────────────────────────────────────────────────
+function rRoadmap(el) {
+  let html = '<h1 class="view-title">Roadmap</h1>';
+  html += '<div class="view-sub">// 6 stages · ~18h total</div>';
+
+  html += '<div class="help">Tap any stage to expand. Tick components as you ship them. Each stage\u2019s checkpoint is the bar to clear before moving on.</div>';
+
+  STAGES_CANONICAL.forEach(stage => {
+    const state = getStageState(stage.id);
+    const p = stageProgress(stage.id);
+    const tasks = getStageTasks(stage.id);
+    const expanded = state.expanded;
+
+    html += '<div class="stage' + (expanded ? ' expanded' : '') + '" id="stage-' + stage.id + '">';
+    html += '<div class="stage-head" onclick="toggleStage(\'' + stage.id + '\')">';
+    html += '<div class="stage-num">S' + stage.num + '</div>';
+    html += '<div style="flex:1">';
+    html += '<div class="stage-title">' + escHtml(stage.title) + '</div>';
+    html += '<div class="stage-meta"><span>' + escHtml(stage.when) + '</span> · <span class="effort">' + escHtml(stage.effort) + '</span> · <span>deps: ' + escHtml(stage.deps) + '</span></div>';
+    html += '</div>';
+    html += '<div class="stage-prog">' + p.pct + '%</div>';
+    html += '<div class="stage-chev">▸</div>';
+    html += '</div>';
+
+    html += '<div class="stage-body">';
+    html += '<div class="stage-tagline">' + escHtml(stage.tagline) + '</div>';
+    html += '<div class="pb"><div class="pbi" style="width:' + p.pct + '%"></div></div>';
+    html += '<div style="font-family:var(--mono);font-size:10px;color:var(--sub);letter-spacing:.1em;margin:6px 0 14px">' + p.done + ' / ' + p.total + ' components</div>';
+
+    html += '<div class="stage-section">';
+    html += '<div class="stage-section-title">Components</div>';
+    tasks.forEach(t => {
+      const checked = t.status === 'done';
+      html += '<div class="task' + (checked ? ' done' : '') + '" id="task-' + t.id + '">';
+      html += '<div class="task-check' + (checked ? ' checked' : '') + '" onclick="toggleTaskInline(\'' + t.id + '\')"></div>';
+      html += '<div class="task-body">';
+      html += '<div class="task-text" onclick="openTask(\'' + t.id + '\')">' + escHtml(t.text) + '</div>';
+      const meta = [];
+      if (t.completedAt) meta.push('<span class="ts">✓ ' + fmtRel(t.completedAt) + '</span>');
+      if (t.notes) meta.push('<span class="ts">📝 has notes</span>');
+      if (meta.length) html += '<div class="task-meta">' + meta.join(' · ') + '</div>';
+      html += '</div>';
+      html += '<div class="task-actions"><button class="task-act" onclick="openTask(\'' + t.id + '\')">⋯</button></div>';
+      html += '</div>';
+    });
+    html += '</div>';
+
+    html += '<div class="stage-section">';
+    html += '<div class="stage-section-title">Checkpoint</div>';
+    html += '<div style="padding:12px;background:var(--accent-soft);border-left:2px solid var(--accent);border-radius:var(--radius-sm);font-size:12px;line-height:1.6">' + escHtml(stage.checkpoint) + '</div>';
+    html += '</div>';
+
+    html += '<div class="stage-section">';
+    html += '<div class="stage-section-title">Deliverable</div>';
+    html += '<div style="font-size:12px;color:var(--text);font-family:var(--mono);letter-spacing:.02em">' + escHtml(stage.deliverable) + '</div>';
+    html += '</div>';
+
+    html += '<div style="margin-top:14px"><a href="roadmap-reference.html#' + stage.id + '" target="_blank" style="font-family:var(--mono);font-size:10px;color:var(--accent);text-decoration:none;letter-spacing:.1em">→ READ FULL SPEC</a></div>';
+
+    html += '</div>'; // stage-body
+    html += '</div>'; // stage
+  });
+
+  el.innerHTML = html;
+}
+
+// ─── TASKS view ───────────────────────────────────────────────────────────
+function rTasks(el) {
+  let html = '<h1 class="view-title">Tasks</h1>';
+  html += '<div class="view-sub">// ' + S.tasks.length + ' total · ' + S.tasks.filter(t => t.status === 'done').length + ' done</div>';
+
+  // Stage filter chips
+  html += '<div class="chips">';
+  html += '<div class="chip ' + (_filterStage === 'all' ? 'active' : '') + '" onclick="filterStage(\'all\')">All</div>';
+  STAGES_CANONICAL.forEach(s => {
+    html += '<div class="chip ' + (_filterStage === s.id ? 'active' : '') + '" onclick="filterStage(\'' + s.id + '\')">S' + s.num + '</div>';
+  });
+  html += '</div>';
+
+  html += '<div class="chips">';
+  html += '<div class="chip ' + (_filterStatus === 'all' ? 'active' : '') + '" onclick="filterStatus(\'all\')">Any</div>';
+  html += '<div class="chip ' + (_filterStatus === 'pending' ? 'active' : '') + '" onclick="filterStatus(\'pending\')">Pending</div>';
+  html += '<div class="chip ' + (_filterStatus === 'done' ? 'active' : '') + '" onclick="filterStatus(\'done\')">Done</div>';
+  html += '</div>';
+
+  let filtered = S.tasks;
+  if (_filterStage !== 'all') filtered = filtered.filter(t => t.stageId === _filterStage);
+  if (_filterStatus !== 'all') filtered = filtered.filter(t => t.status === _filterStatus);
+
+  if (!filtered.length) {
+    html += '<div class="empty"><div class="icon">∅</div><h3>No tasks match</h3><p>Try a different filter, or hit the + button to add a task.</p></div>';
+  } else {
+    // Group by stage
+    const byStage = {};
+    filtered.forEach(t => { (byStage[t.stageId] = byStage[t.stageId] || []).push(t); });
+    Object.keys(byStage).forEach(sid => {
+      const stage = getStage(sid);
+      html += '<div class="card">';
+      html += '<div class="sl">S' + stage.num + ' · ' + escHtml(stage.title) + '</div>';
+      byStage[sid].forEach(t => {
+        const checked = t.status === 'done';
+        html += '<div class="task' + (checked ? ' done' : '') + '">';
+        html += '<div class="task-check' + (checked ? ' checked' : '') + '" onclick="toggleTaskInline(\'' + t.id + '\')"></div>';
+        html += '<div class="task-body">';
+        html += '<div class="task-text" onclick="openTask(\'' + t.id + '\')">' + escHtml(t.text) + '</div>';
+        if (t.completedAt) html += '<div class="task-meta"><span class="ts">✓ ' + fmtRel(t.completedAt) + '</span></div>';
+        html += '</div>';
+        html += '<div class="task-actions"><button class="task-act" onclick="openTask(\'' + t.id + '\')">⋯</button></div>';
+        html += '</div>';
+      });
+      html += '</div>';
+    });
+  }
+
+  // Add custom task button
+  html += '<div style="margin-top:18px;text-align:center"><button class="btn btn-g" onclick="openAddTask()">+ Add custom task</button></div>';
+
+  el.innerHTML = html;
+}
+
+function filterStage(s) { _filterStage = s; rTasks(document.getElementById('mc')); }
+function filterStatus(s) { _filterStatus = s; rTasks(document.getElementById('mc')); }
+
+// ─── CAPTURES view ────────────────────────────────────────────────────────
+function rCaptures(el) {
+  let html = '<h1 class="view-title">Captures</h1>';
+  html += '<div class="view-sub">// inbox before the brain processes it</div>';
+
+  html += '<div class="cap-quick" onclick="openCapture()">';
+  html += '<span class="icon">⊕</span>';
+  html += '<div class="text">Capture something</div>';
+  html += '</div>';
+
+  html += '<div class="help">In S2, captures will flow to <strong>inbox/</strong> on your NUC and the watcher will run <strong>/understand</strong> on each one. For now, this is a local notepad.</div>';
+
+  if (!S.captures.length) {
+    html += '<div class="empty"><div class="icon">⊕</div><h3>No captures yet</h3><p>Brain farts, links, voice transcripts, anything. Drop them here for the system to process when S2 is live.</p></div>';
+  } else {
+    S.captures.slice().reverse().forEach(c => {
+      html += '<div class="card">';
+      html += '<div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">';
+      html += '<span class="tag tc">' + escHtml(c.type) + '</span>';
+      html += '<span style="font-family:var(--mono);font-size:9px;color:var(--sub);letter-spacing:.1em">' + fmtRel(c.createdAt) + '</span>';
+      html += '<button class="task-act" style="margin-left:auto" onclick="deleteCapture(\'' + c.id + '\')">✕</button>';
+      html += '</div>';
+      html += '<div style="font-size:13px;line-height:1.6;white-space:pre-wrap">' + escHtml(c.text) + '</div>';
+      html += '</div>';
+    });
+  }
+
+  el.innerHTML = html;
+}
+
+// ─── TIMELINE view ────────────────────────────────────────────────────────
+function rTimeline(el) {
+  let html = '<h1 class="view-title">Timeline</h1>';
+  html += '<div class="view-sub">// 18h across 3 weeks</div>';
+
+  // Compute hours per stage
+  const stageHours = STAGES_CANONICAL.map(s => ({ id: s.id, num: s.num, title: s.title, h: parseFloat(s.effort) || 0 }));
+  const totalH = stageHours.reduce((a, s) => a + s.h, 0);
+
+  // Visual stack of stages as blocks
+  html += '<div class="card">';
+  html += '<div class="sl">Effort distribution</div>';
+  html += '<div class="timeline-bar">';
+  stageHours.forEach(s => {
+    const w = (s.h / totalH) * 100;
+    html += '<div class="timeline-seg ' + s.id + '" style="width:' + w + '%" title="S' + s.num + ' ' + escHtml(s.title) + ' (' + s.h + 'h)">S' + s.num + '</div>';
+  });
+  html += '</div>';
+  html += '<div style="font-family:var(--mono);font-size:10px;color:var(--sub);letter-spacing:.1em;margin-top:8px">' + totalH + 'h total</div>';
+  html += '</div>';
+
+  // Per-week breakdown
+  html += '<div class="timeline-week">';
+  html += '<div class="timeline-week-head">▸ Today</div>';
+  ['s0', 's1'].forEach(sid => html += renderTimelineRow(sid));
+  html += '</div>';
+
+  html += '<div class="timeline-week">';
+  html += '<div class="timeline-week-head">▸ This week</div>';
+  ['s2', 's3'].forEach(sid => html += renderTimelineRow(sid));
+  html += '</div>';
+
+  html += '<div class="timeline-week">';
+  html += '<div class="timeline-week-head">▸ Week 2</div>';
+  ['s4'].forEach(sid => html += renderTimelineRow(sid));
+  html += '</div>';
+
+  html += '<div class="timeline-week">';
+  html += '<div class="timeline-week-head">▸ Week 3</div>';
+  ['s5'].forEach(sid => html += renderTimelineRow(sid));
+  html += '</div>';
+
+  el.innerHTML = html;
+}
+
+function renderTimelineRow(sid) {
+  const stage = getStage(sid);
+  const p = stageProgress(sid);
+  let row = '<div class="card" style="margin-bottom:6px">';
+  row += '<div style="display:flex;align-items:center;gap:10px">';
+  row += '<div style="width:32px;height:32px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:10px;font-weight:700;background:var(--' + sid + '-color,var(--accent));color:var(--bg)" class="timeline-seg ' + sid + '" title="S' + stage.num + '">' + stage.num + '</div>';
+  row += '<div style="flex:1">';
+  row += '<div style="font-family:var(--display);font-size:14px;font-weight:700">' + escHtml(stage.title) + '</div>';
+  row += '<div style="font-family:var(--mono);font-size:10px;color:var(--sub);letter-spacing:.1em">' + escHtml(stage.effort) + ' · ' + p.done + '/' + p.total + ' tasks</div>';
+  row += '</div>';
+  row += '<div style="font-family:var(--mono);font-size:11px;color:var(--accent);font-weight:700">' + p.pct + '%</div>';
+  row += '</div>';
+  row += '<div class="pb" style="margin-top:8px"><div class="pbi" style="width:' + p.pct + '%"></div></div>';
+  row += '</div>';
+  return row;
+}
+
+// ─── NOTES view ───────────────────────────────────────────────────────────
+function rNotes(el) {
+  let html = '<h1 class="view-title">Notes</h1>';
+  html += '<div class="view-sub">// free-form, attached to stages or floating</div>';
+
+  html += '<div style="margin-bottom:18px"><button class="btn btn-p" onclick="openAddNote()">+ New note</button></div>';
+
+  if (!S.notes.length) {
+    html += '<div class="empty"><div class="icon">✎</div><h3>No notes yet</h3><p>Free-form scratch. Stage observations, design decisions, anything that doesn\u2019t fit a task.</p></div>';
+  } else {
+    S.notes.slice().reverse().forEach(n => {
+      const stage = n.stageId ? getStage(n.stageId) : null;
+      html += '<div class="note">';
+      html += '<div class="note-head">';
+      if (stage) html += '<span class="tag tc">S' + stage.num + '</span>';
+      html += '<span>' + fmtRel(n.createdAt) + '</span>';
+      if (n.title) html += '<span style="color:var(--text);text-transform:none;letter-spacing:0;font-family:var(--body);font-size:13px;font-weight:600">· ' + escHtml(n.title) + '</span>';
+      html += '<button class="task-act" style="margin-left:auto" onclick="deleteNote(\'' + n.id + '\')">✕</button>';
+      html += '</div>';
+      html += '<div class="note-body">' + escHtml(n.body) + '</div>';
+      html += '</div>';
+    });
+  }
+
+  el.innerHTML = html;
+}
+
+// ─── Task interactions ────────────────────────────────────────────────────
+function toggleStage(id) {
+  const state = getStageState(id);
+  state.expanded = !state.expanded;
+  saveS();
+  rRoadmap(document.getElementById('mc'));
+}
+
+function expandStage(id) {
+  const state = getStageState(id);
+  state.expanded = true;
+  saveS();
+  rRoadmap(document.getElementById('mc'));
+  setTimeout(() => {
+    const el = document.getElementById('stage-' + id);
+    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }, 100);
+}
+
+function toggleTaskInline(id) {
+  const t = S.tasks.find(x => x.id === id);
+  if (!t) return;
+  if (t.status === 'done') {
+    t.status = 'pending';
+    t.completedAt = null;
+  } else {
+    t.status = 'done';
+    t.completedAt = Date.now();
+    // Mark stage started if not already
+    const state = getStageState(t.stageId);
+    if (!state.startedAt) state.startedAt = Date.now();
+    // Check if stage now complete
+    const p = stageProgress(t.stageId);
+    if (p.pct === 100 && !state.completedAt) {
+      state.completedAt = Date.now();
+      toast('Stage ' + getStage(t.stageId).num + ' complete ✓');
+    } else {
+      toast('Task complete ✓');
+    }
+  }
+  saveS();
+  // Re-render current view
+  showV(CV);
+}
+
+function completeTask(id) {
+  toggleTaskInline(id);
+}
+
+function openTask(id) {
+  const t = S.tasks.find(x => x.id === id);
+  if (!t) return;
+  const stage = getStage(t.stageId);
+  let html = '';
+  html += '<label>Stage</label>';
+  html += '<div style="font-family:var(--mono);font-size:11px;color:var(--accent);letter-spacing:.1em;margin-bottom:14px">S' + stage.num + ' · ' + escHtml(stage.title) + '</div>';
+
+  html += '<label>Task</label>';
+  html += '<textarea class="inp" id="t-text" rows="3">' + escHtml(t.text) + '</textarea>';
+
+  html += '<label>Notes</label>';
+  html += '<textarea class="inp" id="t-notes" rows="6" placeholder="Decisions, observations, blockers, links...">' + escHtml(t.notes || '') + '</textarea>';
+
+  html += '<label>Status</label>';
+  html += '<div class="brow">';
+  html += '<button class="btn ' + (t.status === 'pending' ? 'btn-p' : 'btn-g') + '" onclick="setTaskStatus(\'' + t.id + '\',\'pending\')">Pending</button>';
+  html += '<button class="btn ' + (t.status === 'in-progress' ? 'btn-p' : 'btn-g') + '" onclick="setTaskStatus(\'' + t.id + '\',\'in-progress\')">In Progress</button>';
+  html += '<button class="btn ' + (t.status === 'done' ? 'btn-p' : 'btn-g') + '" onclick="setTaskStatus(\'' + t.id + '\',\'done\')">Done</button>';
+  html += '</div>';
+
+  if (t.completedAt) {
+    html += '<div style="margin-top:14px;font-family:var(--mono);font-size:10px;color:var(--sub);letter-spacing:.1em">Completed ' + fmtRel(t.completedAt) + '</div>';
+  }
+
+  html += '<div style="margin-top:24px;display:flex;gap:8px">';
+  html += '<button class="btn btn-p" onclick="saveTask(\'' + t.id + '\')">Save</button>';
+  html += '<button class="btn btn-r" onclick="deleteTask(\'' + t.id + '\')">Delete</button>';
+  html += '</div>';
+
+  openSheet('Task', html);
+}
+
+function setTaskStatus(id, st) {
+  const t = S.tasks.find(x => x.id === id);
+  if (!t) return;
+  t.status = st;
+  if (st === 'done' && !t.completedAt) t.completedAt = Date.now();
+  if (st !== 'done') t.completedAt = null;
+  // Reflect in sheet without closing
+  saveTask(id, false);
+}
+
+function saveTask(id, close) {
+  const t = S.tasks.find(x => x.id === id);
+  if (!t) return;
+  const text = document.getElementById('t-text');
+  const notes = document.getElementById('t-notes');
+  if (text) t.text = text.value.trim();
+  if (notes) t.notes = notes.value;
+  t.updatedAt = Date.now();
+  saveS();
+  toast('Saved');
+  if (close !== false) closeSheet();
+  showV(CV);
+}
+
+function deleteTask(id) {
+  if (!confirm('Delete this task?')) return;
+  S.tasks = S.tasks.filter(x => x.id !== id);
+  saveS();
+  closeSheet();
+  toast('Deleted');
+  showV(CV);
+}
+
+function openAddTask() {
+  let html = '';
+  html += '<label>Stage</label>';
+  html += '<select class="inp" id="add-stage">';
+  STAGES_CANONICAL.forEach(s => {
+    html += '<option value="' + s.id + '">S' + s.num + ' — ' + escHtml(s.title) + '</option>';
+  });
+  html += '</select>';
+
+  html += '<label>Task</label>';
+  html += '<textarea class="inp" id="add-text" rows="3" placeholder="What needs doing?"></textarea>';
+
+  html += '<div style="margin-top:24px"><button class="btn btn-p" onclick="addTask()">Add task</button></div>';
+
+  openSheet('Add custom task', html);
+}
+
+function addTask() {
+  const stageId = document.getElementById('add-stage').value;
+  const text = document.getElementById('add-text').value.trim();
+  if (!text) { toast('Task text required'); return; }
+  S.tasks.push({
+    id: uid(),
+    stageId,
+    text,
+    status: 'pending',
+    priority: 'normal',
+    notes: '',
+    createdAt: Date.now(),
+    completedAt: null,
+    custom: true
+  });
+  saveS();
+  closeSheet();
+  toast('Task added');
+  showV(CV);
+}
+
+// ─── Captures ─────────────────────────────────────────────────────────────
+function openCapture() {
+  let html = '';
+  html += '<label>Type</label>';
+  html += '<select class="inp" id="cap-type">';
+  ['idea', 'link', 'thought', 'quote', 'voice'].forEach(t => {
+    html += '<option value="' + t + '">' + t + '</option>';
+  });
+  html += '</select>';
+
+  html += '<label>Content</label>';
+  html += '<textarea class="inp" id="cap-text" rows="6" placeholder="Brain fart, in. Anything goes."></textarea>';
+
+  html += '<div style="margin-top:18px"><button class="btn btn-p" onclick="addCapture()">Capture</button></div>';
+  html += '<div class="help" style="margin-top:14px">In S2, this writes to <strong>inbox/</strong> on the NUC and triggers /understand. For now, captures live in localStorage and can be exported with the rest of your data.</div>';
+
+  openSheet('Capture', html);
+}
+
+function addCapture() {
+  const type = document.getElementById('cap-type').value;
+  const text = document.getElementById('cap-text').value.trim();
+  if (!text) { toast('Content required'); return; }
+  S.captures.push({
+    id: uid(),
+    type,
+    text,
+    createdAt: Date.now()
+  });
+  saveS();
+  closeSheet();
+  toast('Captured');
+  showV(CV);
+}
+
+function deleteCapture(id) {
+  if (!confirm('Delete this capture?')) return;
+  S.captures = S.captures.filter(x => x.id !== id);
+  saveS();
+  showV(CV);
+}
+
+// ─── Notes ────────────────────────────────────────────────────────────────
+function openAddNote() {
+  let html = '';
+  html += '<label>Stage (optional)</label>';
+  html += '<select class="inp" id="n-stage">';
+  html += '<option value="">— None —</option>';
+  STAGES_CANONICAL.forEach(s => {
+    html += '<option value="' + s.id + '">S' + s.num + ' — ' + escHtml(s.title) + '</option>';
+  });
+  html += '</select>';
+
+  html += '<label>Title (optional)</label>';
+  html += '<input type="text" class="inp" id="n-title" placeholder="Short title"/>';
+
+  html += '<label>Body</label>';
+  html += '<textarea class="inp" id="n-body" rows="8" placeholder="Free-form. Decisions, observations, links."></textarea>';
+
+  html += '<div style="margin-top:18px"><button class="btn btn-p" onclick="addNote()">Save note</button></div>';
+
+  openSheet('New note', html);
+}
+
+function addNote() {
+  const stageId = document.getElementById('n-stage').value;
+  const title = document.getElementById('n-title').value.trim();
+  const body = document.getElementById('n-body').value.trim();
+  if (!body) { toast('Body required'); return; }
+  S.notes.push({
+    id: uid(),
+    stageId: stageId || null,
+    title,
+    body,
+    createdAt: Date.now()
+  });
+  saveS();
+  closeSheet();
+  toast('Note saved');
+  showV(CV);
+}
+
+function deleteNote(id) {
+  if (!confirm('Delete this note?')) return;
+  S.notes = S.notes.filter(x => x.id !== id);
+  saveS();
+  showV(CV);
+}
+
+// ─── Sheet / drawer ───────────────────────────────────────────────────────
+function openSheet(title, body) {
+  document.getElementById('sheet-title').textContent = title;
+  document.getElementById('sheet-body').innerHTML = body;
+  document.getElementById('sheet-overlay').classList.add('show');
+  document.getElementById('sheet').classList.add('show');
+}
+function closeSheet() {
+  document.getElementById('sheet-overlay').classList.remove('show');
+  document.getElementById('sheet').classList.remove('show');
+}
+function toggleDrawer() {
+  const o = document.getElementById('drawer-overlay');
+  const d = document.getElementById('drawer');
+  if (d.classList.contains('show')) { closeDrawer(); }
+  else { o.classList.add('show'); d.classList.add('show'); }
+}
+function closeDrawer() {
+  document.getElementById('drawer-overlay').classList.remove('show');
+  document.getElementById('drawer').classList.remove('show');
+}
+
+// ─── Settings ─────────────────────────────────────────────────────────────
+function openSettings() {
+  let html = '';
+
+  html += '<div class="setting-row">';
+  html += '<div class="label">Coach voice</div>';
+  html += '<div class="desc">How responses are toned in S3 retrieval. Doesn\u2019t affect this app yet.</div>';
+  html += '<select class="inp" id="set-voice">';
+  ['warm', 'helpful', 'aggressive', 'roasty', 'prepaired', 'accountantability', 'ijneb-dev'].forEach(v => {
+    const sel = S.settings.voicePref === v ? ' selected' : '';
+    html += '<option value="' + v + '"' + sel + '>' + v + '</option>';
+  });
+  html += '</select>';
+  html += '</div>';
+
+  html += '<div class="setting-row">';
+  html += '<div class="label">Google Drive sync</div>';
+  html += '<div class="desc">Sync app state to a single file in your Drive (drive.file scope; we only see the file we create). Requires a Google Cloud OAuth Client ID.</div>';
+  if (S.settings.driveToken) {
+    html += '<div style="font-family:var(--mono);font-size:10px;color:var(--green);letter-spacing:.1em;margin-bottom:10px">✓ CONNECTED</div>';
+    html += '<label style="display:flex;align-items:center;gap:10px;cursor:pointer;font-family:var(--body);font-size:13px;text-transform:none;letter-spacing:0;color:var(--text)">';
+    html += '<span class="switch"><input type="checkbox" id="set-sync"' + (S.settings.driveSync ? ' checked' : '') + ' onchange="toggleDriveSync()"/><span class="switch-track"></span></span>';
+    html += 'Auto-sync after every change';
+    html += '</label>';
+    html += '<div class="brow" style="margin-top:14px">';
+    html += '<button class="btn btn-p" onclick="driveSave()">Push now</button>';
+    html += '<button class="btn btn-g" onclick="driveLoad()">Pull now</button>';
+    html += '<button class="btn btn-r" onclick="driveDisconnect()">Disconnect</button>';
+    html += '</div>';
+  } else {
+    html += '<label>Client ID</label>';
+    html += '<input type="text" class="inp" id="set-clientid" value="' + escHtml(S.settings.driveClientId || '') + '" placeholder="xxxxx.apps.googleusercontent.com"/>';
+    html += '<div class="brow" style="margin-top:10px">';
+    html += '<button class="btn btn-g" onclick="saveDriveClientId()">Save Client ID</button>';
+    if (S.settings.driveClientId) html += '<button class="btn btn-p" onclick="driveAuth()">Connect Drive</button>';
+    html += '</div>';
+    html += '<div class="help" style="margin-top:10px;font-size:11px">Create a Client ID at <a href="https://console.cloud.google.com" target="_blank" style="color:var(--accent)">console.cloud.google.com</a> → APIs &amp; Services → Credentials → OAuth client ID (Web). Add this URL to authorised redirect URIs.</div>';
+  }
+  html += '</div>';
+
+  html += '<div class="setting-row">';
+  html += '<div class="label">Manual JSON export/import</div>';
+  html += '<div class="desc">Bypass Drive entirely. Export to file, drop wherever you want, import on any device.</div>';
+  html += '<div class="brow">';
+  html += '<button class="btn btn-g" onclick="exportJSON()">Export JSON</button>';
+  html += '<button class="btn btn-g" onclick="importJSON()">Import JSON</button>';
+  html += '</div>';
+  html += '</div>';
+
+  html += '<div class="setting-row">';
+  html += '<div class="label">Data</div>';
+  html += '<div class="desc">' + S.tasks.length + ' tasks · ' + S.captures.length + ' captures · ' + S.notes.length + ' notes</div>';
+  html += '<div class="desc">Schema ' + S.meta.schemaVersion + ' · created ' + fmtDate(S.meta.createdAt) + '</div>';
+  if (S.meta.lastSyncedAt) html += '<div class="desc">Last synced ' + fmtRel(S.meta.lastSyncedAt) + '</div>';
+  html += '<div style="margin-top:10px"><button class="btn btn-r" onclick="confirmReset()">Reset all data</button></div>';
+  html += '</div>';
+
+  openSheet('Settings', html);
+
+  // Wire voice change
+  setTimeout(() => {
+    const v = document.getElementById('set-voice');
+    if (v) v.onchange = () => { S.settings.voicePref = v.value; saveS(); toast('Voice saved'); };
+  }, 50);
+}
+
+function saveDriveClientId() {
+  const v = document.getElementById('set-clientid').value.trim();
+  S.settings.driveClientId = v;
+  saveS();
+  toast('Client ID saved');
+  openSettings();
+}
+
+function toggleDriveSync() {
+  S.settings.driveSync = document.getElementById('set-sync').checked;
+  saveS();
+  toast(S.settings.driveSync ? 'Auto-sync ON' : 'Auto-sync OFF');
+}
+
+function driveDisconnect() {
+  if (!confirm('Disconnect Drive? Your local data stays. You can reconnect anytime.')) return;
+  S.settings.driveToken = null;
+  S.settings.driveSync = false;
+  saveS();
+  toast('Drive disconnected');
+  openSettings();
+}
+
+// ─── Drive sync (forked from RenovAIter, adapted) ─────────────────────────
+function driveAuth() {
+  const clientId = S.settings.driveClientId;
+  if (!clientId) { toast('Save a Client ID first'); return; }
+  const redirect = window.location.href.split('?')[0].split('#')[0];
+  const scope = 'https://www.googleapis.com/auth/drive.file';
+  const url = 'https://accounts.google.com/o/oauth2/v2/auth?client_id=' + encodeURIComponent(clientId) +
+    '&redirect_uri=' + encodeURIComponent(redirect) +
+    '&response_type=token&scope=' + encodeURIComponent(scope);
+  window.location.href = url;
+}
+
+function handleDriveCallback() {
+  const hash = window.location.hash;
+  if (!hash || !hash.includes('access_token')) return;
+  const params = new URLSearchParams(hash.substring(1));
+  const token = params.get('access_token');
+  if (token) {
+    S.settings.driveToken = token;
+    saveS();
+    window.location.hash = '';
+    toast('Drive connected');
+  }
+}
+
+async function driveFindFile() {
+  if (!S.settings.driveToken) return null;
+  try {
+    const res = await fetch('https://www.googleapis.com/drive/v3/files?q=name=\'' + DRIVE_FILE_NAME + '\'+and+trashed=false&spaces=drive&fields=files(id,name)', {
+      headers: { 'Authorization': 'Bearer ' + S.settings.driveToken }
+    });
+    if (!res.ok) {
+      if (res.status === 401) { S.settings.driveToken = null; saveS(); toast('Drive session expired'); }
+      return null;
+    }
+    const data = await res.json();
+    return data.files && data.files.length ? data.files[0].id : null;
+  } catch (e) { console.error(e); return null; }
+}
+
+async function driveSave() {
+  if (!S.settings.driveToken) { toast('Connect Drive first'); return; }
+  toast('Saving to Drive…');
+  const exportData = JSON.parse(JSON.stringify(S));
+  delete exportData.settings.driveToken; // don't save the token to Drive
+  const content = JSON.stringify(exportData, null, 2);
+
+  const fileId = await driveFindFile();
+  try {
+    if (fileId) {
+      const res = await fetch('https://www.googleapis.com/upload/drive/v3/files/' + fileId + '?uploadType=media', {
+        method: 'PATCH',
+        headers: { 'Authorization': 'Bearer ' + S.settings.driveToken, 'Content-Type': 'application/json' },
+        body: content
+      });
+      if (res.ok) { S.meta.lastSyncedAt = Date.now(); saveS(); toast('Saved to Drive'); }
+      else { toast('Drive save failed'); }
+    } else {
+      const metadata = { name: DRIVE_FILE_NAME, mimeType: 'application/json' };
+      const form = new FormData();
+      form.append('metadata', new Blob([JSON.stringify(metadata)], { type: 'application/json' }));
+      form.append('file', new Blob([content], { type: 'application/json' }));
+      const res = await fetch('https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart', {
+        method: 'POST',
+        headers: { 'Authorization': 'Bearer ' + S.settings.driveToken },
+        body: form
+      });
+      if (res.ok) { S.meta.lastSyncedAt = Date.now(); saveS(); toast('Saved to Drive'); }
+      else { toast('Drive save failed'); }
+    }
+  } catch (e) { console.error(e); toast('Drive error'); }
+}
+
+async function driveLoad() {
+  if (!S.settings.driveToken) { toast('Connect Drive first'); return; }
+  if (!confirm('Replace local data with Drive data? Your current local state will be overwritten.')) return;
+  toast('Loading from Drive…');
+  const fileId = await driveFindFile();
+  if (!fileId) { toast('No sync file on Drive yet'); return; }
+  try {
+    const res = await fetch('https://www.googleapis.com/drive/v3/files/' + fileId + '?alt=media', {
+      headers: { 'Authorization': 'Bearer ' + S.settings.driveToken }
+    });
+    if (!res.ok) { toast('Drive load failed'); return; }
+    const data = await res.json();
+    if (data.tasks && data.stages) {
+      const token = S.settings.driveToken;
+      const clientId = S.settings.driveClientId;
+      S = data;
+      S.settings.driveToken = token;
+      S.settings.driveClientId = clientId;
+      S.meta.lastSyncedAt = Date.now();
+      saveS();
+      showV('today');
+      toast('Loaded from Drive');
+    } else { toast('Invalid Drive data'); }
+  } catch (e) { console.error(e); toast('Drive error'); }
+}
+
+function syncToDrive() {
+  if (!S.settings.driveToken || !S.settings.driveSync) return;
+  clearTimeout(window._driveSyncTimer);
+  window._driveSyncTimer = setTimeout(() => driveSave().catch(() => {}), 5000);
+}
+
+// ─── Manual JSON export/import ────────────────────────────────────────────
+function exportJSON() {
+  const exportData = JSON.parse(JSON.stringify(S));
+  delete exportData.settings.driveToken;
+  const content = JSON.stringify(exportData, null, 2);
+  const blob = new Blob([content], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  const date = new Date().toISOString().split('T')[0];
+  a.href = url;
+  a.download = 'ikigai-state-' + date + '.json';
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+  toast('Exported');
+}
+
+function importJSON() {
+  document.getElementById('file-import').click();
+}
+
+function handleImport(ev) {
+  const file = ev.target.files[0];
+  if (!file) return;
+  if (!confirm('Replace all local data with the imported file?')) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    try {
+      const data = JSON.parse(e.target.result);
+      if (!data.tasks || !data.stages) { toast('Invalid file'); return; }
+      const token = S.settings.driveToken;
+      const clientId = S.settings.driveClientId;
+      S = data;
+      if (token) S.settings.driveToken = token;
+      if (clientId) S.settings.driveClientId = clientId;
+      saveS();
+      showV('today');
+      toast('Imported');
+    } catch (err) { console.error(err); toast('Parse failed'); }
+  };
+  reader.readAsText(file);
+  ev.target.value = '';
+}
+
+function confirmReset() {
+  if (!confirm('Reset everything? This wipes tasks, captures, notes, settings. There is no undo unless you have an export.')) return;
+  if (!confirm('Really? Last chance.')) return;
+  localStorage.removeItem(SK);
+  S = emptyData();
+  saveS();
+  closeSheet();
+  showV('today');
+  toast('Reset');
+}
+
+// ─── About ────────────────────────────────────────────────────────────────
+function openAbout() {
+  let html = '';
+  html += '<div style="text-align:center;margin-bottom:18px">';
+  html += '<div style="font-family:var(--display);font-size:32px;font-weight:800;letter-spacing:-0.02em">ikig<span style="color:var(--accent)">AI</span></div>';
+  html += '<div style="font-family:var(--mono);font-size:10px;color:var(--sub);letter-spacing:.2em;margin-top:4px">// SCHEMA ' + SCHEMA_VERSION + '</div>';
+  html += '</div>';
+  html += '<div style="font-size:13px;line-height:1.7;margin-bottom:14px">A self-owned coach grounded in everything you know. This app tracks the build itself. Once shipped, the app you\u2019ll use day-to-day lives on your NUC.</div>';
+  html += '<div style="font-size:13px;line-height:1.7;margin-bottom:14px">Built with the bones of <a href="https://github.com/ijnebzor/RenovAIter" target="_blank" style="color:var(--accent)">RenovAIter</a>. Source on <a href="https://github.com/ijnebzor/IkigAI" target="_blank" style="color:var(--accent)">GitHub</a>.</div>';
+  html += '<div style="font-family:var(--mono);font-size:10px;color:var(--sub);letter-spacing:.1em;text-align:center;margin-top:24px">// CAPTURE · UNDERSTAND · RETAIN · SURFACE · GROW</div>';
+  openSheet('About', html);
+}
+
+// ─── Init ─────────────────────────────────────────────────────────────────
+function updateSyncStatus() {
+  const el = document.getElementById('sync-status');
+  if (S.settings.driveToken && S.settings.driveSync) {
+    el.textContent = '⟳ SYNC';
+    el.style.color = 'var(--green)';
+  } else if (S.settings.driveToken) {
+    el.textContent = '⟳ ON';
+    el.style.color = 'var(--sub)';
+  } else {
+    el.textContent = '○ LOCAL';
+    el.style.color = 'var(--sub)';
+  }
+}
+
+handleDriveCallback();
+showV('today');
+updateSyncStatus();
+
+// Re-render sync status after every save
+const _origSave = saveS;
+saveS = function() { _origSave(); updateSyncStatus(); };
+
+// PWA service worker
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('sw.js').catch(() => {});
+  });
+}
+</script>
+</body>
+</html>
