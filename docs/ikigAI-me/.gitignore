@@ -1,0 +1,16 @@
+# Indexes are computed; don't commit
+state/indexes/
+state/cache/
+graph/graph.json
+
+# Inbox files that have been ingested can be archived
+inbox/_archived/
+
+# Secrets
+.env
+*.key
+*.pem
+
+# OS noise
+.DS_Store
+Thumbs.db
