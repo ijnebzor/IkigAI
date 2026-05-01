@@ -275,20 +275,20 @@ textarea.inp{resize:vertical;min-height:60px;font-family:var(--body)}
 <div class="drawer-overlay" id="drawer-overlay" onclick="closeDrawer()"></div>
 <div class="drawer" id="drawer">
   <div class="drawer-grid">
-    <button class="drawer-btn" onclick="closeDrawer();openOnboard()"><span class="drawer-icon">\u2766</span>Onboard</button>
-    <button class="drawer-btn" onclick="closeDrawer();showV('roadmap')"><span class="drawer-icon">\u25A6</span>Roadmap</button>
-    <button class="drawer-btn" onclick="closeDrawer();showV('tasks')"><span class="drawer-icon">\u2611</span>Tasks</button>
-    <button class="drawer-btn" onclick="closeDrawer();showV('timeline')"><span class="drawer-icon">\u29FE</span>Timeline</button>
-    <button class="drawer-btn" onclick="closeDrawer();showV('notes')"><span class="drawer-icon">\u270E</span>Notes</button>
-    <button class="drawer-btn" onclick="closeDrawer();openSettings()"><span class="drawer-icon">\u2699</span>Settings</button>
-    <button class="drawer-btn" onclick="closeDrawer();driveSave()"><span class="drawer-icon">\u2B06</span>Push Drive</button>
-    <button class="drawer-btn" onclick="closeDrawer();driveLoad()"><span class="drawer-icon">\u2B07</span>Pull Drive</button>
-    <button class="drawer-btn" onclick="closeDrawer();exportJSON()"><span class="drawer-icon">\u2913</span>Export JSON</button>
-    <button class="drawer-btn" onclick="closeDrawer();importJSON()"><span class="drawer-icon">\u2912</span>Import JSON</button>
-    <button class="drawer-btn" onclick="window.open('roadmap-reference.html','_blank')"><span class="drawer-icon">\u270D</span>Spec Doc</button>
-    <button class="drawer-btn" onclick="closeDrawer();openAbout()"><span class="drawer-icon">\u24D8</span>About</button>
-    <button class="drawer-btn" onclick="closeDrawer();confirmReset()"><span class="drawer-icon">\u21BA</span>Reset</button>
-    <button class="drawer-btn" onclick="closeDrawer()"><span class="drawer-icon">\u2715</span>Close</button>
+    <button class="drawer-btn" onclick="closeDrawer();openOnboard()"><span class="drawer-icon">❦</span>Onboard</button>
+    <button class="drawer-btn" onclick="closeDrawer();showV('roadmap')"><span class="drawer-icon">▦</span>Roadmap</button>
+    <button class="drawer-btn" onclick="closeDrawer();showV('tasks')"><span class="drawer-icon">☑</span>Tasks</button>
+    <button class="drawer-btn" onclick="closeDrawer();showV('timeline')"><span class="drawer-icon">⧾</span>Timeline</button>
+    <button class="drawer-btn" onclick="closeDrawer();showV('notes')"><span class="drawer-icon">✎</span>Notes</button>
+    <button class="drawer-btn" onclick="closeDrawer();openSettings()"><span class="drawer-icon">⚙</span>Settings</button>
+    <button class="drawer-btn" onclick="closeDrawer();driveSave()"><span class="drawer-icon">⬆</span>Push Drive</button>
+    <button class="drawer-btn" onclick="closeDrawer();driveLoad()"><span class="drawer-icon">⬇</span>Pull Drive</button>
+    <button class="drawer-btn" onclick="closeDrawer();exportJSON()"><span class="drawer-icon">⤓</span>Export JSON</button>
+    <button class="drawer-btn" onclick="closeDrawer();importJSON()"><span class="drawer-icon">⤒</span>Import JSON</button>
+    <button class="drawer-btn" onclick="window.open('roadmap-reference.html','_blank')"><span class="drawer-icon">✍</span>Spec Doc</button>
+    <button class="drawer-btn" onclick="closeDrawer();openAbout()"><span class="drawer-icon">ⓘ</span>About</button>
+    <button class="drawer-btn" onclick="closeDrawer();confirmReset()"><span class="drawer-icon">↺</span>Reset</button>
+    <button class="drawer-btn" onclick="closeDrawer()"><span class="drawer-icon">✕</span>Close</button>
   </div>
 </div>
 
@@ -296,7 +296,7 @@ textarea.inp{resize:vertical;min-height:60px;font-family:var(--body)}
 <div class="sheet" id="sheet">
   <div class="sheet-head">
     <div class="sheet-title" id="sheet-title"></div>
-    <button class="sheet-close" onclick="closeSheet()">\u2715</button>
+    <button class="sheet-close" onclick="closeSheet()">✕</button>
   </div>
   <div class="sheet-body" id="sheet-body"></div>
 </div>
@@ -339,7 +339,7 @@ const STAGES_CANONICAL = [
       'Pick one real source (article, voice memo, chat-paste, or idea)',
       'Drop in inbox/unsorted/ as markdown',
       'Run /understand manually through Claude with CLAUDE.md + ikigai.md + lexicon.md context',
-      'Verify regions tagged through your lens, not the source\u2019s encoded one',
+      'Verify regions tagged through your lens, not the source’s encoded one',
       'Save the resulting page to wiki/sources/<id>.md',
       'Run /retrieve at all three gears against the corpus-of-one',
       'Adjust schema or lexicon if any field felt wrong; bump schema_hash',
@@ -396,7 +396,7 @@ const STAGES_CANONICAL = [
       'Brusselbach Ikigai diagram interactive — click region, see all tagged',
       'Search across whole vault with snippet highlighting',
       'ijneb.dev tokens applied throughout',
-      'Brief panel always accessible — today\u2019s recommended work',
+      'Brief panel always accessible — today’s recommended work',
       'Daily brief format: 3 stage options across projects, recommendation with reasoning, calendar offer',
       'Coach voice configured: helpful default, warm/aggressive/roasty/prepaired/etc selectable',
       'Idea page type live in wiki/ideas/',
@@ -428,7 +428,7 @@ const STAGES_CANONICAL = [
   },
   {
     id: 's5', num: '05', title: 'Friend-Ready', when: 'Week 3', effort: '2h', deps: 'S4',
-    tagline: 'Onboarding conversation built (always-on, not just first-run). Bespoke proven scalable by spinning up a second me. Friend\u2019s first capture lands cleanly.',
+    tagline: 'Onboarding conversation built (always-on, not just first-run). Bespoke proven scalable by spinning up a second me. Friend’s first capture lands cleanly.',
     components: [
       'Conversational onboarder operation prompt (already first-class from S0)',
       'Walks user through: current Ikigai, aspirational Ikigai, vocabulary seed, lexicon entries, voice prefs',
@@ -436,11 +436,11 @@ const STAGES_CANONICAL = [
       'friend-me/ created next to ikigAI-me/ on shared infra (or own NUC)',
       'Same core/ import; their vault, their tags, their voice, their lexicon',
       'Multi-tenant MCP: server reads me from auth context',
-      'Tailscale ACL keeps friend\u2019s vault isolated',
+      'Tailscale ACL keeps friend’s vault isolated',
       'Daemons run per-vault',
       'Comparison pass: their experience vs yours, governance gaps surfaced'
     ],
-    checkpoint: 'Friend captures their first thing. Their first retrieval works. Their daily brief in their voice lands next morning. You haven\u2019t refactored anything in your own setup.',
+    checkpoint: 'Friend captures their first thing. Their first retrieval works. Their daily brief in their voice lands next morning. You haven’t refactored anything in your own setup.',
     deliverable: 'Two people, one core, two brains. Bespoke scales.'
   }
 ];
@@ -462,37 +462,37 @@ const LEXICON_SEED = [
   {
     term: 'Compounding',
     lens: 'mechanism / what the system makes visible',
-    body: 'A single action lighting up multiple Ikigai regions simultaneously. Not addition. Not coincidence. Mechanism.\n\nDo one thing in good_at. If it\u2019s also love, that\u2019s passion. If it\u2019s also world_needs, that\u2019s mission. If it\u2019s also paid_for, that\u2019s vocation. If all four, centre.\n\nThe system\u2019s entire job is making this visible. Without the framework overlay, the compounding happens but you don\u2019t see it. With the overlay, every action shows its full footprint across regions.',
+    body: 'A single action lighting up multiple Ikigai regions simultaneously. Not addition. Not coincidence. Mechanism.\n\nDo one thing in good_at. If it’s also love, that’s passion. If it’s also world_needs, that’s mission. If it’s also paid_for, that’s vocation. If all four, centre.\n\nThe system’s entire job is making this visible. Without the framework overlay, the compounding happens but you don’t see it. With the overlay, every action shows its full footprint across regions.',
     examples: 'Writing this very document compounds: love (you enjoy it), good_at (you can), world_needs (others might), paid_for (latent — could be productised). Centre case. The system flags it.'
   },
   {
     term: 'Recursion',
     lens: 'mechanism / how compounding extends',
-    body: 'Compounding\u2019s second-order effect. Action A lights up region X. The lit X feeds back into action B in region Y. Y feeds back into Z. Each step amplifies the next.\n\nNot a metaphor. The system literally tracks this — when a page reinforces a concept, that concept\u2019s confidence rises, which means it ranks higher in the next retrieval, which means the next action is shaped by it more strongly.',
-    examples: 'Capture an article on AIthropology. It reinforces the concept page. Tomorrow\u2019s brief surfaces the concept higher. You write a blog post citing it. The post reinforces both the concept and the source. Recursion.'
+    body: 'Compounding’s second-order effect. Action A lights up region X. The lit X feeds back into action B in region Y. Y feeds back into Z. Each step amplifies the next.\n\nNot a metaphor. The system literally tracks this — when a page reinforces a concept, that concept’s confidence rises, which means it ranks higher in the next retrieval, which means the next action is shaped by it more strongly.',
+    examples: 'Capture an article on AIthropology. It reinforces the concept page. Tomorrow’s brief surfaces the concept higher. You write a blog post citing it. The post reinforces both the concept and the source. Recursion.'
   },
   {
     term: 'Drift',
     lens: 'failure mode / what the system watches for',
-    body: 'When the stones you\u2019re placing build toward the wrong thought. The agent\u2019s interpretation of a load-bearing word slowly diverges from yours. Each step is small. The cumulative effect is the system thinking on your behalf in a way that no longer matches your actual thinking.\n\nThe lexicon exists to prevent drift. Define the load-bearing terms with your interpretive lens. Update them when your understanding evolves.',
+    body: 'When the stones you’re placing build toward the wrong thought. The agent’s interpretation of a load-bearing word slowly diverges from yours. Each step is small. The cumulative effect is the system thinking on your behalf in a way that no longer matches your actual thinking.\n\nThe lexicon exists to prevent drift. Define the load-bearing terms with your interpretive lens. Update them when your understanding evolves.',
     examples: 'If "sovereignty" drifts from "freedom from tenancy" toward "control over others," every retrieval downstream has a slightly wrong stone. The drift is invisible until you read what the system has been doing in your name.'
   },
   {
     term: 'Governance',
     lens: 'principle for managing your life',
-    body: 'Governance as a principle for managing your life — not a tech-ops concept reapplied. The deliberate design of the systems you live inside, the rules they enforce on your behalf, the boundaries they maintain.\n\nIkigAI is governance over your own knowledge: what comes in, how it\u2019s classified, what gets retrieved when, what gets challenged. Without governance, the inputs run you. With governance, you run them.',
+    body: 'Governance as a principle for managing your life — not a tech-ops concept reapplied. The deliberate design of the systems you live inside, the rules they enforce on your behalf, the boundaries they maintain.\n\nIkigAI is governance over your own knowledge: what comes in, how it’s classified, what gets retrieved when, what gets challenged. Without governance, the inputs run you. With governance, you run them.',
     examples: 'Phase 0 brain dump as ceremony. Lexicon updates as legislative action. Confidence decay as audit. Debaiser as judicial review.'
   },
   {
     term: 'Agency',
     lens: 'what the system protects',
     body: 'The capacity to choose. To decline a SaaS. To name your own things. To reject the encoded interpretation. To remain the thinker.\n\nThe industry erodes agency by making cognition convenient. The system defends agency by making compounding visible without making decisions for you.',
-    examples: 'Three retrieval gears, not one. You choose the depth. The Debaiser pushes back, doesn\u2019t conclude. The phased plan offers calendar slots, doesn\u2019t book them. Always: you remain the thinker.'
+    examples: 'Three retrieval gears, not one. You choose the depth. The Debaiser pushes back, doesn’t conclude. The phased plan offers calendar slots, doesn’t book them. Always: you remain the thinker.'
   },
   {
     term: 'Alignment',
     lens: 'goal vs reality',
-    body: 'The gap between your stated Ikigai (where you want to be) and your captured reality (where you actually are). The system\u2019s role is to surface the delta — without judgement, without prescription. Just visibility.\n\nAlignment is not "stay on track." Alignment is "see the divergence and decide what to do." Sometimes the right move is updating the goal, not closing the gap.',
+    body: 'The gap between your stated Ikigai (where you want to be) and your captured reality (where you actually are). The system’s role is to surface the delta — without judgement, without prescription. Just visibility.\n\nAlignment is not "stay on track." Alignment is "see the divergence and decide what to do." Sometimes the right move is updating the goal, not closing the gap.',
     examples: 'me/ikigai.md says you want to move toward centre via bAIj. The captures show you spent 12 hours on PrepAIred this week and zero on bAIj. The brief surfaces the gap. You decide whether to course-correct or update the aspirational ikigai.md.'
   },
   {
@@ -830,7 +830,7 @@ function rRoadmap(el) {
     html += '<div class="stage-meta"><span>' + escHtml(stage.when) + '</span> &middot; <span class="effort">' + escHtml(stage.effort) + '</span> &middot; <span>' + escHtml(stage.deps) + '</span></div>';
     html += '</div>';
     html += '<div class="stage-prog">' + p.pct + '%</div>';
-    html += '<div class="stage-chev">\u25B8</div>';
+    html += '<div class="stage-chev">▸</div>';
     html += '</div>';
 
     html += '<div class="stage-body">';
@@ -847,11 +847,11 @@ function rRoadmap(el) {
       html += '<div class="task-body">';
       html += '<div class="task-text" onclick="openTask(\'' + t.id + '\')">' + escHtml(t.text) + '</div>';
       const meta = [];
-      if (t.completedAt) meta.push('<span class="ts">\u2713 ' + fmtRel(t.completedAt) + '</span>');
-      if (t.notes) meta.push('<span class="ts">\u270E has notes</span>');
+      if (t.completedAt) meta.push('<span class="ts">✓ ' + fmtRel(t.completedAt) + '</span>');
+      if (t.notes) meta.push('<span class="ts">✎ has notes</span>');
       if (meta.length) html += '<div class="task-meta">' + meta.join(' &middot; ') + '</div>';
       html += '</div>';
-      html += '<div class="task-actions"><button class="task-act" onclick="openTask(\'' + t.id + '\')">\u22EF</button></div>';
+      html += '<div class="task-actions"><button class="task-act" onclick="openTask(\'' + t.id + '\')">⋯</button></div>';
       html += '</div>';
     });
     html += '</div>';
@@ -866,7 +866,7 @@ function rRoadmap(el) {
     html += '<div style="font-size:12px;color:var(--text);font-family:var(--mono);letter-spacing:.02em">' + escHtml(stage.deliverable) + '</div>';
     html += '</div>';
 
-    html += '<div style="margin-top:14px"><a href="roadmap-reference.html#' + stage.id + '" target="_blank" style="font-family:var(--mono);font-size:10px;color:var(--accent);text-decoration:none;letter-spacing:.1em">\u2192 READ FULL SPEC</a></div>';
+    html += '<div style="margin-top:14px"><a href="roadmap-reference.html#' + stage.id + '" target="_blank" style="font-family:var(--mono);font-size:10px;color:var(--accent);text-decoration:none;letter-spacing:.1em">→ READ FULL SPEC</a></div>';
 
     html += '</div></div>';
   });
@@ -897,7 +897,7 @@ function rTasks(el) {
   if (_filterStatus !== 'all') filtered = filtered.filter(t => t.status === _filterStatus);
 
   if (!filtered.length) {
-    html += '<div class="empty"><div class="icon">\u2205</div><h3>No tasks match</h3><p>Try a different filter, or hit + to add a custom task.</p></div>';
+    html += '<div class="empty"><div class="icon">∅</div><h3>No tasks match</h3><p>Try a different filter, or hit + to add a custom task.</p></div>';
   } else {
     const byStage = {};
     filtered.forEach(t => { (byStage[t.stageId] = byStage[t.stageId] || []).push(t); });
@@ -911,9 +911,9 @@ function rTasks(el) {
         html += '<div class="task-check' + (checked ? ' checked' : '') + '" onclick="toggleTaskInline(\'' + t.id + '\')"></div>';
         html += '<div class="task-body">';
         html += '<div class="task-text" onclick="openTask(\'' + t.id + '\')">' + escHtml(t.text) + '</div>';
-        if (t.completedAt) html += '<div class="task-meta"><span class="ts">\u2713 ' + fmtRel(t.completedAt) + '</span></div>';
+        if (t.completedAt) html += '<div class="task-meta"><span class="ts">✓ ' + fmtRel(t.completedAt) + '</span></div>';
         html += '</div>';
-        html += '<div class="task-actions"><button class="task-act" onclick="openTask(\'' + t.id + '\')">\u22EF</button></div>';
+        html += '<div class="task-actions"><button class="task-act" onclick="openTask(\'' + t.id + '\')">⋯</button></div>';
         html += '</div>';
       });
       html += '</div>';
@@ -936,7 +936,7 @@ function rCapture(el) {
   const voiceSupported = ('webkitSpeechRecognition' in window) || ('SpeechRecognition' in window);
   if (voiceSupported && S.settings.voiceTranscriptionEnabled) {
     html += '<div class="voice-rec" id="voice-rec">';
-    html += '<button class="voice-btn" id="voice-btn" onclick="toggleVoiceRec()">\uD83C\uDFA4</button>';
+    html += '<button class="voice-btn" id="voice-btn" onclick="toggleVoiceRec()">🎤</button>';
     html += '<div class="voice-status" id="voice-status">Tap to record &middot; transcribes live</div>';
     html += '</div>';
   }
@@ -971,14 +971,14 @@ function rCapture(el) {
   html += '<div class="help">In S2, captures will flow to <strong>inbox/</strong> on your NUC and the watcher will run <strong>/understand</strong> on each one. For now, captures live in localStorage and sync to Drive.</div>';
 
   if (!S.captures.length) {
-    html += '<div class="empty"><div class="icon">\u2295</div><h3>No captures yet</h3><p>Brain farts, links, voice transcripts, anything. The system makes their compounding visible.</p></div>';
+    html += '<div class="empty"><div class="icon">⊕</div><h3>No captures yet</h3><p>Brain farts, links, voice transcripts, anything. The system makes their compounding visible.</p></div>';
   } else {
     S.captures.slice().reverse().forEach(c => {
       html += '<div class="card">';
       html += '<div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">';
       html += '<span class="tag tc">' + escHtml(c.type) + '</span>';
       html += '<span style="font-family:var(--mono);font-size:9px;color:var(--sub);letter-spacing:.1em">' + fmtRel(c.createdAt) + '</span>';
-      html += '<button class="task-act" style="margin-left:auto" onclick="deleteCapture(\'' + c.id + '\')">\u2715</button>';
+      html += '<button class="task-act" style="margin-left:auto" onclick="deleteCapture(\'' + c.id + '\')">✕</button>';
       html += '</div>';
       html += '<div style="font-size:13px;line-height:1.6;white-space:pre-wrap">' + escHtml(c.text) + '</div>';
       const regions = c.regions || inferRegionsFromText(c.text);
@@ -1214,7 +1214,7 @@ function rLexicon(el) {
   let html = '<h1 class="view-title">Lexicon</h1>';
   html += '<div class="view-sub">// load-bearing terms with your interpretive lens</div>';
 
-  html += '<div class="help">The lexicon prevents drift. Define each load-bearing term with the lens you apply to it. The ingest pipeline reads this when classifying — so when a source uses "sovereignty," it gets tagged through <strong>your</strong> reading, not the source\u2019s encoded one.</div>';
+  html += '<div class="help">The lexicon prevents drift. Define each load-bearing term with the lens you apply to it. The ingest pipeline reads this when classifying — so when a source uses "sovereignty," it gets tagged through <strong>your</strong> reading, not the source’s encoded one.</div>';
 
   html += '<div style="margin-bottom:14px"><button class="btn btn-p" onclick="openAddLexicon()">+ Add term</button></div>';
 
@@ -1318,7 +1318,7 @@ function rTimeline(el) {
     const inWeek = STAGES_CANONICAL.filter(s => s.when === when);
     if (!inWeek.length) return;
     html += '<div style="margin-bottom:18px">';
-    html += '<div style="font-family:var(--mono);font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:var(--accent);margin-bottom:8px">\u25B8 ' + when + '</div>';
+    html += '<div style="font-family:var(--mono);font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:var(--accent);margin-bottom:8px">▸ ' + when + '</div>';
     inWeek.forEach(stage => {
       const p = stageProgress(stage.id);
       html += '<div class="card" style="margin-bottom:6px">';
@@ -1347,7 +1347,7 @@ function rNotes(el) {
   html += '<div style="margin-bottom:18px"><button class="btn btn-p" onclick="openAddNote()">+ New note</button></div>';
 
   if (!S.notes.length) {
-    html += '<div class="empty"><div class="icon">\u270E</div><h3>No notes yet</h3><p>Stage observations, design decisions, anything that doesn\u2019t fit a task.</p></div>';
+    html += '<div class="empty"><div class="icon">✎</div><h3>No notes yet</h3><p>Stage observations, design decisions, anything that doesn’t fit a task.</p></div>';
   } else {
     S.notes.slice().reverse().forEach(n => {
       const stage = n.stageId ? getStage(n.stageId) : null;
@@ -1356,7 +1356,7 @@ function rNotes(el) {
       if (stage) html += '<span class="tag tc">S' + stage.num + '</span>';
       html += '<span>' + fmtRel(n.createdAt) + '</span>';
       if (n.title) html += '<span style="color:var(--text);text-transform:none;letter-spacing:0;font-family:var(--body);font-size:13px;font-weight:600">&middot; ' + escHtml(n.title) + '</span>';
-      html += '<button class="task-act" style="margin-left:auto" onclick="deleteNote(\'' + n.id + '\')">\u2715</button>';
+      html += '<button class="task-act" style="margin-left:auto" onclick="deleteNote(\'' + n.id + '\')">✕</button>';
       html += '</div>';
       html += '<div class="note-body">' + escHtml(n.body) + '</div>';
       html += '</div>';
@@ -1374,7 +1374,7 @@ function toggleVoiceRec() {
     document.getElementById('voice-btn').classList.remove('recording');
     document.getElementById('voice-rec').classList.remove('active');
     document.getElementById('voice-status').classList.remove('live');
-    document.getElementById('voice-status').textContent = 'Tap to record \u00B7 transcribes live';
+    document.getElementById('voice-status').textContent = 'Tap to record · transcribes live';
     return;
   }
   const SR = window.webkitSpeechRecognition || window.SpeechRecognition;
@@ -1397,7 +1397,7 @@ function toggleVoiceRec() {
     if (ta) {
       ta.value = (finalText + interim).trim();
     }
-    document.getElementById('voice-status').textContent = '\u25CF LIVE \u00B7 ' + (finalText.length + interim.length) + ' chars';
+    document.getElementById('voice-status').textContent = '● LIVE · ' + (finalText.length + interim.length) + ' chars';
   };
   r.onerror = (e) => {
     console.error('Voice error:', e);
@@ -1410,7 +1410,7 @@ function toggleVoiceRec() {
       document.getElementById('voice-btn').classList.remove('recording');
       document.getElementById('voice-rec').classList.remove('active');
       document.getElementById('voice-status').classList.remove('live');
-      document.getElementById('voice-status').textContent = 'Tap to record \u00B7 transcribes live';
+      document.getElementById('voice-status').textContent = 'Tap to record · transcribes live';
     }
   };
   r.start();
@@ -1418,7 +1418,7 @@ function toggleVoiceRec() {
   document.getElementById('voice-btn').classList.add('recording');
   document.getElementById('voice-rec').classList.add('active');
   document.getElementById('voice-status').classList.add('live');
-  document.getElementById('voice-status').textContent = '\u25CF LIVE \u00B7 listening';
+  document.getElementById('voice-status').textContent = '● LIVE · listening';
   document.getElementById('cap-type').value = 'voice';
 }
 
@@ -1455,9 +1455,9 @@ function toggleTaskInline(id) {
     const p = stageProgress(t.stageId);
     if (p.pct === 100 && !state.completedAt) {
       state.completedAt = Date.now();
-      toast('Stage ' + getStage(t.stageId).num + ' complete \u2713');
+      toast('Stage ' + getStage(t.stageId).num + ' complete ✓');
     } else {
-      toast('Done \u2713');
+      toast('Done ✓');
     }
     // Compounding flash — Option B: surfaced at retrieval moments, quiet at action time
     // Action-time gets a small region pill confirmation; retrieval-time gets the deeper overlay.
@@ -1490,7 +1490,7 @@ function openTask(id) {
     html += '</div>';
   }
   html += '<label>Notes</label>';
-  html += '<textarea class="inp" id="t-notes" rows="6" placeholder="Decisions, observations, blockers, links\u2026">' + escHtml(t.notes || '') + '</textarea>';
+  html += '<textarea class="inp" id="t-notes" rows="6" placeholder="Decisions, observations, blockers, links…">' + escHtml(t.notes || '') + '</textarea>';
   html += '<label>Status</label>';
   html += '<div class="brow">';
   html += '<button class="btn ' + (t.status === 'pending' ? 'btn-p' : 'btn-g') + '" onclick="setTaskStatus(\'' + t.id + '\',\'pending\')">Pending</button>';
@@ -1540,7 +1540,7 @@ function openAddTask() {
   let html = '';
   html += '<label>Stage</label>';
   html += '<select class="inp" id="add-stage">';
-  STAGES_CANONICAL.forEach(s => html += '<option value="' + s.id + '">S' + s.num + ' \u2014 ' + escHtml(s.title) + '</option>');
+  STAGES_CANONICAL.forEach(s => html += '<option value="' + s.id + '">S' + s.num + ' — ' + escHtml(s.title) + '</option>');
   html += '</select>';
   html += '<label>Task</label>';
   html += '<textarea class="inp" id="add-text" rows="3" placeholder="What needs doing?"></textarea>';
@@ -1614,8 +1614,8 @@ function openAddNote() {
   let html = '';
   html += '<label>Stage (optional)</label>';
   html += '<select class="inp" id="n-stage">';
-  html += '<option value="">\u2014 None \u2014</option>';
-  STAGES_CANONICAL.forEach(s => html += '<option value="' + s.id + '">S' + s.num + ' \u2014 ' + escHtml(s.title) + '</option>');
+  html += '<option value="">— None —</option>';
+  STAGES_CANONICAL.forEach(s => html += '<option value="' + s.id + '">S' + s.num + ' — ' + escHtml(s.title) + '</option>');
   html += '</select>';
   html += '<label>Title</label><input type="text" class="inp" id="n-title" placeholder="Short title"/>';
   html += '<label>Body</label><textarea class="inp" id="n-body" rows="8" placeholder="Free-form."></textarea>';
@@ -1645,14 +1645,14 @@ function deleteNote(id) {
 // ─── Onboarding (always-on, not just first-run) ──────────────────────────
 function openOnboard() {
   let html = '';
-  html += '<div class="help">The framework overlays. Tell it what you know about yourself and where you\u2019re going. Run this any time your understanding evolves \u2014 your Ikigai is not a static thing.</div>';
+  html += '<div class="help">The framework overlays. Tell it what you know about yourself and where you’re going. Run this any time your understanding evolves — your Ikigai is not a static thing.</div>';
   html += '<div class="onb-step">';
   html += '<div class="num">// 01</div>';
   html += '<h4>Current Ikigai</h4>';
   html += '<p>Where are you now across the four axes?</p>';
   html += '<label>What do you love doing?</label><textarea class="inp" id="onb-love" rows="2" placeholder="Activities, topics, work that pulls you"></textarea>';
   html += '<label>What are you good at?</label><textarea class="inp" id="onb-good" rows="2" placeholder="Durable skills, accumulated experience"></textarea>';
-  html += '<label>What does the world need (that you can address)?</label><textarea class="inp" id="onb-world" rows="2" placeholder="Be honest. Don\u2019t tag generously."></textarea>';
+  html += '<label>What does the world need (that you can address)?</label><textarea class="inp" id="onb-world" rows="2" placeholder="Be honest. Don’t tag generously."></textarea>';
   html += '<label>What can you be paid for?</label><textarea class="inp" id="onb-paid" rows="2" placeholder="Current and credibly-near"></textarea>';
   html += '</div>';
 
@@ -1688,7 +1688,7 @@ function saveOnboard() {
   const shift = document.getElementById('onb-shift').value.trim();
   const voice = document.getElementById('onb-voice').value;
   // Save as a structured note
-  const body = `# Onboarding snapshot\n\n## Current Ikigai\n\n**love** \u2014 ${love || '(blank)'}\n\n**good_at** \u2014 ${good || '(blank)'}\n\n**world_needs** \u2014 ${world || '(blank)'}\n\n**paid_for** \u2014 ${paid || '(blank)'}\n\n## Aspirational\n\n${shift || '(blank)'}`;
+  const body = `# Onboarding snapshot\n\n## Current Ikigai\n\n**love** — ${love || '(blank)'}\n\n**good_at** — ${good || '(blank)'}\n\n**world_needs** — ${world || '(blank)'}\n\n**paid_for** — ${paid || '(blank)'}\n\n## Aspirational\n\n${shift || '(blank)'}`;
   S.notes.push({ id: uid(), stageId: null, title: 'Onboarding ' + new Date().toLocaleDateString('en-AU'), body, createdAt: Date.now() });
   S.settings.voicePref = voice;
   S.settings.onboardedAt = Date.now();
@@ -1764,7 +1764,7 @@ function openSettings() {
 
   html += '<div class="setting-row">';
   html += '<div class="label">Voice transcription</div>';
-  html += '<div class="desc">Web Speech API \u2014 on-device, free, no key. Works in Chrome and Safari.</div>';
+  html += '<div class="desc">Web Speech API — on-device, free, no key. Works in Chrome and Safari.</div>';
   html += '<label style="display:flex;align-items:center;gap:10px;cursor:pointer;font-family:var(--body);font-size:13px;text-transform:none;letter-spacing:0;color:var(--text)">';
   html += '<span class="switch"><input type="checkbox" id="set-voice-tx"' + (S.settings.voiceTranscriptionEnabled ? ' checked' : '') + ' onchange="toggleVoiceTx()"/><span class="switch-track"></span></span>';
   html += 'Show voice button in Capture';
@@ -1775,7 +1775,7 @@ function openSettings() {
   html += '<div class="label">Google Drive sync</div>';
   html += '<div class="desc">drive.file scope. We only see the file we create.</div>';
   if (S.settings.driveToken) {
-    html += '<div style="font-family:var(--mono);font-size:10px;color:var(--green);letter-spacing:.1em;margin-bottom:10px">\u2713 CONNECTED</div>';
+    html += '<div style="font-family:var(--mono);font-size:10px;color:var(--green);letter-spacing:.1em;margin-bottom:10px">✓ CONNECTED</div>';
     html += '<label style="display:flex;align-items:center;gap:10px;cursor:pointer;font-family:var(--body);font-size:13px;text-transform:none;letter-spacing:0;color:var(--text)">';
     html += '<span class="switch"><input type="checkbox" id="set-sync"' + (S.settings.driveSync ? ' checked' : '') + ' onchange="toggleDriveSync()"/><span class="switch-track"></span></span>';
     html += 'Auto-sync after every change';
@@ -1792,7 +1792,7 @@ function openSettings() {
     html += '<button class="btn btn-g" onclick="saveDriveClientId()">Save Client ID</button>';
     if (S.settings.driveClientId) html += '<button class="btn btn-p" onclick="driveAuth()">Connect Drive</button>';
     html += '</div>';
-    html += '<div class="help" style="margin-top:10px;font-size:11px"><a href="https://console.cloud.google.com" target="_blank" style="color:var(--accent)">console.cloud.google.com</a> \u2192 APIs &amp; Services \u2192 Credentials \u2192 OAuth client ID (Web). Add this URL to authorised redirect URIs.</div>';
+    html += '<div class="help" style="margin-top:10px;font-size:11px"><a href="https://console.cloud.google.com" target="_blank" style="color:var(--accent)">console.cloud.google.com</a> → APIs &amp; Services → Credentials → OAuth client ID (Web). Add this URL to authorised redirect URIs.</div>';
   }
   html += '</div>';
 
@@ -1895,7 +1895,7 @@ async function driveFindFile() {
 
 async function driveSave() {
   if (!S.settings.driveToken) { toast('Connect Drive first'); return; }
-  toast('Saving to Drive\u2026');
+  toast('Saving to Drive…');
   const exportData = JSON.parse(JSON.stringify(S));
   delete exportData.settings.driveToken;
   const content = JSON.stringify(exportData, null, 2);
@@ -1928,7 +1928,7 @@ async function driveSave() {
 async function driveLoad() {
   if (!S.settings.driveToken) { toast('Connect Drive first'); return; }
   if (!confirm('Replace local data with Drive data?')) return;
-  toast('Loading\u2026');
+  toast('Loading…');
   const fileId = await driveFindFile();
   if (!fileId) { toast('No sync file on Drive'); return; }
   try {
@@ -2021,7 +2021,7 @@ function openAbout() {
   html += '<div style="font-size:13px;line-height:1.7;margin-bottom:14px">A tool I built for myself, to make myself better. You can have it too.</div>';
   html += '<div style="font-size:13px;line-height:1.7;margin-bottom:14px">The framework overlays. Compounding becomes visible. You remain the thinker.</div>';
   html += '<div style="font-size:13px;line-height:1.7;margin-bottom:14px">Built with the bones of <a href="https://github.com/ijnebzor/RenovAIter" target="_blank" style="color:var(--accent)">RenovAIter</a>. The Digiquarium daemon naming. PoliticalDebAIser reframed inward. ABENAKI cognitive loop. Source on <a href="https://github.com/ijnebzor/IkigAI" target="_blank" style="color:var(--accent)">GitHub</a>.</div>';
-  html += '<div style="font-family:var(--mono);font-size:10px;color:var(--sub);letter-spacing:.1em;text-align:center;margin-top:24px">// CAPTURE \u00B7 UNDERSTAND \u00B7 RETAIN \u00B7 SURFACE \u00B7 GROW</div>';
+  html += '<div style="font-family:var(--mono);font-size:10px;color:var(--sub);letter-spacing:.1em;text-align:center;margin-top:24px">// CAPTURE · UNDERSTAND · RETAIN · SURFACE · GROW</div>';
   openSheet('About', html);
 }
 
@@ -2030,13 +2030,13 @@ function updateSyncStatus() {
   const el = document.getElementById('sync-status');
   if (!el) return;
   if (S.settings.driveToken && S.settings.driveSync) {
-    el.textContent = '\u27F3 SYNC';
+    el.textContent = '⟳ SYNC';
     el.style.color = 'var(--green)';
   } else if (S.settings.driveToken) {
-    el.textContent = '\u27F3 ON';
+    el.textContent = '⟳ ON';
     el.style.color = 'var(--sub)';
   } else {
-    el.textContent = '\u25CB LOCAL';
+    el.textContent = '○ LOCAL';
     el.style.color = 'var(--sub)';
   }
 }
