@@ -1,137 +1,142 @@
-# /understand — the ingest pipeline
+# /understand — the ingest operation
 
-> The most important prompt in IkigAI.
-> Canonicalisation at this step determines the quality of every retrieval afterwards.
-> Get this right; everything compounds. Get it wrong; the rest is sand.
+> Read incoming material, classify through MY lens, write a valid v0.3 page.
 
-You are the IkigAI ingest pipeline. Read the user's `CLAUDE.md` first if you have not in this session — it carries personal vocabulary that determines correct entity matching.
+Triggered by: file landing in `inbox/`, manual run, or MCP call from any client.
+
+---
 
 ## Inputs
-One or more files in `inbox/**/*` (markdown, text, JSON exports, transcripts, plain URL lists).
 
-## Stages
+You receive:
 
-### Stage 1 — Triage
+1. **The raw source** (markdown, transcribed audio, pasted text, link contents).
+2. **Source metadata** (where it came from, when, by whom — if known).
+3. **`me/CLAUDE.md`** — projects, people, concepts, vocabulary, current working context.
+4. **`me/ikigai.md`** — current and aspirational Ikigai with concentric-rings architecture.
+5. **`me/lexicon.md`** — load-bearing terms with my interpretive lens. Read this BEFORE classifying.
+6. **`core/schema/SCHEMA.md`** — the v0.3 contract this output must honour.
+7. **The recent corpus** — last ~50 canonical pages, for canonicalisation and supersession detection.
 
-Determine what kind of input this is:
-
-- **Plain URL list** (chrome dump, social saves) → process each URL as separate source after fetch
-- **Chat-paste** (copied content from messaging apps, the one-time Phase 0 bridge) → split by topic, one source per coherent topic, NEVER reference channel/sender/thread
-- **Voice transcript** → one source unless clearly multi-topic
-- **Article / paper / book chapter** → one source
-- **Idea capture** (the user dropped a thought into `inbox/ideas/`) → type=`idea`, route to phase-an-idea after canonical record exists
-- **Email forward** (from Gmail label watcher) → strip mail headers, treat body as source
-
-If the input contains multiple distinct topics, split. One canonical record per concept.
-
-### Stage 2 — Fetch (if needed)
-
-For each URL:
-1. Try normal HTTP fetch via the local fetcher
-2. If blocked / 403 / cloudflare / paywall → fall back to TinyFish
-3. If TinyFish fails → create a stub source with confidence 0.2, flag in log.md, move on
-4. Log every fetch attempt in `state/fetch.log` with method, status, ms-elapsed
-
-### Stage 3 — Canonicalise (the load-bearing step)
-
-For each source, before writing anything new, check if a canonical record already exists. Use **multi-key matching**, in priority order:
-
-1. **Exact URL match** in `sources_raw` of any existing source page → MERGE candidate
-2. **Content hash match** (SHA256 of normalised text) → DUPLICATE, skip ingest, bump `last_reinforced` on the existing
-3. **Title fuzzy match** (Levenshtein ratio ≥0.85 against existing titles) → MERGE candidate
-4. **Semantic similarity** (embedding cosine ≥0.92 against existing summaries) → MERGE candidate
-
-**Merge candidate handling:**
-- If confidence in match is high (≥0.9): merge into existing page. Add this source's URL to `sources_raw`. Update `summary` to incorporate new info. Bump `confidence` and `last_reinforced`.
-- If confidence in match is medium (0.7–0.9): create new page, add `derived_from: [[existing]]` and a note in both pages' bodies: `> Possibly merges with [[other]]; review.`
-- If confidence is low: treat as new source.
-
-**Why this matters:** the user pastes the same article from three devices over six months. Canonicalisation makes that one record with three reinforcements, not three records. This is what makes the system feel intelligent.
-
-### Stage 4 — Extract
-
-For each (now-canonical) source, identify:
-
-- **Title** — short, retrieval-friendly, 5–10 words. Prefer the source's own title; rewrite only if it's bad for retrieval.
-- **Summary** — 2–4 sentences. What this is, why it matters, what's new in it. Written in *your* voice as the agent, not copying the source's marketing language.
-- **Key claims** — the load-bearing assertions, each able to stand alone. List them in the body, not frontmatter.
-- **Entities mentioned** — match against `me/CLAUDE.md` Personal Vocabulary FIRST. If no match, propose a new entity page (and note it in log.md so the user can confirm).
-- **Concepts touched** — match against existing `wiki/concepts/` pages first. Create new concept pages only when the idea is genuinely novel and load-bearing. Most sources reinforce existing concepts.
-- **Open questions** — what the source raises but doesn't answer.
-
-### Stage 5 — Classify (Ikigai regions)
-
-For each source, determine which axes it touches:
-
-- `love` — does this content reflect something the user loves doing, learning, or being around? Read the user's `me/ikigai.md` for current and aspirational signals.
-- `good_at` — does this connect to a skill or expertise the user has? Match against `me/CLAUDE.md` skill markers.
-- `world_needs` — does this address something genuinely needed (not just hyped)? Be honest; don't tag this generously.
-- `paid_for` — is there a real path to compensation? Either present (an existing income stream) or near-future (a skill being developed for pay).
-
-**Then add the implied intersections.** A source tagged `love + world_needs` adds `mission`. A source tagged on all four axes adds `passion + mission + profession + vocation + centre`. List them all flat:
-
-```yaml
-ikigai_regions: [love, world_needs, mission]
-```
-
-If a source touches no axes, leave the list empty. That's fine — it's information, not necessarily aligned to Ikigai. It still gets classified by tags and entities.
-
-### Stage 6 — Score initial confidence
-
-- Single source, no corroboration → 0.5
-- Source contradicts ≥2 existing claims → 0.3, flag in log.md
-- Source reinforces existing claims → 0.6, bump `last_reinforced` on the reinforced pages
-- Source is high-quality original (paper, primary doc, founder post) → +0.1
-- Source is paywalled secondary aggregator → -0.1
-
-### Stage 7 — Tag with topical vocabulary
-
-Match against the tag list in `me/CLAUDE.md` first. Propose new tags only when nothing fits. Keep to ≤5 tags per source. The lint pass will surface tag drift later.
-
-### Stage 8 — Identify provenance signals
-
-- `drivers` — inferred reason for capture, pick from: `[curiosity, professional-relevance, project-research, idea-generation, problem-solving, dispute, validation, social, accountability, other]`
-- `biases` to flag if visible: `[recency, sunk-cost, confirmation, authority, novelty, social-proof, availability, none]`
-
-Be honest. Don't fabricate biases to look smart, but don't avoid flagging them when they're visible.
-
-### Stage 9 — Write to disk
-
-- Source page → `wiki/sources/<id>.md` using `templates/source.md`
-- New entity pages → `wiki/entities/<id>.md`
-- New concept pages → `wiki/concepts/<id>.md`
-- New idea pages → `wiki/ideas/<id>.md` (also trigger phase-an-idea downstream)
-- Update `wiki/index.md`
-- Regenerate `wiki/overview.md`
-- Append to `log.md`: timestamp, source id, action, contradictions flagged, merges performed, new entities/concepts proposed
-- Add bidirectional `[[wikilinks]]` between source and any entities/concepts it cites
-
-### Stage 10 — Cross-reference
-
-For the new/updated source:
-- Reinforces existing claims? Bump `confidence` and `last_reinforced` on those pages, log it
-- Contradicts existing claims? Add a contradiction note to both pages, propose supersession in log.md
-- Extends existing concepts? Add bidirectional links
-
-## What NOT to do
-
-- **Don't fabricate confidence.** If you can't tell, mark 0.4 and move on.
-- **Don't lose the user's actual words.** If a voice memo has a phrasing they'd want preserved, keep it verbatim in `## Raw notes`.
-- **Don't anonymise the user's own projects/people/concepts** that are in `me/CLAUDE.md` Personal Vocabulary.
-- **Don't reference channels, senders, or threads** when ingesting chat-paste content. The Phase 0 bridge is one-way; pretend you don't know where it came from.
-- **Don't ingest secrets.** API keys, passwords, full credit card numbers, addresses of others — strip and proceed. Note in log.md.
-- **Don't ingest content marked private.** If a source contains "this is confidential" or similar, summarise without quoting and flag in log.md.
-- **Don't merge aggressively across topics.** Two pages on similar subjects but distinct claims should stay separate, linked, not merged.
+---
 
 ## Output
 
-After processing, return a one-paragraph summary:
-- N sources ingested
-- M merges performed (deduplication wins)
-- K new entities proposed (user should confirm)
-- J new concepts proposed (user should confirm)
-- C contradictions flagged
-- Top 3 most-connected items in this batch
-- Anything that needs the user's attention before next ingest
+A single valid v0.3 markdown page with frontmatter. Status starts as `canonical` if classification succeeded; `inbox` if anything was unclear.
 
-Keep this brief. The detail lives in `log.md`.
+---
+
+## Process
+
+### Step 1 — read the lexicon first
+
+Before reading the source, read `me/lexicon.md`. The lexicon defines what load-bearing terms mean **to me**. If the source uses any lexicon term, the classification must use my interpretive lens for that term, not the source's encoded one.
+
+**Concrete example.** If the source says "we need data sovereignty in healthcare" and my lexicon defines sovereignty as a five-layer concept (data, cognitive, tooling, narrative, epistemic), the resulting page tags `sovereignty_layers: [data]` explicitly, and `lexicon_terms: [sovereignty]` is set. The classification is wrong if it imports the source's reading of "data sovereignty" as a single undifferentiated concept.
+
+### Step 2 — read the source
+
+Extract the substantive claims. Strip rhetorical flourishes. If the source is a transcript, distil to claims and quotes. Verbatim quotes go in the body with attribution; everything else is paraphrased.
+
+### Step 3 — canonicalise
+
+Search the recent corpus for:
+- An entity with this name (or alias) → reference its `id`, do not create a duplicate.
+- A concept that captures this idea → reference and reinforce it; bump `last_reinforced`.
+- A near-identical source already captured → mark this one as `archived` and link.
+
+If the source contradicts an existing canonical page, set `contradicts: [<old_id>]` on the new page. **Do NOT auto-supersede.** Surface the contradiction in the next brief.
+
+### Step 4 — classify against the four-axis Ikigai
+
+Tag `ikigai_regions` through MY lens. Be honest. The four axes:
+
+- `love` — would I do this anyway? Does this fascinate me?
+- `good_at` — am I durably skilled at what this implicates?
+- `world_needs` — does the world need this? Be careful not to tag generously here. Most things don't qualify.
+- `paid_for` — am I paid (now or credibly soon) for this?
+
+Plus the intersections, included explicitly when they apply:
+
+- `passion` (love + good_at)
+- `profession` (good_at + paid_for)
+- `vocation` (paid_for + world_needs)
+- `mission` (world_needs + love)
+- `centre` (all four)
+
+If three of four axes apply, list those three plus the relevant intersection. If all four, list all four plus `centre`.
+
+If nothing applies, leave the list empty. Empty is valid. Not everything is Ikigai-coded.
+
+### Step 5 — classify against the ring architecture
+
+This is separate from regions. The four-circle Ikigai is the test; the rings are the architecture.
+
+- `ring: identity` — this is about being the AIthropologist. Defining who I am.
+- `ring: principle` — this is about sovereignty. Set `sovereignty_layers: [...]` listing which layers (data, cognitive, tooling, narrative, epistemic).
+- `ring: surface` — this expresses identity through one of the four channels. Set `expression_surface: [research|tooling|discourse|practice]`.
+- `ring: funding` — this is about how the work gets funded (salary, NFP, commercialisation, brand-adjacent).
+- `ring: none` — most things; doesn't sit on a specific ring.
+
+A page can have a ring AND ikigai_regions. They're orthogonal axes.
+
+### Step 6 — compute compounding ripples
+
+For each canonical page in recent corpus, check if it shares at least one ikigai_region AND at least one other classifier (concept, project, person, ring, surface) with the new page. List those `page_id`s in `compounding_ripples`.
+
+This is what makes the Lens view light up. This is what the brief reads to surface "this thing you're capturing connects to four other things you're already working on." This is the mechanism behind compounding visibility.
+
+If the corpus is empty, ripples are empty. Fine.
+
+### Step 7 — set provenance and confidence
+
+- `derived_from`: [] for raw sources; [<input_page_id>] when a synthesis or output produced this.
+- `confidence`: start high (0.85+) for verbatim sources, lower (0.6-0.8) for paraphrased synthesis, lower still (0.4-0.6) for inferred classifications.
+- `drivers`: short list of WHY this got captured. ("inbox watch on Twitter saved", "user voice memo at 11pm", "MCP call from Claude Desktop").
+- `biases`: known limits. ("source has commercial interest in X", "captured during high-stress week", "was responding to a specific Slack thread context now lost").
+
+### Step 8 — write the body
+
+Markdown. Voice: matter-of-fact, dense, scannable. No filler. Structure:
+
+1. **One-line summary** — what this page IS, in one sentence.
+2. **Substantive content** — the claims, quotes, key passages. Verbatim where useful, paraphrased where compression matters.
+3. **Why it matters** — one short paragraph relating this to my current work and current Ikigai state. Honest. If it doesn't matter, say so.
+4. **Open questions** — things this raises that aren't resolved. Becomes the seed for `/phase-an-idea` later.
+5. **Links** — bare-link list to related pages by id, with one-line context per link.
+
+### Step 9 — validate
+
+Before writing, validate the frontmatter against `core/schema/SCHEMA.md`. If anything fails:
+- Required field missing → status: inbox, note the gap in `drivers`.
+- Region tag is hallucinated → drop it.
+- Ring is wrong → none is fine.
+
+Do NOT ship invalid frontmatter to canonical. The watcher rejects it.
+
+---
+
+## Voice and tone
+
+Matter-of-fact. The page is for my future self. Future-me has limited time and reads what's useful. Don't editorialise. Don't motivate. Don't sell.
+
+If the source is voice memo or chat-paste, retain my actual voice — including swearing, half-thoughts, course corrections. Don't sanitise. The lexicon and my prior corpus is what tells you what my voice sounds like.
+
+---
+
+## Edge cases
+
+- **Empty body** — capture as `inbox` status with a `drivers` note. Will be re-run when there's enough to classify.
+- **Highly contested topic** — flag with `biases: [contested]` and surface in next debaiser run.
+- **Recursive reference** (this page is about a page) — `derived_from` links the parent.
+- **The source contradicts the lexicon** — capture the source AND propose a lexicon update in the body (don't write to lexicon directly; surface for user review).
+- **The source is from me, talking about me** — `verbatim: true`, `entity_kind: self` if it's an entity-type page about my own state.
+
+---
+
+## What this operation refuses to do
+
+- Tell me what to do. The body has open questions, not directives.
+- Tag generously. Empty regions are honest.
+- Auto-supersede. Contradictions surface; only I (or a debaiser run) decide.
+- Write outside the schema contract. If it can't be valid v0.3, it stays inbox.

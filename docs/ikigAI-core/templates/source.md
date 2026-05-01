@@ -1,59 +1,71 @@
 ---
-id: 2026-04-30-EXAMPLE
+id: <ulid-or-yyyymmdd-slug>
 type: source
-created: 2026-04-30T00:00:00+11:00
-updated: 2026-04-30T00:00:00+11:00
+title: <human readable>
+created: <iso8601>
+updated: <iso8601>
 
-ikigai_regions: []
+status: canonical
+schema_version: "0.3"
+schema_hash: <hash>
 
-summary: ""
-
-tags: []
-
-sources_raw: []
 derived_from: []
 supersedes: []
-superseded_by: null
-confidence: 0.5
-last_reinforced: 2026-04-30
-drivers: []
+contradicts: []
+last_reinforced: null
+confidence: 0.85
+drivers: ["captured_via inbox"]
 biases: []
 
+ikigai_regions: []
+compounding_ripples: []
+
+ring: none
+expression_surface: none
+sovereignty_layers: []
+
+lexicon_terms: []
+
 retrieval_score: 0.5
-last_surfaced: null
-last_used: null
-context_modifiers: {}
+context_modifiers:
+  work_strategy: 1.0
+  creative: 1.0
+  research: 1.0
+  relational: 1.0
 surface_count: 0
 use_count: 0
+ignored_count: 0
 
-status: inbox
-schema_hash: v0.2
+tags: []
+people: []
+projects: []
+concepts: []
 
-source_type: web
-source_url: null
-source_date: null
-captured_from: manual
-extracted_entities: []
-extracted_concepts: []
-fetched_via: n/a
+source_type: article
+source_url: ""
+source_author: ""
+source_date: ""
+captured_via: inbox
+captured_at: <iso8601>
+verbatim: false
 ---
 
-# {{ title }}
-
 ## Summary
-> 2–4 sentences. What this is, why it matters, what's new.
 
-## Key claims
-- Claim 1
-- Claim 2
+<one sentence>
 
-## Connections
-- Reinforces: [[concept-x]]
-- Contradicts: [[claim-y]]
-- Extends: [[source-z]]
+## Substantive content
+
+<the claims and quotes that matter>
+
+## Why it matters
+
+<one short paragraph relating to current work and current Ikigai state>
 
 ## Open questions
-- What I don't yet know after reading this
 
-## Raw notes
-<!-- preserved verbatim from the source if worth keeping -->
+- <thing that's not resolved>
+
+## Links
+
+- [[<page_id>]] — <one-line context>

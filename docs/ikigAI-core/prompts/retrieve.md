@@ -1,149 +1,163 @@
-# /retrieve — three-gear natural language retrieval
+# /retrieve — the retrieval operation
 
-> The user asks a question. You return at the depth they need.
-> Default gear is inferred from phrasing. User can override.
+> Surface what the corpus already knows. Three gears, three depths.
 
-## Gear inference rules
+Triggered by: query in any client (PWA search, Claude Desktop MCP call, Claude Code, brief generator). The user's phrasing implies the gear; if not, the system asks.
 
-Apply in order; first match wins.
+---
 
-**Gear 1 — Links only**
-Phrasing markers: "just give me", "find me", "show me", "what links", "links about", "what have I sent about", "anything on"
-Returns: ranked list of pages with summaries. No synthesis. Local model only. Free, instant.
+## The three gears
 
-**Gear 2 — Synthesis (default)**
-Phrasing markers: "what do I think about", "what do I know about", "tell me about", "explain", "how did I get to", "what's my position on"
-Returns: five-section coach output (below). Local model drafts; cloud model (Claude) polishes if requested.
+| Gear | Latency | Cost | Where it runs | What it returns |
+|---|---|---|---|---|
+| **G1 — Links** | <1s | $0 | NUC, local model | Top 10 page hits with one-line context. Pure ranking. No synthesis. |
+| **G2 — Synthesis** | 5-15s | low | NUC drafts → Claude polishes | 5-section synthesis: claim, evidence, friction, ripples, open questions. |
+| **G3 — Debaiser-on-self** | 30-90s | medium | Claude required | Five analyst voices contradict each other on what the corpus thinks. Lens-checker flags drift. |
 
-**Gear 3 — Debaiser-on-self**
-Phrasing markers: "stress-test", "push back", "what am I missing", "what would change my mind", "where am I wrong", "challenge me on"
-Returns: contrarian panel synthesis (see `prompts/debaiser.md`). Cloud model required.
+Retrieval may go SOTA/cloud. Capture and classification stay local. The principle: where the depth genuinely earns the cost, pay it; everywhere else, run free locally.
 
-**Override syntax**
-- `--gear 1` / `--gear 2` / `--gear 3` overrides inference
-- `--minimal` strips Gear 2 to just the answer + sources
-- `--save` files the response back as `wiki/outputs/<id>.md`
+---
 
-## Retrieval mechanics (all gears use this)
+## Inputs
 
-### Step 1 — Lex the question
+1. **The query** — natural language.
+2. **The intent signal** — gear (if explicit) or rough indicator from phrasing.
+3. **The user's current context** — recent captures, current stage, recent retrievals (last 24h).
+4. **`me/CLAUDE.md`**, **`me/ikigai.md`**, **`me/lexicon.md`** — always.
+5. **The vault index** — vector index over canonical pages, graph index over relationships.
+6. **`feedback.jsonl`** — surface/ignore/use signals; used for retrieval-score evolution.
 
-Identify entities, concepts, time qualifiers, and project references. Match against `me/CLAUDE.md` vocabulary. Note anything unmatched (might be a new entity).
+---
 
-### Step 2 — Three-stream search, fused
+## Gear 1 — Links
 
-- **BM25** over wiki page titles + headings + summaries
-- **Vector similarity** via embeddings of summaries
-- **Graph traversal** from any matched entity/concept, depth 2
+```
+Query: "what have I captured about Mac Studios"
 
-Fuse with reciprocal rank fusion. Top 10 candidates.
+→ Vector top-30 from canonical, filter by retrieval_score > threshold.
+→ Re-rank with context modifiers (e.g., if this is a work-strategy retrieval, boost work-strategy modifier).
+→ Return top 10 with: title, one-line summary, ikigai_regions tags, last_reinforced, link to page.
 
-### Step 3 — Apply retrieval signal
+No synthesis. No interpretation. Just what's there.
+```
 
-For each candidate, modify its rank by:
-- `retrieval_score` (the learned signal, 0–1)
-- `context_modifiers` matching the inferred query context
-- Recency: pages with `last_reinforced` in the last 14 days get +0.1
-- Decay: pages with no surface in 90+ days get -0.1
+Voice: silent. The system surfaces and steps back. The user reads.
 
-This is what makes retrieval get smarter over time. Pages you actually use rank higher in similar contexts; pages you ignore sink.
+---
 
-### Step 4 — Read the candidates
+## Gear 2 — Synthesis (default)
 
-Pull full content of top 5. Read in order.
+```
+Query: "what am I really thinking about Mac Studios"
 
-### Step 5 — Log the surface
+→ G1 to find the 8-15 most relevant canonical pages.
+→ Read them. Extract the claims.
+→ NUC's local model writes a structured draft.
+→ Claude polishes for clarity, voice, lens-fidelity (uses lexicon).
+→ Return 5-section synthesis.
+```
 
-For every page that appears in the result set, log a surface event in `feedback.jsonl`:
+The five sections, every time:
+
+1. **Claim** — what does the corpus say, in one paragraph?
+2. **Evidence** — which pages support it? Bullet with one-line context per page, page_id linked.
+3. **Friction** — where does the corpus disagree with itself? Pages that contradict, or sit in tension.
+4. **Ripples** — what regions does this synthesis light up? Which other concepts/projects intersect?
+5. **Open questions** — what's missing? What would I need to capture to resolve the friction?
+
+The voice **shows overlap, never direct**. It does not say "you should." It says "the corpus contains X. It also contains Y. They overlap on Z. They diverge on W."
+
+The user remains the thinker. The synthesis is the framework overlay laid over what's already there.
+
+---
+
+## Gear 3 — Debaiser-on-self
+
+```
+Query: "what am I really thinking about Mac Studios" + flag: debaiser
+or:    "challenge me on Mac Studios"
+
+→ Five voices, plus a lens-checker.
+→ Each voice reads the corpus's stance on the topic.
+→ Each voice argues a different framing.
+→ Lens-checker validates against me/lexicon.md to flag terminological drift.
+→ Output: synthesis-of-disagreement with explicit framing tags.
+```
+
+The five analyst voices (forked from PoliticalDebAIser, retargeted at the self):
+
+1. **The Optimist** — "the corpus is correctly bullish. Here's why this is a load-bearing investment."
+2. **The Pessimist** — "the corpus is wrong about the upside. Here are the cited pages most exposed to motivated reasoning."
+3. **The Pragmatist** — "the corpus is right about the want, wrong about the timing. Reframe."
+4. **The Sceptic** — "the corpus is reading something into this that isn't there. Show me the actual evidence."
+5. **The Outsider** — "the corpus is locked into a frame. Here's a frame it's never tried."
+
+Plus:
+
+6. **The Lens-Checker** — reads `me/lexicon.md`. Flags any voice (including the corpus's own pages) that use a load-bearing term in a way that drifts from the user's defined lens. Lists the drift instances. Does not argue them.
+
+Output structure:
+
+```
+## What the corpus says
+<2 sentence neutral summary>
+
+## Where the analysts split
+- Optimist: <one paragraph>
+- Pessimist: <one paragraph>
+- Pragmatist: <one paragraph>
+- Sceptic: <one paragraph>
+- Outsider: <one paragraph>
+
+## Drift detected
+<lens-checker findings, or "none">
+
+## Where this lands
+<one paragraph: not "you should" but "if you want X, optimist line. if you want Y, sceptic line. lens-checker says watch out for Z.">
+```
+
+Gear 3 is the strongest tool in the box. It's expensive. Run it when:
+
+- A concept has been reinforced 5+ times without any contradiction logged.
+- You're about to commit (a phased plan, a calendar block, a public post).
+- The brief generator suggests it.
+- You explicitly ask.
+
+---
+
+## Gear inference (from phrasing)
+
+Heuristics:
+
+- **G1** — "show me", "find", "list", "what was the", "where did I", "links to"
+- **G2** — "what do I think about", "summarise", "what's my position on", "tell me about"
+- **G3** — "challenge me on", "where am I wrong", "debaiser", "blind spots", "argue both sides"
+
+If unclear, default to G2. If the user's recent context shows three G3 runs in a row, suggest G1 next time ("you've been going deep — want a quick scan?"). If the user's recent context shows ten G1 runs without a G2, suggest G2 ("you've been browsing — want me to synthesise?").
+
+---
+
+## Retrieval-score evolution
+
+Every retrieval logs to `state/feedback.jsonl`:
+
 ```json
-{"event": "surface", "page": "<id>", "query": "<query>", "gear": 2, "context": "<inferred>", "rank": 1, "ts": "2026-04-30T08:54+11:00"}
+{"ts": <iso>, "gear": 1|2|3, "query": "...", "surfaced": ["page_id", ...], "cited": ["page_id", ...], "ignored": ["page_id", ...]}
 ```
 
-This is what the ADDIE loop reads.
+The keeper daemon reads this nightly:
+
+- Cited pages: `retrieval_score += 0.05`, `use_count++`.
+- Ignored pages (surfaced 3+ times in 30 days, never cited): `retrieval_score *= 0.95`, `ignored_count++`.
+- Pages not surfaced in 90 days: `retrieval_score *= 0.98` (gentle decay).
+
+Per-context modifiers track which contexts a page is most useful in (work_strategy, creative, research, relational). The classifier gets sharper over time without the user grading anything.
 
 ---
 
-## Gear 1 output — Links only
+## What retrieval refuses to do
 
-```
-**Found <N> pages on <topic>:**
-
-1. **<Page title>** — [[<id>]] (confidence 0.X, last reinforced YYYY-MM-DD)
-   <summary, 1 line>
-   Regions: <ikigai_regions>
-
-2. <…>
-
-Run `/retrieve "<query>" --gear 2` for synthesis.
-```
-
-Total response: under 200 words. Pure listing.
-
----
-
-## Gear 2 output — Synthesis (default)
-
-```
-**Answer:** <direct, ≤3 sentences>
-
-**Trail:** how I got here from your corpus
-- <claim> — [[source-id]] (confidence 0.X, reinforced N times)
-- <claim> — [[concept-id]]
-- <claim> — [[entity-id]]
-
-**Action:** what you can do with this
-- <concrete next move, framed against the user's active projects in me/CLAUDE.md>
-
-**Blind spot:** what you might not be considering
-- <a contrarian source from your own corpus, or a gap the wiki has on this topic>
-
-**Biases:** what may have shaped this thinking
-- <bias flagged on the chain, if any — recency, confirmation, sunk-cost>
-- If none visible: "Chain looks clean. No flagged biases."
-
----
-
-**Confidence:** <one sentence on overall reliability>
-**Gaps:** <what the wiki doesn't know about this>
-**Next:** Related queries · /why-did-i-think · --save
-```
-
-`--minimal` flag strips this to:
-```
-**Answer:** <direct, ≤3 sentences>
-**Sources:** [[id]], [[id]], [[id]]
-```
-
----
-
-## Gear 3 output — Debaiser-on-self
-
-Full panel synthesis from `prompts/debaiser.md`. Five analyst voices on the user's own corpus, then synthesis.
-
----
-
-## When the answer isn't in the corpus
-
-Say so plainly. Don't fabricate. Suggest:
-- What to ingest to fill the gap (specific source types, not vague)
-- Whether this is a `paid_for` or `world_needs` topic the user might want to capture more on
-- Adjacent topics in the wiki that might be useful instead
-
-Never fabricate citations. If a `[[wikilink]]` would point at nothing, don't write it.
-
----
-
-## Voice
-
-Coach voice configured per context in `me/CLAUDE.md`. Default if unset: `helpful` (warm, direct, gets to the point).
-
-Voices available:
-- `warm` — gentle, encouraging, soft prompting
-- `helpful` — clear, direct, no filler (default)
-- `aggressive` — pushes hard, doesn't accept first-pass answers
-- `roasty` — affectionate teasing, especially for accountability moments
-- `prepaired` — calm, structured, slightly clinical
-- `accountantability` — direct, accountability-heavy, asks back
-- `ijneb-dev` — sharp, declarative, no fluff
-
-The voice shapes tone, not content. Five-section structure stays the same.
+- Recommend. The user remains the thinker.
+- Pretend the corpus knows things it doesn't. If the corpus is sparse on a topic, say so.
+- Auto-cite. Citations are explicit; if a page wasn't actually used, it doesn't go in `cited`.
+- Hide drift. The lens-checker fires every G3. Drift findings are surfaced even when they're inconvenient.

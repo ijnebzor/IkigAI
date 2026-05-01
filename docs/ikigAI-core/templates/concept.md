@@ -1,53 +1,71 @@
 ---
-id: 2026-04-30-EXAMPLE
+id: <ulid-or-slug>
 type: concept
-created: 2026-04-30T00:00:00+11:00
-updated: 2026-04-30T00:00:00+11:00
+title: <name>
+created: <iso8601>
+updated: <iso8601>
 
-ikigai_regions: []
-summary: ""
-tags: []
+status: canonical
+schema_version: "0.3"
+schema_hash: <hash>
 
-sources_raw: []
 derived_from: []
 supersedes: []
-superseded_by: null
-confidence: 0.5
-last_reinforced: 2026-04-30
+contradicts: []
+last_reinforced: null
+confidence: 0.7
 drivers: []
 biases: []
 
+ikigai_regions: []
+compounding_ripples: []
+
+ring: none
+expression_surface: none
+sovereignty_layers: []
+
+lexicon_terms: []
+
 retrieval_score: 0.5
-last_surfaced: null
-last_used: null
-context_modifiers: {}
+context_modifiers:
+  work_strategy: 1.0
+  creative: 1.0
+  research: 1.0
+  relational: 1.0
 surface_count: 0
 use_count: 0
+ignored_count: 0
 
-status: canonical
-schema_hash: v0.2
+tags: []
+people: []
+projects: []
+concepts: []
 
-domain: []
-maturity: nascent
+concept_kind: framework
+mature: false
+related_concepts: []
 ---
 
-# {{ concept name }}
+## What this concept captures
 
-## Definition
-> The clearest one-paragraph statement of this idea.
+<one sentence>
 
-## Why I'm tracking it
-> What made this worth a page.
+## My current articulation
 
-## Evidence — sources that built this
-<!-- auto-populated -->
+<paragraphs>
 
-## Related concepts
-- Reinforces: [[…]]
-- Contradicts: [[…]]
-- Subset of: [[…]]
-- Composed of: [[…]]
+## Sources that reinforce this
+
+- [[<source_id>]] — <one line>
+
+## Sources that complicate this
+
+- [[<source_id>]] — <one line>
 
 ## Open questions
 
-## Where this points next
+- 
+
+## Links
+
+- [[<page_id>]]

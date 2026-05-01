@@ -1,52 +1,68 @@
 ---
-id: 2026-04-30-EXAMPLE
+id: <ulid-or-slug>
 type: idea
-created: 2026-04-30T00:00:00+11:00
-updated: 2026-04-30T00:00:00+11:00
+title: <name>
+created: <iso8601>
+updated: <iso8601>
 
-ikigai_regions: []
-summary: ""
-tags: []
+status: canonical
+schema_version: "0.3"
+schema_hash: <hash>
 
-sources_raw: []
 derived_from: []
 supersedes: []
-superseded_by: null
+contradicts: []
+last_reinforced: null
 confidence: 0.5
-last_reinforced: 2026-04-30
-drivers: []
+drivers: ["captured_as idea"]
 biases: []
 
+ikigai_regions: []
+compounding_ripples: []
+
+ring: none
+expression_surface: none
+sovereignty_layers: []
+
+lexicon_terms: []
+
 retrieval_score: 0.5
-last_surfaced: null
-last_used: null
-context_modifiers: {}
+context_modifiers:
+  work_strategy: 1.0
+  creative: 1.0
+  research: 1.0
+  relational: 1.0
 surface_count: 0
 use_count: 0
+ignored_count: 0
 
-status: inbox
-schema_hash: v0.2
+tags: []
+people: []
+projects: []
+concepts: []
 
-idea_status: raw
+idea_origin: capture
+trigger_page: null
+phase_status: unphased
 phased_plan: null
-calendar_offered: false
-calendar_event_ids: []
-parent_project: null
 ---
 
-# {{ idea name }}
+## The idea, in one paragraph
 
-## The idea
-> What is this? One paragraph.
+<the load-bearing claim>
 
-## Why now
-> What triggered this capture? What's the timing pressure (if any)?
+## What triggered it
 
-## Desired end state
-> What does shipped look like?
+<source page or context>
 
-## Loose thoughts
-<!-- the captured stream-of-consciousness; preserve verbatim -->
+## What this might compound with
 
-<!-- After /phase-an-idea runs, the phased plan is written to wiki/outputs/ -->
-<!-- and linked here via the phased_plan frontmatter field. -->
+- [[<project_or_concept>]] — <how>
+
+## What's unclear
+
+- 
+
+## Links
+
+- [[<page_id>]]

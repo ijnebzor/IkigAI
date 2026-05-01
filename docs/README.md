@@ -1,46 +1,69 @@
-# IkigAI v0.2
+# docs/ — IkigAI Specification
 
-A self-owned coach grounded in everything you know.
+> The contract. The substrate. The vocabulary. Everything the system reads before it acts.
 
-This is a **two-repo** project. They live as siblings.
+## Layout
 
 ```
-ikigAI-core/    universal — shared across all users
-                schema, prompts, daemons, scripts, templates, ui
-
-ikigAI-me/      personal — yours, single source of truth for your brain
-                vault, vocabulary, calendar links, feedback log
+docs/
+├── ikigAI-core/         # universal, fork-safe
+│   ├── schema/          # SCHEMA.md — v0.3 page contract
+│   ├── prompts/         # operation prompts
+│   │   ├── understand.md
+│   │   ├── retrieve.md
+│   │   ├── debaiser.md
+│   │   ├── phase-an-idea.md
+│   │   ├── brief.md
+│   │   ├── onboard.md
+│   │   └── secondary.md (surface, lint, why-did-i-think, etc.)
+│   └── templates/       # frontmatter templates per page type
+│       ├── source.md
+│       ├── entity.md
+│       ├── concept.md
+│       ├── project.md
+│       ├── idea.md
+│       ├── output.md
+│       ├── dimension.md
+│       └── lexicon.md
+└── ikigAI-me/           # bespoke, this user's vault skeleton
+    ├── CLAUDE.md         # vocabulary, projects, current context
+    ├── ikigai.md         # concentric rings, current vs aspirational
+    ├── lexicon.md        # load-bearing terms with my lens
+    ├── config.yml        # daemon and routing config
+    ├── inbox/            # captures awaiting processing
+    ├── state/            # runtime state, feedback log, indexes
+    └── wiki/             # the vault: sources, entities, concepts, projects, ideas, outputs, dimensions
 ```
 
-`me/` imports `core/` like a library. Core upgrades flow downstream to every `me/`. Personal never leaks upstream. When user #2 arrives, they get a `friend-me/` next to your `ikigAI-me/`, sharing the same `core/`. No refactor.
+## Repo split contract (S0 hard requirement)
 
-## Get started
+`ikigAI-core/` is universal and fork-safe. Two friends can use the same core.
 
-1. Both repos go on the NUC at `~/ikigAI/`
-2. `cd ikigAI-me && git init && git add . && git commit -m "ikigAI-me v0.2 init"`
-3. Open `ikigAI-me/CLAUDE.md`, scan the vocabulary, edit anything missing
-4. Drop a single source into `ikigAI-me/inbox/unsorted/`
-5. Read `ikigAI-core/prompts/understand.md` and run a manual round trip via Claude
-6. Validated? Move to S2 (NUC infra + bulk Phase 0 dump). See `IkigAI_Roadmap.md`.
+`ikigAI-me/` is bespoke. Friend forks, gets their own `me/` skeleton, never refactors core.
 
-## What's in this v0.2
+Day-1 split. No refactor cost when friend onboards.
 
-- Schema v0.2 with explicit Ikigai regions as a flat list (not derived)
-- Three retrieval gears: links / synthesis / debaiser-on-self
-- Productionised idea flow: drop idea → phased plan → calendar offer
-- Daily brief in the multi-project options format
-- Repo split: core vs me from day one
-- Provenance fields baked in for the reverse brain fart
-- ADDIE feedback hooks (retrieval_score, context_modifiers)
-- Specs for all daemons (no infra yet — that's S2)
+## Reading order for new operators
 
-## What's NOT in v0.2 yet
+1. `ikigAI-me/ikigai.md` — what this vault is FOR (the user's framework)
+2. `ikigAI-me/CLAUDE.md` — who the user is, what they work on
+3. `ikigAI-me/lexicon.md` — load-bearing terms with the user's lens (read this BEFORE classifying anything)
+4. `ikigAI-core/schema/SCHEMA.md` — what every page must look like
+5. `ikigAI-core/prompts/<operation>.md` — the specific operation
 
-- Daemon implementations (specs only — S2 builds them)
-- MCP server config (S2)
-- Web viewer (S3)
-- Calendar/Gmail integration (S2)
-- Application capture mechanic (S4)
-- Onboarding conversation (S5)
+## Schema version
 
-This is the foundation. Everything else builds on top.
+v0.3. Adds: `ring`, `expression_surface`, `sovereignty_layers`, `lexicon_terms`, `compounding_ripples` fields. Adds `lexicon` page type. Migration from v0.2 is non-destructive.
+
+## What lives outside docs/
+
+- `index.html`, `app.html`, `roadmap-reference.html` — the PWA. Reads docs for spec; doesn't write to it.
+- `s2/` (after S2 build) — deployment scripts, daemon source, MCP server, runbook.
+- `manifest.json`, `sw.js` — PWA configuration.
+
+## Status
+
+- v0.3 spec complete (this commit)
+- v0.3 PWA shipped (this commit)
+- S2 deployment packet — coming in this commit
+- S2 deployment execution — Saturday, on user's NUC

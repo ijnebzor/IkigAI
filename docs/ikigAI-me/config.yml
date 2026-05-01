@@ -1,120 +1,74 @@
-# IkigAI me/ configuration
-# Edit freely. Daemons re-read this on each run.
+# IkigAI v0.3 — personal config
+# Bespoke. Read by daemons and prompts. The friend gets their own.
 
-schema_hash: v0.2
-user_id: benji
-created: 2026-04-30
-timezone: Australia/Melbourne
+owner:
+  name: Benji Zorella
+  github: ijnebzor
+  timezone: Australia/Melbourne
 
-# Voice preferences per context
-voice:
-  default: helpful
-  morning_brief: helpful
-  retrieve_gear_1: helpful
-  retrieve_gear_2: helpful
-  retrieve_gear_3: ijneb-dev      # sharper synthesis for debaiser
-  phase_an_idea: prepaired
-  accountability: roasty
-  financial: accountantability
+retrieval:
+  default_gear: 2
+  gear_inference: heuristic_then_llm
+  per_context_modifiers: true
 
-# Brief cadence
 brief:
-  daily:
-    enabled: true
-    delivery_time: "07:30"        # local time
-    delivery: [web_viewer, mcp]   # later add: email, ntfy, ios_push
-  weekly:
-    enabled: true
-    delivery_day: sunday
-    delivery_time: "19:00"
-    type: pattern_report          # broader review, not just options
-  ambient:
-    enabled: true                  # available on-demand from MCP / web
+  cadence: daily
+  generate_at: "07:00"
+  available_at: "07:30"
+  channel: pwa
+  max_length_words: 600
 
-# Working hours (the brief generator respects these for calendar offers)
-working_hours:
-  weekday:
-    deep_work_blocks: ["19:00-23:00"]
-    avoid: ["09:00-17:00"]         # PH2 hours
-  saturday:
-    deep_work_blocks: ["09:00-12:00", "19:00-23:00"]
-  sunday:
-    deep_work_blocks: []            # family time, default no scheduling
-
-# Retrieval defaults
-retrieve:
-  default_gear: 2                   # synthesis
-  gear_2_polish: claude             # local | claude — claude polishes Gear 2 by default
-  gear_3_provider: claude
-  show_minimal_by_default: false
-
-# Inference providers
-models:
-  local:
-    runtime: ollama
-    model: llama3.2:latest
-    base_url: http://localhost:11434
-  cloud:
-    provider: claude
-    model: claude-opus-4-7
-    api_key_env: ANTHROPIC_API_KEY
-
-# Fetch behaviour
-fetch:
-  primary: normal_http
-  fallback: tinyfish
-  tinyfish_api_key_env: TINYFISH_API_KEY
-  log_spend: true
-
-# Google integration (S2)
-google:
-  calendar:
-    enabled: true                   # set true after OAuth in S2
-    write: true
-    accounts: [primary]
-  gmail:
-    enabled: true
-    read_only: true
-    accounts: [primary]
-    label: "IkigAI/Inbox"
-
-# Daemons
 daemons:
-  inbox_watcher:
+  watcher:
     enabled: true
-    poll_interval: inotify          # vs polling
+    inbox_path: ~/ikigAI-me/inbox
   scout:
     enabled: true
-    schedule: "0 2 * * *"           # 02:00 nightly
-  lint:
+    schedule: "0 2 * * *"  # 02:00 daily
+  keeper:
     enabled: true
-    schedule: "0 3 * * *"           # 03:00 nightly, after scout
-  brief_generator:
+    schedule: "0 3 * * *"  # 03:00 daily
+    decay_rate: 0.98
+  herald:
     enabled: true
-    schedule: "30 7 * * *"          # daily brief at 07:30
-  decay_keeper:
+    schedule: "0 7 * * *"  # 07:00 daily
+  gatekeeper:
     enabled: true
-    schedule: "0 3 * * 0"           # weekly Sunday 03:00
+    poll_minutes: 15
+    label: IkigAI/Inbox
+  scribe:
+    enabled: true
+    cache_days: 14
+    write_on: accepted_only
 
-# Privacy
-privacy:
-  anonymise_unknown_names: false    # private vault, not published
-  strip_secrets: true                # API keys, passwords, full PII
-  ignore_patterns:
-    - "*.confidential.*"
-    - "private/*"
+mcp:
+  bind_addr: 100.x.x.x:8765   # Tailscale IP
+  tools:
+    - ikigai_capture
+    - ikigai_retrieve
+    - ikigai_phase_an_idea
+    - ikigai_brief_today
+    - ikigai_debaiser
 
-# Ikigai region weights (informs tagging confidence)
-# Adjust if classifier is being too generous or too stingy on any axis
-ikigai_classification:
-  love_threshold: 0.6
-  good_at_threshold: 0.6
-  world_needs_threshold: 0.7        # be conservative; don't tag generously
-  paid_for_threshold: 0.6
+llm:
+  local:
+    provider: ollama
+    base_url: http://localhost:11434
+    default_model: llama3.2:latest
+    fallback_model: mixtral:8x7b
+  cloud:
+    provider: anthropic
+    gear_2_model: claude-haiku-4-5
+    gear_3_model: claude-sonnet-4-5
 
-# ADDIE feedback
-feedback:
-  log_path: feedback.jsonl
-  context_modifiers_learning_rate: 0.1
-  retrieval_score_decay_per_90_days: 0.1
-  reinforcement_bump: 0.05
+voice_prefs:
+  brief: ijneb-dev
+  retrieval: prepaired
+  drift_alerts: accountantability
+  debaiser: helpful
+
+vault:
+  path: ~/ikigAI-me
+  git_remote: git@github.com:ijnebzor/ikigAI-me.git  # private mirror
+  auto_commit: true
+  commit_message_format: "[{daemon}] {action}: {summary}"

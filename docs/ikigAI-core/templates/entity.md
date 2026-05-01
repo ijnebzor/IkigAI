@@ -1,53 +1,64 @@
 ---
-id: 2026-04-30-EXAMPLE
+id: <ulid-or-slug>
 type: entity
-created: 2026-04-30T00:00:00+11:00
-updated: 2026-04-30T00:00:00+11:00
+title: <name>
+created: <iso8601>
+updated: <iso8601>
 
-ikigai_regions: []
-summary: ""
-tags: []
+status: canonical
+schema_version: "0.3"
+schema_hash: <hash>
 
-sources_raw: []
 derived_from: []
 supersedes: []
-superseded_by: null
-confidence: 0.5
-last_reinforced: 2026-04-30
+contradicts: []
+last_reinforced: null
+confidence: 0.85
 drivers: []
 biases: []
 
+ikigai_regions: []
+compounding_ripples: []
+
+ring: none
+expression_surface: none
+sovereignty_layers: []
+
+lexicon_terms: []
+
 retrieval_score: 0.5
-last_surfaced: null
-last_used: null
-context_modifiers: {}
+context_modifiers:
+  work_strategy: 1.0
+  creative: 1.0
+  research: 1.0
+  relational: 1.0
 surface_count: 0
 use_count: 0
+ignored_count: 0
 
-status: canonical
-schema_hash: v0.2
+tags: []
+people: []
+projects: []
+concepts: []
 
-entity_type: project
+entity_kind: person
 aliases: []
+attributes: {}
 relationships: []
 ---
 
-# {{ name }}
+## Who/what this is
 
-## What it is
-> One sentence definition.
+<one sentence>
 
-## Current status
-> Where this is right now.
+## What I know about them
 
-## Why it matters
-> The Ikigai framing.
+<paragraphs>
 
-## Sources mentioning this
-<!-- auto-populated -->
+## Recent interactions
 
-## Related
-<!-- auto-populated -->
+- <ts>: <what>
 
-## Notes / decisions
-<!-- editorial layer -->
+## Links
+
+- [[<page_id>]] — <context>

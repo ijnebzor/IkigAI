@@ -1,0 +1,22 @@
+# Common base for all IkigAI daemons.
+# Single image, different commands per daemon.
+FROM python:3.11-slim
+
+WORKDIR /daemons
+
+# System deps for some Python packages
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    curl \
+    ca-certificates \
+    && rm -rf /var/lib/apt/lists/*
+
+# Python deps
+COPY requirements.txt /daemons/requirements.txt
+RUN pip install --no-cache-dir --upgrade pip && \
+    pip install --no-cache-dir -r /daemons/requirements.txt
+
+# Daemon source
+COPY *.py /daemons/
+
+# Sane default — overridden by compose command
+CMD ["python", "-u", "/daemons/the-watcher.py"]

@@ -1,161 +1,158 @@
-# /phase-an-idea — productionised idea flow
+# /phase-an-idea — turning an idea into a phased plan
 
-> Idea in. Phased plan out. Calendar offered. Work begins.
-> The verb of IkigAI is *productionising idea flows*. This prompt is that verb.
+> Read an idea. Read the corpus. Read the framework. Write a plan that respects all three.
 
-## Inputs
+This is the operation that converts an `idea` page into a `phased_plan` output. The input is one page; the output is a structured commitment with explicit ring/region lighting at each phase.
 
-A page in `wiki/ideas/` with `idea_status: raw` (just-captured idea), or an idea description passed inline.
+Triggered by:
 
-## Process
-
-### Step 1 — Read the idea fully
-
-What is the user trying to do? What's the desired end state? What's implicit vs explicit? Don't add scope; clarify what's there.
-
-### Step 2 — Pull context from the user's corpus
-
-Across the whole wiki, gather:
-
-- **Adjacent prior work** — pages tagged with overlapping concepts, similar entities, or shared regions
-- **Skills the user already has** that apply (read `me/CLAUDE.md` skill markers + concept pages with `maturity: established`)
-- **Tools the user already uses** that fit this idea
-- **Active projects** that might absorb this, or that this might unblock
-- **Past ideas** that look like this — were they shipped, parked, or abandoned? Why?
-- **Past biases** the user has shown on adjacent topics
-
-This is the unfair advantage. The brain knows what the user knows. The plan starts where they actually are, not at zero.
-
-### Step 3 — Read the user's current state
-
-- **Active projects** in `wiki/projects/` with `project_status: active`
-- **Recent ideas** that haven't yet been phased (signal of bandwidth)
-- **Calendar load** for the next 14 days (read via Google Calendar daemon)
-- **Current Ikigai** vs **aspirational Ikigai** in `me/ikigai.md` — does this idea move toward aspirational?
-
-### Step 4 — Write the phased plan
-
-Use the same structure this very document was written in. Specifically:
-
-```markdown
-# <Idea name>
-
-## Purpose
-<one paragraph: what this idea is, why now, what it gets the user>
-
-## Where it sits in your Ikigai
-<which axes/intersections this touches; whether it moves toward aspirational>
-
-## Existing leverage
-<what the user already has that applies — skills, tools, prior work, adjacent
-projects. Be specific: cite [[wikilinks]]>
-
-## Phases
-
-### Stage 0 — Foundation
-**Goal:** <what's true at end of stage>
-**Effort:** <hours>
-**Components:** <bulleted>
-**Dependencies:** <what must be true before starting; usually nothing for S0>
-**Deliverable:** <the artefact>
-
-### Stage 1 — <next>
-… same shape …
-
-### Stage N — <final>
-… same shape …
-
-## Total timeline
-<sum of effort, mapped to user's calendar reality>
-
-## What stays constant
-<the no-refactor guarantees: what's a contract that won't break across stages>
-
-## Calendar offer
-<proposed Phase 1 slots against the user's actual availability,
-prioritising deep-work blocks if the user has them in CLAUDE.md preferences>
-```
-
-### Step 5 — Be honest about cost
-
-Estimate hours like you would for someone you respect: realistically, slightly conservative, not optimistic. If a stage feels like it'll take 8 hours, say 8, not 4. The user is going to schedule against this.
-
-If the idea will take longer than the user's recent throughput suggests they have bandwidth for, say so. Suggest:
-- Parking until a specific bandwidth window opens
-- Compressing scope (which sub-stages can defer?)
-- Replacing an active project (which one is delivering least?)
-
-### Step 6 — Identify the load-bearing dependency
-
-Across the whole plan, which stage is the one that everything else depends on? Mark it. The user will protect this slot above others.
-
-### Step 7 — Flag the risks
-
-What might go wrong? Be specific. Pull from past biases the user has shown — if they tend to underestimate infra time, flag that. If they tend to scope-creep, flag that. The brain has the data; use it.
-
-### Step 8 — Write the page
-
-Save the phased plan as `wiki/outputs/<idea-id>-plan.md` with:
-- `output_type: phased-plan`
-- `in_response_to: <idea-id>`
-- frontmatter linking back to the idea page
-
-Update the idea page:
-- `idea_status: phased`
-- `phased_plan: [[<output-id>]]`
-
-### Step 9 — Propose the calendar offer
-
-Look at user's Google Calendar for the next 14 days. Find blocks ≥ 90 minutes that don't break stated boundaries (working hours, deep-work preferences from `me/CLAUDE.md`).
-
-Propose:
-- 1 slot for Phase 1, kickoff
-- 1–2 slots for Phase 1 continuation if Phase 1 is >3 hours
-
-Surface the offer in the brief or directly in the response:
-
-```
-**Phase 1 ready to start.** I see these slots in your calendar:
-
-— Wed May 6, 7:00–9:00 PM (deep-work window, no conflicts)
-— Sat May 9, 9:00–11:30 AM (your preferred Saturday morning slot)
-— Mon May 11, 6:30–8:00 PM (after dinner, light cognitive load before)
-
-Recommended: Sat May 9. Largest contiguous block, matches your historical 
-preference for kickoff-day-Saturday on similar projects. Want me to book it?
-```
-
-User accepts → daemon writes the event to Google Calendar with description linking to the plan page.
-
-### Step 10 — Update the idea status
-
-If user accepts a calendar offer:
-- `idea_status: accepted`
-- `calendar_offered: true`
-- `calendar_event_ids: [<google_event_id>]`
-
-If user declines:
-- `idea_status: phased` (stays as plan, not accepted)
-- `calendar_offered: true` (don't re-pester)
-- Note the decline reason in the idea page if user provided one
-
-If user picks a different time:
-- Same as accept, but with their slot
+- User explicitly calls `/phase-an-idea <idea_id>` from any client.
+- An idea page sits at status `unphased` for >5 days; the brief offers to phase it.
+- A capture from inbox arrives marked as type `idea`; the watcher offers to phase immediately.
 
 ---
 
-## What NOT to do
+## Inputs
 
-- **Don't write a phased plan that's bigger than the idea warrants.** A 30-minute task gets a single-stage plan. Don't bloat to look smart.
-- **Don't use generic phase names.** "Stage 1: Discovery" is meaningless. Use specific outcomes: "Stage 1: Whisper.cpp installed, first transcript pipelined."
-- **Don't ignore the user's recent failures.** If they've abandoned 3 ideas in a row that matched this pattern, surface that. Maybe this one needs a smaller scope or different framing.
-- **Don't propose calendar slots that fight the user's stated preferences.** Read `me/CLAUDE.md` for working hours, Sabbath days, deep-work blocks, family commitments.
-- **Don't propose Phase 2+ slots.** Only Phase 1. Each subsequent phase gets re-proposed after the previous ships, against fresh calendar reality.
+1. **The idea page** — the input. Captures what the user is thinking about.
+2. **`me/CLAUDE.md`** — current projects, recent context, what the user is currently chasing.
+3. **`me/ikigai.md`** — current and aspirational Ikigai. The plan must explicitly say which ring(s) and region(s) it pulls toward.
+4. **`me/lexicon.md`** — for any load-bearing term the idea uses, apply the user's lens.
+5. **The corpus** — relevant canonical pages by ikigai_region overlap with the idea.
+6. **Calendar cache** — last 14 days of activity, next 30 days of slots. Used for realistic phase timing.
+7. **Existing project pages** — the plan must reckon with whether this idea is a new project, a phase of an existing project, or something that should be folded into something already in flight.
+
+---
+
+## Output
+
+A single `output` page of `output_kind: phased_plan`. The body is structured. The frontmatter includes the same Ikigai region tagging as any other page.
+
+---
+
+## Process
+
+### Step 1 — read the idea honestly
+
+What is the user actually proposing? Distil to the load-bearing claim. Strip excitement. Strip "but maybe also..." Focus on the smallest articulable version.
+
+If the idea is incoherent or under-formed, the output is a single section saying so, with 3-5 questions the user would need to answer before phasing was useful. **Do not phase a half-baked idea into a plan that pretends to be ready.**
+
+### Step 2 — locate against the corpus
+
+Pull the 10-20 most relevant canonical pages by region overlap and concept match. Ask:
+
+- Has the user thought about this before? When? How did it resolve?
+- What's the strongest case in the corpus FOR this idea? Strongest case AGAINST?
+- Is there a contradiction in the corpus on this topic? (If yes — surface BEFORE the plan. The user might want a debaiser run first.)
+
+### Step 3 — locate against the rings and regions
+
+For the idea, identify:
+
+- Which ring(s) does this sit on? (identity, principle, surface, funding, none)
+- If surface — which expression channel? (research, tooling, discourse, practice)
+- Which Ikigai axes does this touch?
+- Which intersections light up?
+- Does this pull toward or away from the aspirational ikigai?
+
+This is what gets shown at every phase below.
+
+### Step 4 — locate against existing projects
+
+- Is this already in flight as a project? If so, this is a phase of that project, not a new project.
+- Does this duplicate effort with another project? If so, surface and ask.
+- Is this a new project? Does it warrant the overhead of being one, or could it live as an output of an existing project?
+
+### Step 5 — phase it
+
+The plan is structured into phases, **each with explicit ring/region lighting**.
+
+```markdown
+# Phased plan: <idea title>
+
+## What this is
+<one paragraph: load-bearing claim>
+
+## Where this sits
+- Ring(s): <list>
+- Sovereignty layers (if principle): <list>
+- Expression surface (if surface): <single>
+- Ikigai axes lit: <list>
+- Intersections: <list>
+- Pulls toward / away from aspirational: <toward | away | neutral, with reason>
+
+## Compounding ripples
+- Connects to: <list of project_ids and concept_ids with one-line context per>
+- Could feed into: <list of currently-active projects this would benefit>
+- Could conflict with: <projects this might pull effort from>
+
+## Phases
+
+### Phase 1 — <name>
+**Goal**: <single sentence>
+**Effort**: <Xh, honest>
+**Deliverable**: <single concrete thing produced>
+**Lights up**: <which regions and rings>
+**Open questions blocking this phase**: <list, or "none">
+**Calendar offer**: <a real slot from the next 14 days, or "user to schedule">
+
+### Phase 2 — <name>
+<same structure>
+
+### Phase 3 — <name>
+<same structure, only if it earns its place>
+
+(More phases only if genuinely necessary. Most ideas are 2-3 phases.)
+
+## What this plan does NOT include
+<honest list of things the user might expect but aren't here, with reasoning>
+
+## Open questions before commitment
+<list of things the user should resolve before starting Phase 1; if zero, say so>
+
+## When to revisit
+<one sentence: under what condition would this plan need re-phasing>
+```
+
+### Step 6 — calendar offer
+
+For Phase 1, propose 2-3 real slots from the next 14 days against actual calendar availability. The user accepts a slot, declines, or asks for alternatives.
+
+If the user accepts, write a Google Calendar event linking back to the plan output page. Mark the plan as `applied_at: <now>`. The plan is in flight.
+
+If the user declines all slots, the plan stays at status `canonical` but `applied_at: null`. The brief generator may resurface it.
+
+### Step 7 — set provenance
+
+The output page references:
+- `derived_from: [<idea_id>, ...]` — at minimum the idea, plus any corpus pages heavily used.
+- `input_pages: [<page_id>, ...]` — every page actually read.
+- `prompt_used: phase-an-idea`
+- The idea page is updated: `phase_status: phased`, `phased_plan: <output_id>`.
 
 ---
 
 ## Voice
 
-Same voice rules as `retrieve.md`. Default `helpful`. Tone shapes how the plan reads, not its structure.
+The plan is structured, dense, scannable. No filler. No motivation. The user is committed enough to phase the idea; the plan respects that and gives them the framework, not a pep talk.
 
-For accountability-heavy moments (idea is repeating a past pattern, scope is too big, user is over-committed), the voice can default to `roasty` or `accountantability` — but the structure stays the same.
+If the plan finds the idea genuinely unviable, **say so plainly**. Don't phase to phase. The output can be a single paragraph explaining why this isn't ready and 3-5 captures that would change that.
+
+---
+
+## Edge cases
+
+- **Idea contradicts the aspirational ikigai** — phase it AND surface the contradiction. The user is the thinker; they may have updated their Ikigai without writing it down.
+- **Idea is a debaiser candidate** — surface "this concept hasn't had a debaiser run in 30+ days; consider running before phasing." Don't refuse. Suggest.
+- **Idea would require deprecating something** — surface explicitly which canonical projects/plans this displaces. Don't auto-deprecate.
+- **Idea is centre-coded** (lights all four axes) — flag it. Centre-coded ideas are rare and load-bearing; the user should know.
+
+---
+
+## What this operation refuses to do
+
+- Phase an idea before answering its open questions. Half-baked plans cost more than no plan.
+- Hide trade-offs. Every plan names what it costs.
+- Tell the user what to do. The plan offers structure; commitment is the user's.
+- Auto-create calendar events. The user accepts a slot explicitly before anything is written to Google Calendar.

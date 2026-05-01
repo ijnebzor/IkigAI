@@ -1,0 +1,121 @@
+# S2 — 04 — docker-compose.yml
+#
+# The daemon orchestrator. Each daemon runs in its own container with its own
+# logs and lifecycle. All share the vault volume read-write and the index volume.
+# Ollama runs on the host (not in compose), reachable at host.docker.internal.
+#
+# Usage:
+#   cd docs/s2
+#   docker compose up -d
+#   docker compose logs -f the-watcher
+#   docker compose down
+#
+# Adjust environment to match your paths if you didn't follow exact defaults.
+
+version: '3.9'
+
+x-daemon-base: &daemon-base
+  build:
+    context: .
+    dockerfile: 05-daemons/Dockerfile.daemon
+  restart: unless-stopped
+  volumes:
+    - ${VAULT_DIR:-${HOME}/ikigAI-me}:/vault
+    - ${INDEX_DIR:-${HOME}/ikigai-state/index}:/index
+    - ${LOGS_DIR:-${HOME}/ikigai-state/logs}:/logs
+    - ${SECRETS_DIR:-${HOME}/ikigai-state/secrets}:/secrets:ro
+  environment:
+    - PYTHONUNBUFFERED=1
+    - VAULT_DIR=/vault
+    - INDEX_DIR=/index
+    - LOGS_DIR=/logs
+    - SECRETS_DIR=/secrets
+    - OLLAMA_HOST=http://host.docker.internal:11434
+    - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY:-}
+  extra_hosts:
+    - "host.docker.internal:host-gateway"
+  networks:
+    - ikigai-net
+
+services:
+  the-watcher:
+    <<: *daemon-base
+    container_name: ikigai-the-watcher
+    command: ["python", "-u", "/daemons/the-watcher.py"]
+    healthcheck:
+      test: ["CMD", "test", "-f", "/logs/the-watcher.heartbeat"]
+      interval: 60s
+      timeout: 5s
+      retries: 3
+
+  the-scout:
+    <<: *daemon-base
+    container_name: ikigai-the-scout
+    command: ["python", "-u", "/daemons/the-scout.py"]
+    profiles: ["always"]
+
+  the-keeper:
+    <<: *daemon-base
+    container_name: ikigai-the-keeper
+    command: ["python", "-u", "/daemons/the-keeper.py"]
+    profiles: ["always"]
+
+  the-herald:
+    <<: *daemon-base
+    container_name: ikigai-the-herald
+    command: ["python", "-u", "/daemons/the-herald.py"]
+    profiles: ["always"]
+
+  the-debaiser:
+    <<: *daemon-base
+    container_name: ikigai-the-debaiser
+    command: ["python", "-u", "/daemons/the-debaiser.py"]
+    profiles: ["always"]
+
+  the-gatekeeper:
+    <<: *daemon-base
+    container_name: ikigai-the-gatekeeper
+    command: ["python", "-u", "/daemons/the-gatekeeper.py"]
+    profiles: ["with-google"]
+
+  the-scribe:
+    <<: *daemon-base
+    container_name: ikigai-the-scribe
+    command: ["python", "-u", "/daemons/the-scribe.py"]
+    profiles: ["with-google"]
+
+  mcp-server:
+    <<: *daemon-base
+    container_name: ikigai-mcp
+    command: ["python", "-u", "/daemons/mcp-server.py"]
+    ports:
+      - "127.0.0.1:8765:8765"   # only loopback; MCP clients reach via stdio or local TCP
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8765/health"]
+      interval: 60s
+      timeout: 5s
+      retries: 3
+
+networks:
+  ikigai-net:
+    driver: bridge
+
+# ─── Notes ─────────────────────────────────────────────────────────
+#
+# Profile usage:
+#   docker compose --profile always up -d              # everything except Google daemons
+#   docker compose --profile always --profile with-google up -d  # full stack
+#
+# To bring up just the watcher:
+#   docker compose up -d the-watcher
+#
+# To rebuild after editing daemon source:
+#   docker compose build
+#   docker compose up -d
+#
+# Logs:
+#   docker compose logs -f                # all
+#   docker compose logs -f the-herald     # one daemon
+#
+# Status:
+#   docker compose ps

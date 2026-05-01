@@ -4,129 +4,154 @@
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <meta name="theme-color" content="#0d0d0d"/>
-<meta name="description" content="A self-owned coach grounded in everything you know. Capture anything. Retrieve at depth. Productionise idea flows."/>
-<meta property="og:title" content="IkigAI — Your Brain, Coached"/>
-<meta property="og:description" content="A self-owned coach grounded in everything you know. Capture anything. Retrieve at depth. Productionise idea flows."/>
+<meta name="description" content="A tool I built for myself. You can have it too. The industry wants to erode your critical thinking. This is the opposite."/>
+<meta property="og:title" content="ikigAI"/>
+<meta property="og:description" content="A tool I built for myself. You can have it too."/>
 <meta property="og:type" content="website"/>
-<title>IkigAI — Your Brain, Coached</title>
+<title>ikigAI</title>
 <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&family=Syne:wght@700;800&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet"/>
 <style>
-:root{--bg:#0d0d0d;--surface:#0f0f0f;--card:#141414;--border:#1e1e1e;--accent:#c8f135;--accent-dim:rgba(200,241,53,0.15);--accent-soft:rgba(200,241,53,0.06);--cyan:#00d4ff;--green:#00ff88;--orange:#ff8c42;--coral:#ff6b6b;--purple:#a78bfa;--yellow:#eab308;--text:#e8e8e2;--sub:#8a8a84;--muted:#1a1a1a}
+:root{--bg:#0d0d0d;--surface:#0f0f0f;--card:#141414;--border:#1e1e1e;--accent:#c8f135;--accent-dim:rgba(200,241,53,0.15);--accent-soft:rgba(200,241,53,0.06);--cyan:#00d4ff;--green:#00ff88;--orange:#ff8c42;--coral:#ff6b6b;--purple:#a78bfa;--text:#e8e8e2;--sub:#8a8a84;--dim:#5a5a55;--muted:#1a1a1a}
 *{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth}
-body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;line-height:1.7;min-height:100vh}
+body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;line-height:1.7;min-height:100vh;-webkit-font-smoothing:antialiased}
+a{color:var(--accent);text-decoration:none}
+a:hover{opacity:0.85}
 .bar{height:2px;background:linear-gradient(90deg,var(--accent) 0%,var(--green) 35%,var(--cyan) 70%,var(--purple) 100%);opacity:.6}
-.container{max-width:900px;margin:0 auto;padding:0 24px}
-.hero{padding:120px 0 80px;text-align:center}
-.hero .logo-mark{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.3em;color:var(--sub);text-transform:uppercase;margin-bottom:32px}
-.hero h1{font-family:'Syne',sans-serif;font-size:clamp(2.4rem,6vw,4rem);font-weight:800;line-height:1.05;margin-bottom:18px;letter-spacing:-0.02em}
-.hero h1 .accent{color:var(--accent)}
-.hero .tagline{font-size:clamp(1rem,2vw,1.2rem);color:var(--text);max-width:580px;margin:0 auto 16px;line-height:1.6}
-.hero .sub{font-size:13px;color:var(--sub);max-width:520px;margin:0 auto 36px;font-family:'JetBrains Mono',monospace;letter-spacing:0.02em}
-.hero-cta{display:inline-flex;gap:12px;flex-wrap:wrap;justify-content:center}
-.btn{padding:15px 32px;border-radius:6px;border:none;font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:700;letter-spacing:.08em;cursor:pointer;text-decoration:none;display:inline-block;transition:all .15s;text-transform:uppercase}
-.btn-p{background:var(--accent);color:var(--bg)}.btn-p:hover{transform:translateY(-1px);box-shadow:0 4px 16px rgba(200,241,53,0.25)}
-.btn-g{background:transparent;color:var(--text);border:1px solid var(--border)}.btn-g:hover{border-color:var(--accent);color:var(--accent)}
-.section{padding:60px 0}
-.section-title{font-family:'Syne',sans-serif;font-size:1.6rem;font-weight:800;text-align:center;margin-bottom:8px;letter-spacing:-0.01em}
-.section-sub{text-align:center;color:var(--sub);font-size:13px;margin-bottom:40px;font-family:'JetBrains Mono',monospace;letter-spacing:0.05em}
-.features{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px}
-.feature{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:24px;transition:border-color .2s}
-.feature:hover{border-color:var(--accent)}
-.feature-num{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--sub);letter-spacing:0.2em;margin-bottom:14px}
-.feature h3{font-family:'Syne',sans-serif;font-size:16px;font-weight:700;margin-bottom:8px;color:var(--text)}
-.feature p{font-size:13px;color:var(--sub);line-height:1.6}
-.principles{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1px;background:var(--border);border:1px solid var(--border);border-radius:8px;overflow:hidden;margin:0 auto;max-width:800px}
-.principle{background:var(--card);padding:22px}
-.principle h4{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:0.15em;text-transform:uppercase;color:var(--accent);margin-bottom:10px}
-.principle p{font-size:13px;color:var(--text);line-height:1.6}
-.footer{padding:50px 0 40px;text-align:center;border-top:1px solid var(--border);margin-top:60px}
-.footer p{font-size:11px;color:var(--sub);font-family:'JetBrains Mono',monospace;letter-spacing:0.1em}
-.footer a{color:var(--accent);text-decoration:none}
-.footer a:hover{opacity:0.8}
-@media(max-width:600px){.hero{padding:80px 0 50px}.section{padding:40px 0}}
+.wrap{max-width:720px;margin:0 auto;padding:0 28px}
+
+.hero{padding:140px 0 90px}
+.kicker{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.25em;color:var(--dim);text-transform:uppercase;margin-bottom:48px}
+.kicker a{color:var(--dim);border-bottom:1px dashed var(--dim)}
+.kicker a:hover{color:var(--accent);border-color:var(--accent);opacity:1}
+
+h1{font-family:'Syne',sans-serif;font-size:clamp(3rem,8vw,5.2rem);font-weight:800;line-height:1;letter-spacing:-0.03em;margin-bottom:36px}
+h1 .accent{color:var(--accent)}
+
+.tagline{font-size:1.4rem;line-height:1.45;max-width:580px;margin-bottom:14px;color:var(--text);font-weight:500}
+.subline{font-size:1rem;color:var(--sub);max-width:580px;line-height:1.65;margin-bottom:48px}
+
+.spec{font-family:'JetBrains Mono',monospace;font-size:13px;color:var(--text);line-height:2;margin-bottom:48px;padding-left:18px;border-left:2px solid var(--accent);max-width:560px}
+.spec .verb{color:var(--accent)}
+.spec .you{color:var(--text);font-weight:600}
+
+.cta{display:flex;gap:14px;flex-wrap:wrap;margin-bottom:64px}
+.btn{padding:16px 36px;border-radius:6px;border:1px solid transparent;font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:700;letter-spacing:.1em;cursor:pointer;text-decoration:none;display:inline-block;transition:all .15s;text-transform:uppercase}
+.btn-p{background:var(--accent);color:var(--bg);border-color:var(--accent)}
+.btn-p:hover{transform:translateY(-1px);box-shadow:0 6px 24px rgba(200,241,53,0.25);opacity:1}
+.btn-g{background:transparent;color:var(--text);border-color:var(--border)}
+.btn-g:hover{border-color:var(--accent);color:var(--accent);opacity:1}
+
+.stake{padding:60px 0;border-top:1px solid var(--border)}
+.stake p{max-width:580px;margin-bottom:18px;color:var(--text);font-size:1.05rem;line-height:1.8}
+.stake p.lead{color:var(--accent);font-weight:600;font-size:1.1rem}
+.stake .dim{color:var(--sub)}
+.stake .sig{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--dim);letter-spacing:.15em;margin-top:32px;text-transform:uppercase}
+
+.notes{padding:60px 0;border-top:1px solid var(--border)}
+.note-row{display:grid;grid-template-columns:140px 1fr;gap:24px;padding:14px 0;border-bottom:1px solid var(--border);align-items:start}
+.note-row:last-child{border-bottom:none}
+.note-key{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--accent);letter-spacing:.15em;text-transform:uppercase;padding-top:3px}
+.note-val{font-size:14px;color:var(--text);line-height:1.7}
+.note-val a{color:var(--accent)}
+.note-val .dim{color:var(--sub)}
+
+.lineage{padding:60px 0;border-top:1px solid var(--border)}
+.lineage-title{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.2em;color:var(--dim);text-transform:uppercase;margin-bottom:20px}
+.lineage p{font-size:14px;color:var(--sub);line-height:1.8;max-width:580px;margin-bottom:14px}
+.lineage p strong{color:var(--text);font-weight:500}
+
+.foot{padding:60px 0 80px;border-top:1px solid var(--border);font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--dim);letter-spacing:.1em}
+.foot a{color:var(--dim);border-bottom:1px dashed var(--dim)}
+.foot a:hover{color:var(--accent);border-color:var(--accent)}
+
+@media(max-width:600px){
+  .hero{padding:80px 0 60px}
+  .note-row{grid-template-columns:1fr;gap:6px}
+  .note-key{padding-top:0}
+  h1{font-size:3rem}
+  .tagline{font-size:1.2rem}
+}
 </style>
 </head>
 <body>
 <div class="bar"></div>
-<div class="container">
+<div class="wrap">
 
-<div class="hero">
-  <div class="logo-mark">// ijneb.dev presents</div>
+<section class="hero">
+  <div class="kicker">// <a href="https://ijneb.dev" target="_blank">ijneb.dev</a> &nbsp;·&nbsp; aithropologist's notebook</div>
+
   <h1>ikig<span class="accent">AI</span></h1>
-  <p class="tagline">Your brain, coached. A self-owned system that reads everything you send it, links it to everything else, and helps you turn ideas into action.</p>
-  <p class="sub">capture anything · retrieve at depth · productionise idea flows</p>
-  <div class="hero-cta">
-    <a href="app.html" class="btn btn-p">Open App</a>
-    <a href="roadmap-reference.html" class="btn btn-g">Read the spec</a>
+
+  <p class="tagline">A tool I built for myself, to make myself better.<br>You can have it too.</p>
+  <p class="subline">The industry wants to erode your critical thinking and turn you into a robot. This is the opposite. You remain the thinker. The system makes the compounding visible.</p>
+
+  <div class="spec">
+    <span class="you">you</span> give it what you know.<br>
+    <span class="you">you</span> give it where you're going.<br>
+    the framework <span class="verb">overlays</span>.<br>
+    compounding <span class="verb">becomes visible</span>.<br>
+    <span class="you">you</span> act on what was already there.
   </div>
-</div>
 
-<div class="section">
-  <div class="section-title">What it does</div>
-  <div class="section-sub">// five layers, one engine</div>
-  <div class="features">
-    <div class="feature">
-      <div class="feature-num">01 / CAPTURE</div>
-      <h3>Anywhere, any medium</h3>
-      <p>Share-sheet, voice memo, hotkey, paste, email-to-self. Zero thought between brain fart and saved.</p>
-    </div>
-    <div class="feature">
-      <div class="feature-num">02 / UNDERSTAND</div>
-      <h3>Canonicalise &amp; classify</h3>
-      <p>Multi-key dedup. Ikigai region tagging. Entities and concepts extracted. Linkages proposed against everything you've ever sent.</p>
-    </div>
-    <div class="feature">
-      <div class="feature-num">03 / RETAIN</div>
-      <h3>Markdown vault, yours forever</h3>
-      <p>Plain text on your home device. Git is the memory trail. Vector and graph indexes derive from it. No vendor lock-in.</p>
-    </div>
-    <div class="feature">
-      <div class="feature-num">04 / SURFACE</div>
-      <h3>Three retrieval gears</h3>
-      <p>Links only. Synthesis with provenance. Or the Debaiser panel — five analyst voices on your own corpus, pushing back.</p>
-    </div>
-    <div class="feature">
-      <div class="feature-num">05 / GROW</div>
-      <h3>Productionised idea flows</h3>
-      <p>Idea in. Phased plan out. Calendar slots offered against your real availability. Make and iterate.</p>
-    </div>
-    <div class="feature">
-      <div class="feature-num">∞ / COMPOUND</div>
-      <h3>Better every day</h3>
-      <p>Watches what you actually use. Surfaces non-obvious linkages overnight. Learns the shape of your mind without you grading it.</p>
-    </div>
+  <div class="cta">
+    <a href="app.html" class="btn btn-p">Open</a>
+    <a href="roadmap-reference.html" class="btn btn-g">The spec</a>
   </div>
-</div>
+</section>
 
-<div class="section">
-  <div class="section-title">The principles</div>
-  <div class="section-sub">// what stays constant across every stage</div>
-  <div class="principles">
-    <div class="principle">
-      <h4>Sovereignty</h4>
-      <p>Local-first. Self-owned. Your data never leaves your device unless you explicitly send it.</p>
-    </div>
-    <div class="principle">
-      <h4>Frictionless</h4>
-      <p>If capture isn't zero-friction, the brain dies. Any device, any medium, anywhere.</p>
-    </div>
-    <div class="principle">
-      <h4>Bespoke</h4>
-      <p>Every IkigAI is different. Every brain is different. Universal under the hood; yours on the surface.</p>
-    </div>
-    <div class="principle">
-      <h4>Compounding</h4>
-      <p>One capture lights up every Ikigai region it touches. Retrieval improves with use. Phases unlock the next.</p>
-    </div>
+<section class="stake">
+  <p class="lead">It's a coach in the way that it points things out to you.</p>
+  <p>That's all it's doing. Taking the information you gave it, with the goals you provided, overlaying the four-axis Ikigai framework, and giving you frictionless ability to complete your goals in a compounded and recursive way.</p>
+  <p>Do one thing. It might impact two regions of your Ikigai you didn't realise. The system points that out. You decide what to do with it.</p>
+  <p>You remain the thinker. The system stays observational. <span class="dim">No directives. No advice. No "you should." Just visibility on overlap.</span></p>
+  <div class="sig">// THE WHOLE PROMISE</div>
+</section>
+
+<section class="notes">
+  <div class="note-row">
+    <div class="note-key">Identity</div>
+    <div class="note-val">AIthropologist. Everything else expresses this.</div>
   </div>
+  <div class="note-row">
+    <div class="note-key">Principle</div>
+    <div class="note-val">Sovereignty. Data, cognitive, tooling, narrative, epistemic. Same idea at five layers.</div>
+  </div>
+  <div class="note-row">
+    <div class="note-key">Substrate</div>
+    <div class="note-val">Markdown vault on your home device. Indexes derive. <span class="dim">If everything else dies tomorrow, you still have your knowledge.</span></div>
+  </div>
+  <div class="note-row">
+    <div class="note-key">Lens</div>
+    <div class="note-val">Brusselbach four-axis Ikigai. Love, good_at, world_needs, paid_for, plus their five intersections, written explicitly into every page.</div>
+  </div>
+  <div class="note-row">
+    <div class="note-key">Retrieval</div>
+    <div class="note-val">Three gears. Links / synthesis / debaiser-on-self. <span class="dim">SOTA where it earns it. Local everywhere else.</span></div>
+  </div>
+  <div class="note-row">
+    <div class="note-key">Built for</div>
+    <div class="note-val">Me. Friend gets it via fork. Beyond that — if it works, it's open. Nobody owes anybody anything.</div>
+  </div>
+  <div class="note-row">
+    <div class="note-key">Not for sale</div>
+    <div class="note-val">This is not a product. It will never be a product. Just tell me how awesome I am for making it.</div>
+  </div>
+</section>
+
+<section class="lineage">
+  <div class="lineage-title">// LINEAGE — pieces already standing on shoulders</div>
+  <p><strong>RenovAIter</strong> bones (single-file SPA, mobile-first nav, Drive OAuth, PWA setup). <strong>The Digiquarium</strong> daemon patterns and naming convention. <strong>PoliticalDebAIser</strong> reframed as the Debaiser-on-self panel. <strong>ABENAKI</strong>'s December cognitive loop, sharpened by what the OSS landscape shipped between then and now. The canonicalisation, gargAIntuan, and context-injection synthesis engines from <strong>ijneb.dev</strong> council-document work, retargeted at one user's brain.</p>
+  <p>I stand on the shoulders of giants. I recognise that. This is the boulder I'm pushing uphill, accidentally adding value to my own life.</p>
+</section>
+
+<div class="foot">
+  ikig<span style="color:var(--accent)">AI</span> &middot;&nbsp; v0.3 &middot;&nbsp;
+  <a href="https://github.com/ijnebzor/IkigAI" target="_blank">github.com/ijnebzor/IkigAI</a> &middot;&nbsp;
+  <a href="app.html">open</a> &middot;&nbsp;
+  <a href="roadmap-reference.html">spec</a>
 </div>
 
 </div>
-
-<div class="footer">
-  <p>ikig<span style="color:var(--accent)">AI</span> &middot; <a href="https://github.com/ijnebzor/IkigAI" target="_blank">github.com/ijnebzor/IkigAI</a> &middot; built with <a href="https://github.com/ijnebzor/RenovAIter" target="_blank">RenovAIter</a> bones</p>
-</div>
-
 </body>
 </html>

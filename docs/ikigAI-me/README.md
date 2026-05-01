@@ -1,24 +1,29 @@
-# ikigAI-me/ — Benji
+# ikigAI-me/
 
-This is your brain.
+> Bespoke. This user's vault. Not for friend's eyes.
 
-```
-CLAUDE.md         Personal vocabulary — the highest-leverage file
-ikigai.md         Current vs aspirational Ikigai
-config.yml        Voice, cadence, calendar wiring
-inbox/            Drop captures here
-wiki/             Compiled, structured, Obsidian-readable
-graph/            Graph artifact (built S2)
-state/            Indexes, cache, runtime state
-log.md            Append-only ops log
-feedback.jsonl    ADDIE signal log
-```
+This directory contains the user's specific instance:
 
-`me/` imports `core/` like a library. Edit `CLAUDE.md` freely; that's the
-single biggest leverage point on retrieval quality.
+- Their identity, vocabulary, current context (`CLAUDE.md`)
+- Their concentric-rings architecture and four-circle position (`ikigai.md`)
+- Their load-bearing terminology with their interpretive lens (`lexicon.md`)
+- Their daemon config (`config.yml`)
+- Their captures (`inbox/`, then routed into `wiki/`)
+- Their runtime state (`state/`)
+- Their corpus (`wiki/`)
 
-When you bring a friend in (S5), they get a `friend-me/` next to this one,
-sharing the same `core/`. Their CLAUDE.md is theirs. Their vault is theirs.
-No refactor needed.
+## Friend onboarding
 
-See top-level `README.md` and `IkigAI_Roadmap.md` for the build plan.
+Friend forks the repo. Deletes everything in `me/` except `wiki/dimensions/` (the schema rollup pages stay). Runs `/onboard` from S5. The conversation generates their version of CLAUDE.md, ikigai.md, lexicon.md, config.yml. Their captures fill their inbox. Same core/. Different me/. Two brains, one architecture.
+
+## Privacy
+
+The `me/` directory is single-tenant. Even if you self-host the repo as a public mirror, the friend's `me/` is in a separate repo with its own ACL. Tailscale ACLs keep daemon-served APIs isolated per-vault.
+
+## Don't commit
+
+- `state/voice_prefs.yml` if it contains keys
+- `inbox/` items containing PII without consent
+- `state/feedback.jsonl` if you'd rather not log retrieval history (it's local-only either way, but you can choose)
+
+`.gitignore` is set accordingly.

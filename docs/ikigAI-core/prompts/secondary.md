@@ -1,158 +1,203 @@
-# /surface — linkage-scout daemon
+# Secondary operations (v0.3)
 
-> Runs nightly. Walks the graph. Surfaces non-obvious connections.
-> Output feeds the next morning's brief.
-
-## Process
-
-### 1. Find candidate page pairs
-For each high-confidence page (`confidence ≥ 0.7`, `status: canonical|evergreen`):
-- Find pages with overlapping `tags` but no current `[[wikilink]]` connection
-- Find pages with overlapping `extracted_entities` but no link
-- Find pages in adjacent `ikigai_regions` with semantic similarity ≥ 0.85 but no link
-
-### 2. Score each candidate linkage
-- Tag overlap weight 1.0
-- Entity overlap weight 1.5
-- Region adjacency weight 0.5
-- Semantic similarity weight 1.0
-- Penalty if either page has been surfaced together in the last 7 days (-0.5)
-
-Top candidates above threshold (configurable per-user, default 2.5) → linkage queue.
-
-### 3. Detect echo chambers
-For each high-confidence claim with ≥5 reinforcements:
-- Check for any contradicting page in the corpus
-- If none exists → flag as echo-chamber candidate
-- Surface in next brief: "Want a debaiser pass on this?"
-
-### 4. Detect decay candidates
-- Pages where `last_reinforced` > 60 days ago AND `confidence` was previously > 0.7
-- Surface as: "You may have moved on from this — confirm or recapture."
-
-### 5. Detect orphans
-Pages with `status: canonical` and zero inbound links from sources. Either the entity/concept isn't really live in the user's thinking, or sources weren't properly linked at ingest. Surface for review.
-
-### 6. Output to queue
-Write to `state/scout_queue.jsonl` with timestamp, candidate type, page IDs, score. The brief generator reads this file and picks the top 1–3 to surface in the morning.
-
-### 7. Cleanup
-Truncate `scout_queue.jsonl` to last 7 days. Older discoveries that weren't surfaced get archived; if they were genuinely useful they'll reappear when corpus changes.
-
-## Cadence
-
-Nightly cron, configurable. Default: 02:00 local time.
+> Smaller, supporting prompts.
+> Most live as MCP tools after S2; some run as cron-driven daemons.
 
 ---
 
-# /lint — vault health & lifecycle
+## /surface
 
-> Runs daily (separately from scout). Keeps confidence honest.
+Bidirectional discovery. The user asks "what should I look at?" without naming a topic.
 
-## Operations
+### Read first
+- `me/CLAUDE.md`, `me/ikigai.md`, `me/lexicon.md`
+- Last 30 days of activity
+- THE SCOUT's queue
 
-1. **Confidence decay** — pages with `last_reinforced` > 30 days ago: -0.1 confidence (floor 0.2). Append decay note to page footer.
+### Process
+1. Find pages with `last_surfaced` >60 days, `confidence` >0.6 (forgotten gold)
+2. Find pages with high `surface_count` but low `use_count` (false signal — drop their score)
+3. Find recent pages with high overlap to active projects (under-leveraged)
+4. Find regions that have gone quiet vs aspirational (drift)
+5. Pick top 5; rank by likely surprise + utility
 
-2. **Retrieval-score decay** — pages with `last_surfaced` > 90 days ago: -0.1 retrieval_score (floor 0.1).
+### Output
+```markdown
+**Five things you might re-engage with:**
 
-3. **Promotion** —
-   - `inbox` → `canonical`: ≥2 sources OR ≥3 inbound `[[wikilinks]]` AND no unresolved contradictions
-   - `canonical` → `evergreen`: ≥5 reinforcements AND `confidence ≥ 0.8` AND no decay events in 60 days
-
-4. **Schema staleness** — pages with `schema_hash` < current schema version: list for re-ingest.
-
-5. **Tag drift** — tags used <3 times across the vault: surface for consolidation.
-
-6. **Entity drift** — entity pages with no source backlinks: surface for review.
-
-7. **Output to** `log.md` with structured summary. No automatic destructive actions; user decides what to consolidate or archive.
-
-## Cadence
-
-Daily cron, configurable. Default: 03:00 local time, after scout.
-
----
-
-# /why-did-i-think — provenance trace
-
-> Walk a claim's `derived_from` backwards. Surface the trail. Identify load-bearing nodes and biases.
-
-## Inputs
-
-A claim, a `[[wikilink]]`, or a paraphrase.
-
-## Output format
-
-```
-TARGET: <[[wikilink]] or claim text>
-Confidence: <X> (reinforced <N> times since <date>)
-
-PROVENANCE TREE:
-└─ <claim>
-   ├─ derived_from: [[source-A]] (confidence 0.X, captured YYYY-MM-DD)
-   │  ├─ source: <URL or origin>
-   │  ├─ drivers at capture: [curiosity, problem-solving]
-   │  └─ biases flagged: [recency]
-   ├─ derived_from: [[concept-B]] (confidence 0.X, reinforced 3x)
-   │  └─ derived_from: [[source-C]]  ← LOAD-BEARING
-   └─ supersedes: [[earlier-claim]] (date, why)
-
-DRIVERS (across the chain): <union>
-BIASES (across the chain): <union>
-
-CONTRADICTIONS:
-- [[source-D]] disagrees on <specific point>. Currently weaker (confidence 0.4 vs target 0.7).
-
-WHAT WOULD CHANGE MY MIND:
-- A source that establishes <X> with primary evidence
-- A direct experience showing <Y>
-- Reinforcement that <load-bearing-source> is wrong
-
-CURRENT STANCE: <one sentence honest summary, including remaining doubts>
+1. **[[page]]** — <why surface, what it connects to now>
+   Lights up: <regions>
+2. ...
 ```
 
-## What NOT to do
-- Don't fabricate provenance. If `derived_from` is empty, say so: "This claim has no captured provenance — it may be inherited prior knowledge or never sourced."
-- Don't editorialise. Surface the chain; let the user judge.
+Voice: same as `brief`.
 
 ---
 
-# /onboard — conversational setup (S5 implementation)
+## /lint
 
-> Spec only at v0.2. Built fully in S5 when the friend onboards.
+The cleanup operation. Flags drift, doesn't fix it.
 
-## Conversation flow
+### Read first
+The whole `wiki/` tree.
 
-1. **Welcome** — explain what IkigAI is in two sentences. No more.
+### Run nightly
+Default: 02:00 local, by THE KEEPER daemon.
 
-2. **Current Ikigai** — *"Tell me about a typical week. What do you spend most of your time on?"* Listen, infer tentative regions across love/good_at/world_needs/paid_for. Confirm: *"Sounds like your current Ikigai is mostly profession (good_at + paid_for) with some passion (love + good_at) on the side. Does that match?"*
+### Checks
 
-3. **Aspirational Ikigai** — *"Where do you want to be in 12 months? What gap do you want to close?"* Capture as `me/ikigai.md`.
+**Schema:** Every page has `id`, `type`, `summary`, `created`, `updated`, `ikigai_regions`, `status`, `schema_hash`.
 
-4. **Vocabulary seed** — *"Who are the most important people in your life right now? Top 3 active projects? Recurring topics you think about?"* Build the first version of `me/CLAUDE.md` collaboratively.
+**Region implication:** If `ikigai_regions` includes both `love` and `good_at` but not `passion`, flag.
 
-5. **Capture preferences** — share-sheet, voice, hotkey, email, share targets — what does the user have access to and want to use?
+**Stale schema:** Any page with `schema_hash != v0.3` queues for migration.
 
-6. **Coach voice** — sample 2–3 voices on a real example, user picks default. Note context-specific overrides if they have any.
+**Orphans:** Sources/ideas with no inbound links, status `canonical` for >30 days, surface_count zero.
 
-7. **Brief cadence** — daily morning brief, weekly Sunday-evening pattern report, ambient on-app-open, all three? Pick what fits.
+**Bidirectionality:** A → [[B]] but B has no link back. Both should mention each other; flag missing back-links.
 
-8. **First capture** — *"Send me one thing now. A quote, a link, a thought. Anything."* Process it end-to-end. Show the result. Ask: *"Did this land? Anything I should adjust?"* First feedback signal.
+**Dead wikilinks:** `[[X]]` that points to nothing.
 
-9. **Wrap-up** — explain how to use it tomorrow. Set expectation: *"The system gets better the more you use it. The first 30 days, expect rough edges. After that, it'll know you."*
+**Tag drift:** New tags appearing in `<3 pages with no consolidation note.
 
-## Time budget
+**Confidence drift:** `confidence > 0.8` AND `last_reinforced > 90 days` AND `surface_count == 0` → drop to 0.6, note in log.
 
-15 minutes for a technical user. 30+ minutes for a non-technical user. Same conversation tree; depth follows user signal. The agent reads cues and goes deeper only when the user wants more detail.
+**Lexicon coverage:** Pages with `lexicon_terms` referencing a term not in `me/lexicon.md` → flag for user to author.
 
-## Output
+**Echo chambers:** Confidence >0.8, reinforcements >5, contradictions = 0 → queue for THE DEBAISER.
 
-- `me/CLAUDE.md` populated with vocabulary and preferences
-- `me/ikigai.md` populated with current and aspirational Ikigai
-- `me/config.yml` populated with capture/voice/cadence preferences
-- One real source in `wiki/sources/` from the first capture
-- Welcome message in `wiki/outputs/welcome.md`
+### Output
+`state/lint-<date>.md` with sections: schema_violations, orphans, bidirectionality, dead_links, tag_drift, confidence_drift, lexicon_gaps, echo_chambers.
 
-## Voice
+Surface count in next morning's brief if >0.
 
-`warm` always. This is the first impression. No matter what voice they pick for ongoing use, onboarding is warm.
+---
+
+## /why-did-i-think
+
+Trace the genesis of a current claim.
+
+### Inputs
+A claim, page id, or wikilink.
+
+### Process
+Walk `derived_from` chain to root. Read each page. Reconstruct the trail.
+
+### Output
+```markdown
+# Why I think <claim>
+
+## The trail
+1. **<root source>** ([[id]], <date>)
+   <summary>
+   <drivers, biases captured at the time>
+
+2. **<derived>** ([[id]], <date>)
+   Built on (1). <how it shifted the claim>
+   <drivers, biases>
+
+3. **<current>** ([[id]], <date>)
+   Built on (2). <where you are now>
+
+## The pattern
+<bias-watcher style: which patterns shaped the trail?>
+
+## What's been tested
+<which steps had contrarian challenges, which didn't>
+
+## What's still untested
+<weakest steps in the chain — most likely points of failure>
+```
+
+Voice: `prepaired` — clinical, structured.
+
+---
+
+## /onboard
+
+See `prompts/onboard.md` — first-class always-on operation.
+
+---
+
+## /lexicon-suggest
+
+When THE WATCHER sees a load-bearing term used in 3+ sources without an entry in `me/lexicon.md`, propose adding it.
+
+### Process
+1. Read the term across sources
+2. Identify the user's apparent meaning vs encoded meaning
+3. Draft a candidate entry
+
+### Output
+```markdown
+**Lexicon suggestion:**
+
+You've used "**<term>**" in <N> recent sources. Across them, your usage
+seems to mean <user-apparent-meaning>, which differs from the
+encoded reading of <encoded-meaning>.
+
+Suggested entry:
+```yaml
+term: <term>
+definition: <neutral definition>
+lens: <user-apparent meaning, with example>
+seeded: true
+```
+
+Want to keep, edit, or skip?
+```
+
+Surfaced in brief, never forced.
+
+---
+
+## /debaiser-on-demand
+
+Wrapper around `prompts/debaiser.md` for explicit invocation. Single MCP tool, accepts topic or page id.
+
+---
+
+## /idea-flow-check
+
+Run weekly (Sunday evening). Looks at:
+- Ideas captured this week
+- Ideas phased this week
+- Ideas accepted into calendar this week
+- Ideas declined / parked
+- Phase 1 stages actually started
+- Phase 1 stages shipped
+
+### Output
+```markdown
+# Idea flow — week of <date>
+
+**Captured:** <N>
+**Phased:** <M>
+**Accepted to calendar:** <K>
+**Started:** <J>
+**Shipped:** <L>
+
+**Conversion rates:**
+- Capture → Phase: <pct>
+- Phase → Accept: <pct>
+- Accept → Start: <pct>
+- Start → Ship: <pct>
+
+**Stuck:** <ideas in 'phased' >14 days>
+**Stalled:** <ideas in 'accepted' but never started, slot passed>
+**Patterns:** <which kinds of ideas convert; which don't>
+```
+
+Surfaced in Sunday evening brief.
+
+---
+
+## /apply
+
+When user marks an output as applied:
+1. Update output's `applied: true`, `applied_at: <ts>`
+2. Bump `retrieval_score` of all `sources_cited` in the output
+3. Log to `state/feedback.jsonl` for ADDIE
+4. After 24h, daemon prompts: "How did it go?"
+
+User responds → write outcome as new source → link to original idea → update idea status if shipped/iterated.

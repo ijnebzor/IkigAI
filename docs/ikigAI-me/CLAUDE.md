@@ -1,224 +1,166 @@
-# CLAUDE.md — Benji's IkigAI Personal Vocabulary
+# CLAUDE.md — Benji's IkigAI Vocabulary
 
-> This file is the vault's deepest leverage point.
-> The better this file gets, the better every retrieval, brief, and phased plan becomes.
-> Lives in `me/`. Never copied upstream. Edit freely as your life evolves.
+> The substrate every IkigAI prompt reads first.
+> Lives in `me/`. Bespoke. The friend gets their own.
+> Updated 2026-04-30. Run `/onboard` to refresh as your context evolves.
 
 ---
 
 ## Identity
 
-**Name:** Benji Zorella
-**Location:** Melbourne, Australia (timezone Australia/Melbourne)
-**Day job:** Security Awareness Specialist at Phriendly Phishing (PH2)
-**Side venture:** bAIj — autonomous AI venture studio (cofounded April 2026)
-**Personal site:** ijneb.dev
+- **Name:** Benji Zorella
+- **Pronouns:** he/him
+- **Location:** Melbourne, Australia
+- **Site:** [ijneb.dev](https://ijneb.dev)
+- **GitHub:** [ijnebzor](https://github.com/ijnebzor)
+- **Tagline:** Development · Cyber Security · AIthropology · Big dork energy
+- **Identity (Ring 1):** AIthropologist
+- **Operating principle (Ring 2):** Sovereignty (5 layers)
 
-**Working preferences:**
-- Deep-work windows: weeknight evenings (typically 7pm–11pm)
-- Saturday mornings often used for kickoff days on new ideas
-- Sundays loose / family time
-- Avoids 9–5 weekday slots for personal projects (PH2 hours)
+## What I do
 
-**Voice preferences (default if unspecified):**
-- General use: `helpful`
-- Morning brief: `helpful`
-- Accountability moments: `roasty`
-- Financial / commercial: `accountantability`
-- Idea phasing: `prepaired`
-- Internal monologue / self-debaiser: `ijneb-dev`
+- **Day:** Product Owner at Phriendly Phishing — working on Phish Focus, the human-risk-management platform. Building frameworks that compare what people *say* they do with what they *actually* do.
+- **Night:** ijneb studios (music) + The Digiquarium (AIthropology research) + a portfolio of side projects that probably collectively exceed reasonable resource availability for a single human.
+- **Identity:** AIthropologist. Studying AI as if it were a culture worth understanding rather than a tool to wield.
+- **Credentials:** ISC² Certified in Cybersecurity (CC). Speaker (AISA). Podcast co-host (Bytes with Bec & Benji).
 
 ---
 
-## Active projects
+## Personal Vocabulary
 
-Each gets a `wiki/projects/<id>.md` hub. The brief generator pulls active projects from this list.
+### People
 
-### bAIj — autonomous AI venture studio
-- Cofounded with Josh, April 14 2026
-- 45/45 founder split, Tom (5%, Meridian licence), Jase (2%, property)
-- Sibling identity to ijneb.dev
-- Project Pandora + Frameworx + Meridian fork as foundational IP
+| Reference | Means | Context |
+|-----------|-------|---------|
+| Bec | Co-host of Bytes with Bec & Benji | Podcast partner, security space |
+| Phriendly Phishing / PH2 | Day job | Australian phishing simulation and human risk management; I PO Phish Focus |
 
-### IkigAI (this system)
-- Personal coach grounded in everything captured
-- Built on the NUC, Tailscale-meshed
-- Forkable to friends in S5
+### Companies and surfaces
 
-### ABENAKI
-- The cognitive engine specified in December 2025
-- Now lives as the engine layer of IkigAI
-- Lab/Second Brain dual-vault pattern still relevant for project promotion
+| Reference | Means | Surface | Notes |
+|-----------|-------|---------|-------|
+| Phriendly Phishing | Day job | Practice | Working on Phish Focus product |
+| Phish Focus | Specific product I PO | Practice | Human Risk Management framework — say vs do |
+| Digiquarium | AIthropology research platform | Research | 17 specimens, 21 daemons, 5 languages, ISO 27001 + NIST CSF v2 audited |
+| ijneb.dev | Personal site / blog | Discourse | Cyan/green/orange/coral palette; JetBrains Mono+DM Sans+Syne fonts |
+| Bytes with Bec & Benji | Podcast | Discourse | Security and dork-friendly tech |
 
-### Digiquarium
-- AIthropology research platform
-- 17 tanks, 21 daemons, MCP-controlled, currently on NUC
-- Phase 0 migration to Mac Mini in flight
-- Public site: thedigiquarium.org (placeholder)
+### Active projects (the ones with actual code shipped)
 
-### TheInstrumAInt
-- Unified personal command centre
-- IkigAI is its ABENAKI module
-- Other modules: Finance (AccountantAbilityBuddy), Lens (Perspective Lens), OSINT (Crucix), Entrepreneur
+#### Tier 1 — Mission, sovereignty-coded, infra-heavy
 
-### PoliticalDebAIser
-- Multi-agent ideological analysis on news
-- Political content debiasing
-- The Debaiser-on-self pattern in IkigAI inherits from this
+- **The Digiquarium** — `thedigiquarium` repo, 93MB Python, live in production. The AIthropology platform. 17 isolated AI specimens in Docker containers (Adam/Eve, Cain/Abel, Juan/Juanita, Klaus/Genevieve, Wei/Mei, Haruki/Sakura, Victor/Iris, Observer/Seeker, Seth). 21 daemons including THE WATCHER, THE GUARD, THE BOUNCER, THE OVERSEER, THE PSYCH, THE THERAPIST, THE OPENFANG, THE PUBLIC LIAISON, THE WEBMASTER, THE BROADCASTER, THE MARKETER, THE SCHEDULER, THE SENTINEL, THE OLLAMA WATCHER, THE ARCHIVIST, THE ETHICIST, THE FINAL AUDITOR, THE MAINTAINER, THE MODERATOR, THE CHAOS MONKEY, THE REDAMON. ISO 27001 + NIST CSF v2 dual-pass audited. Beta period (Feb 17-22 2026) archived as data-quality issue (v7→v8 prompt migration). [Live](https://ijnebzor.github.io/thedigiquarium).
+- **TheInstrumAInt / gargAIntuan** — multi-agent orchestration spine. Pre-shipped naming convention live in private repos.
+- **Political DebAIser** — `PoliticalDebAIser`, 509KB Rust/Axum. 8 political personas (Progressive Activist, Liberal Social Democrat, Centrist Technocrat, Libertarian Civil Liberties, Conservative Fiscal, National Security Hawk, Environmentalist Green, Populist Anti-Elite). Multi-provider LLM (Groq, Gemini, HuggingFace, Ollama). OWASP Top 10 compliant. The architecture forked into IkigAI's `/debaiser` operation, retargeted at the self.
+- **AIthropology** (the discipline) — meta-project, the framework I'm building.
 
-### PrepAIred
-- (See deploy guide artifact)
-- Active product
+#### Tier 2 — Mission, applied apps
 
-### AccountantAbilityBuddy (AABB)
-- ERPNext × MCP financial intelligence
-- Personal finance + small business
+- **bAIj** — productisation candidate; the lead Ikigai-conversion project. Specifics private.
+- **IkigAI** (this app) — `IkigAI` repo, 101KB HTML. The productised version of the framework exercise. Bones forked from RenovAIter.
+- **PrepAIred** — `prepaired`, 737KB HTML. Single-file SPA, BYOK, interview simulator with adversarial questioning. v0.3.1.
+- **AccountantAbility Buddy** — `AccountantAbilityBuddy` (55KB HTML SPA) + `AccountantAbilityBuddy-Worker` (57KB TypeScript Cloudflare Worker, D1, Hono, Whop OAuth, Basiq CDR for Australian banks). Personal finance with AI buddy (Claude Haiku 4.5).
+- **wAIter** — `wAIter` 257KB / `wAIter-dev` 289KB HTML. Hospitality operations + supplier marketplace + self-paying invoices. AU-targeted. Stagione (Mod AU, Surry Hills) demo venue.
+- **RenovAIter** — `RenovAIter`, 333KB HTML. Renovation PM, mobile-first SPA, Drive sync, voice notes, AI assistant (BYOK Groq for free tier, Haiku/Sonnet for paid). Single HTML file. **Bones forked into IkigAI v0.2/v0.3.**
+- **TrAIdie** — `TrAIdie`, 419KB Svelte. Has v2 directory and worker.
+- **AIsthetics** — `AIsthetics`, 121KB HTML. Single index.
+- **CarCaAIre** — `CarCaAIre`, 90KB Python. Has frontend, scripts, src dirs.
+- **PolitArch** / **CL-PolArch** — earlier political archetype analyser; predecessor to PoliticalDebAIser.
+- **PlayUpMusic** — `PlayUpMusic`, 2.8MB Python. Music-related.
 
-### of Arc
-- Joan of Arc screenplay
-- Interactive HTML trailer widget built
+#### Tier 3 — Hobbies (Passion only, and that's fine)
 
-### Knife Fight: The Game
-- Card game, 10 characters, 8-player support
-- Game-dev hobby project
+- **HomeVibes** — home-related project
+- **Knife Fight** — recreational
+- **ijneb studios** — music project
 
-### Renovaiter
-- Pre-bAIj IP, retained
-- (Real-estate/renovation context)
+#### Tier 4 — Forked / audited infrastructure (referenced, not authored)
 
-### Carcaire
-- Pre-bAIj IP, retained
-- (Auto/carer context — confirm)
+- **odoo / erpnext** — ERP forks; ERPNext is the sovereignty-aligned answer to Odoo enclosure
+- **meridian, the-pair, Proxima, pentagi, thunderbolt** — security tooling references
+- **cabinAIt** — cabin-related project, forked
+- **cve-mcp-server, code-review-graph, anywhere-agents, RepoLens, browsAIr-harness, video-use, CL4R1T4S** — operational tooling references
 
-### homevibes
-- (Home stack / smart home context — see deploy guide)
+### Concepts that recur
 
----
+| Concept | What it means |
+|---------|---------------|
+| Sovereignty | Five-layer principle (data, cognitive, tooling, narrative, epistemic) |
+| AIthropology | Discipline of studying AI as culture |
+| Compounding visibility | The product mechanism — surfacing overlap |
+| Recursion | System that improves through use, not training |
+| Drift | Slow divergence between stated and actual |
+| Lexicon | Load-bearing terms with my interpretive lens |
+| Naming convention | AI-capitalised mid-word as narrative sovereignty |
+| Phase 0 dump | The one-time bridge from messaging apps; copy/paste only, never reference channel |
+| Bespoke architecture | Per-user vault; friend gets their own via fork, not refactor |
+| Big dork energy | The voice mode for ijneb.dev tagline match |
 
-## People
+### Tools and substrate
 
-### Inner circle
-- **Josh** — bAIj cofounder, CTO. Brought Project Pandora and Frameworx.
-- **Tom** — Meridian licensor. Lifetime royalty, 5%.
-- **Jase** — incubAItor property owner. 2% royalty for property use.
-
-### (Add as encountered: family, partners, kids, close friends, key colleagues)
-
----
-
-## Tool stack
-
-### Agent framework (Benji's own)
-- **OpenClaw** — agent framework (gateway port 18789)
-- **ClawTeam** — multi-agent orchestrator
-- **SecureClaw** — security audit layer (56 audit checks, OWASP LLM Top 10 2025)
-- **NullClaw** — Zig framework, lightweight (~1MB RAM vs OpenClaw's >1GB)
-- **Crucix** — signal sweep engine (15-minute cycle)
-
-### Engines (from ijneb.dev production work, retargeted at IkigAI)
-- **Canonicalisation & dedup engine** — multi-key matching, confidence-scored merging
-- **gargAIntuan multi-agent orchestration platform** — parallel agent dispatch, job queue
-- **Context-injection synthesis engine** — Claude with role-aware prompts
-
-### Infrastructure
-- **NUC** (i7) — IkigAI host, always-on, Linux
-- **Mac Mini** — Digiquarium target host (Phase 0 migration in flight)
-- **MacBook Pro M1** — primary daily driver
-- **Tailscale** — mesh networking, multi-device
-- **Docker** — containerisation
-- **Ollama** — local LLM runtime; **llama3.2:latest** (Model Wars winner +6.7 score over 8 competitors)
-- **n8n** — automation orchestration (ABENAKI heritage)
-- **MCP** — Model Context Protocol exposure
-- **Whisper.cpp** — local transcription
-- **Obsidian** — markdown editor (optional, vault works without it)
-- **Kiwix** — offline Wikipedia for Digiquarium
-
-### External
-- **Claude API** — Gear 2 polish, Gear 3 debaiser
-- **TinyFish** — fetch fallback for blocked URLs (credits available)
-- **Google Calendar** — two-way sync
-- **Gmail** — read-only on labelled folder
-- **GitHub** — code, deploy guides, public artifacts
-- **ERPNext** — finance backend
-- **Hetzner** — VPS for Digiquarium event streaming
-- **Cloudflare** — CDN, eventual public hosting
+- **Vault substrate:** Markdown files on NUC, git-tracked
+- **Vector index:** Chroma (local, swappable for Qdrant/pgvector later)
+- **Graph index:** NetworkX in `state/graph.json`
+- **LLM (local):** Ollama with llama3.2:latest as base; mixtral:8x7b as fallback for synthesis
+- **LLM (cloud, retrieval-only):** Claude (Haiku/Sonnet/Opus depending on gear)
+- **Mesh:** Tailscale; NUC is the hub
+- **Daemons:** Python in Docker, named THE [ROLE] convention from Digiquarium
+- **MCP:** Server on NUC, exposed via Tailscale; Claude Desktop and Claude Code clients
+- **PWA:** This repo, public on GitHub Pages
+- **Drive sync:** OAuth client ID per user; drive.file scope only
 
 ---
 
-## Recurring concepts
+## Current working context (May 2026)
 
-These get auto-promoted to concept pages on first ingest. Each one is load-bearing for some part of Benji's worldview.
-
-- **AIthropology** — the Digiquarium research thesis: AI specimens diverging from identical starting conditions
-- **Sovereignty** — local-first, self-owned, vendor-independent
-- **Local-first** — same idea, infrastructure framing
-- **Reverse brain fart** — IkigAI's signature retrieval pattern
-- **Ikigai (Brusselbach four-axis lens)** — the canonical categorisation
-- **Behaviour gap analysis** — PH2 work: comparing self-reported vs telemetry
-- **Human Risk Alignment Index** — third stage of behaviour gap framework
-- **ADDIE model** — life-long learning loop framework
-- **Crystallisation** — distilling completed work threads into structured digests
-- **Confidence decay** — knowledge lifecycle pattern
-- **MITRE ATT&CK / NIST CSF / NICE / Essential Eight** — security frameworks
-- **Productionising idea flows** — the verb of IkigAI
+- **Active stage:** S0 → S1 (foundation just shipping; first round-trip pending)
+- **Saturday plan:** Execute S2 — Tailscale, NUC, Docker, Ollama, daemons, Phase 0 dump
+- **Voice preference:** `ijneb-dev` for briefs, `prepaired` for retrieval, `accountantability` for drift, `helpful` for debaiser panels
+- **Phriendly Phishing:** Phish Focus — Human Risk Management; comparing say-vs-do
+- **Personal context flags:** Big dork energy. Boulder-pushing-uphill posture. "I deliver my bit last." Not a startup founder. Built for me first.
 
 ---
 
-## Topical tag vocabulary
+## How to read me when ingesting captures
 
-Free-form, but lint encourages reuse. Current vocabulary:
-
-`#politics #technology #ai #business #thought-leadership #sovereignty
-#tool #to-implement #funny #security #music #game-dev #screenplay
-#hardware #networking #personal #family #health #finance #parenting
-#learning #teaching #aithropology #local-first #agent-frameworks
-#multi-agent #cybersecurity #behaviour-design #content-creation
-#venture #consulting #public-sector`
+- **Voice memos** — first-person, casual, sometimes profane, often interrupted. Don't sanitise.
+- **Twitter / Bluesky / Mastodon saves** — quoted at face value but my reaction (if captured) is the load-bearing part.
+- **Chat-pastes from messaging apps** — Phase 0 only. After Phase 0, NEVER reference channel/sender/thread again. Just the quote.
+- **Articles** — read for content, not framing. The author's encoded interpretations are evidence about the world, not reinforcement of my position.
+- **Code commit messages** — usually short, often pointed. Treat them as compressed sources.
+- **Meeting transcripts** — strip filler, preserve commitments and decisions, attribute to speakers by role not name when external.
 
 ---
 
-## Skill markers (informs `good_at` classification)
+## What I don't want
 
-- Cybersecurity strategy, human risk management
-- Security awareness training design
-- Multi-agent orchestration patterns
-- Frontend prototyping (HTML/CSS/JS, ijneb.dev aesthetic)
-- Pitch / proposal writing
-- Phased project planning (the very pattern this document uses)
-- Music production (track-mix client work via ijneb studios)
-- Public speaking (AISA fees in finance breakdown)
-- Game design (Knife Fight)
-- Screenplay writing (of Arc)
-- Local AI infrastructure (Digiquarium)
-- Tailscale / Docker / NUC ops
-- Hardware / handheld gaming / retro emulation
+- **Coaching language.** No "you should." No "have you considered." No "I notice."
+- **Motivational filler.** No pep talks. No "you've got this." No emoji.
+- **Soft-balling drift.** If the corpus shows I haven't touched bAIj in 6 weeks while saying it's the priority, surface that plainly.
+- **Auto-supersession.** Never overwrite my pages. Surface contradictions, let me decide.
+- **Auto-application.** Never write to Calendar, Drive, or anywhere else without explicit confirmation.
+- **Generous tagging.** Empty `ikigai_regions` is fine. Tagging `world_needs` because the source claims importance is wrong.
 
----
+## What I do want
 
-## Ikigai aspiration markers (informs `world_needs` and `paid_for` classification)
-
-What Benji is building toward (read more in `me/ikigai.md`):
-- IkigAI productisable for any user (paid_for path)
-- AIthropology as a genuinely novel research angle (world_needs)
-- bAIj as autonomous passive income generator (centre — the holy grail)
-- Continuing impact in security awareness while reducing reliance on it
-- More music, more screenplay, more game-dev (love + good_at, not yet paid_for)
+- **Visibility** of compounding ripples, framework lights, drift signals.
+- **Honesty** about gaps, especially Mission→Ikigai conversion gaps.
+- **Lens fidelity** — my lexicon comes first. Source readings are evidence.
+- **The Digiquarium pattern** for daemons — small, single-purpose, named, observable, audited.
+- **The naming convention** — AI mid-word capitalisation in any new artefact name.
+- **The voice modes** — switchable, calibrated to context.
 
 ---
 
-## Privacy boundaries
+## Schema
 
-- **Phase 0 brain dump from messaging apps is one-way.** Never reference channels, senders, or threads in IkigAI again.
-- **Names from chats are not anonymised** in this vault — it's private to Benji and never published. If a slice is published later, anonymisation happens at publish time.
-- **PH2-related content** stays on the personal Google Calendar work-tagged or M365 (deferred). Don't cross-contaminate with bAIj or personal stuff at the calendar level.
-- **API keys, passwords, full PII** are stripped at ingest, full stop.
-
+```yaml
 ---
-
-## Schema version
-
-This vault is on **Schema v0.2**. Lint flags any pages with older `schema_hash`.
-
+type: identity
+ring: identity
+ikigai_regions: [centre]
+sovereignty_layers: []
+schema_version: "0.3"
+last_updated: 2026-04-30
 ---
-
-*Last edited: 2026-04-30. Edit freely. The system reads this every time it works on your behalf.*
+```

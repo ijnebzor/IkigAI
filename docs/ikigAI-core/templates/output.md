@@ -1,53 +1,52 @@
 ---
-id: 2026-04-30-EXAMPLE
+id: <ulid-or-slug>
 type: output
-created: 2026-04-30T00:00:00+11:00
-updated: 2026-04-30T00:00:00+11:00
+title: <name>
+created: <iso8601>
+updated: <iso8601>
 
-ikigai_regions: []
-summary: ""
-tags: []
+status: canonical
+schema_version: "0.3"
+schema_hash: <hash>
 
-sources_raw: []
 derived_from: []
 supersedes: []
-superseded_by: null
+contradicts: []
+last_reinforced: null
 confidence: 0.7
-last_reinforced: 2026-04-30
 drivers: []
 biases: []
 
+ikigai_regions: []
+compounding_ripples: []
+
+ring: none
+expression_surface: none
+sovereignty_layers: []
+
+lexicon_terms: []
+
 retrieval_score: 0.5
-last_surfaced: null
-last_used: null
-context_modifiers: {}
+context_modifiers:
+  work_strategy: 1.0
+  creative: 1.0
+  research: 1.0
+  relational: 1.0
 surface_count: 0
 use_count: 0
+ignored_count: 0
 
-status: canonical
-schema_hash: v0.2
+tags: []
+people: []
+projects: []
+concepts: []
 
-output_type: gear-2
-in_response_to: ""
-gear_used: 2
-voice: helpful
-sources_cited: []
-applied: false
+output_kind: brief
+gear: null
+input_pages: []
+prompt_used: <prompt_name>
 applied_at: null
-outcome_notes: null
+applied_outcome: null
 ---
 
-# {{ output title }}
-
-<!-- The actual coach response, saved for re-reference. -->
-<!-- Filed back to vault with --save flag. -->
-
-## Original query
-<!-- what was asked -->
-
-## Response
-<!-- the answer + trail + action + blind spot + biases for Gear 2 -->
-<!-- or the full Debaiser panel for Gear 3 -->
-
-## Outcome (filled in later if applied)
-<!-- ADDIE close: what happened when you acted on this -->
+<output body — varies by output_kind>

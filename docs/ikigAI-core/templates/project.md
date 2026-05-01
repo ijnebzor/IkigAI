@@ -1,62 +1,74 @@
 ---
-id: 2026-04-30-EXAMPLE
+id: <ulid-or-slug>
 type: project
-created: 2026-04-30T00:00:00+11:00
-updated: 2026-04-30T00:00:00+11:00
+title: <name>
+created: <iso8601>
+updated: <iso8601>
 
-ikigai_regions: []
-summary: ""
-tags: []
+status: canonical
+schema_version: "0.3"
+schema_hash: <hash>
 
-sources_raw: []
 derived_from: []
 supersedes: []
-superseded_by: null
-confidence: 0.7
-last_reinforced: 2026-04-30
+contradicts: []
+last_reinforced: null
+confidence: 0.85
 drivers: []
 biases: []
 
-retrieval_score: 0.7
-last_surfaced: null
-last_used: null
-context_modifiers: {}
+ikigai_regions: []
+compounding_ripples: []
+
+ring: surface
+expression_surface: tooling
+sovereignty_layers: []
+
+lexicon_terms: []
+
+retrieval_score: 0.6
+context_modifiers:
+  work_strategy: 1.0
+  creative: 1.0
+  research: 1.0
+  relational: 1.0
 surface_count: 0
 use_count: 0
+ignored_count: 0
 
-status: canonical
-schema_hash: v0.2
+tags: []
+people: []
+projects: []
+concepts: []
 
-project_status: active
-linked_concepts: []
-linked_sources: []
-linked_ideas: []
+project_status: scoping
+phases: []
+deliverables: []
+collaborators: []
+target_date: null
+parent_project: null
 ---
 
-# {{ project name }}
+## What this project is
 
-## Mission
-> What this project is for. One paragraph max.
+<one sentence>
 
-## Where it sits in your Ikigai
-> Which regions this touches and why.
+## Why it exists
 
-## Current state
-> What's done. What's blocked. What's next.
+<paragraph>
 
-## Key decisions
-- 2026-04-30 — Decision X — driven by [[source-id]]
+## Phases
+
+### Phase 1 — <name>
+- Goal:
+- Effort:
+- Deliverable:
+- Status: pending|active|done
 
 ## Open questions
 
-## Related entities
-<!-- people, tools, orgs -->
+- 
 
-## Sources
-<!-- auto-populated -->
+## Links
 
-## Ideas in flight
-<!-- auto-populated from wiki/ideas/ tagged to this project -->
-
-## Work units (S4)
-<!-- ABENAKI Segment 2 will populate -->
+- [[<page_id>]]

@@ -7,12 +7,12 @@
 <meta name="apple-mobile-web-app-capable" content="yes"/>
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
 <meta name="apple-mobile-web-app-title" content="IkigAI"/>
-<meta name="description" content="Your brain, coached. Capture anything. Retrieve at depth. Productionise idea flows."/>
+<meta name="description" content="The framework overlays. Compounding becomes visible. You act on what was already there."/>
 <link rel="manifest" href="manifest.json"/>
-<title>IkigAI — App</title>
+<title>ikigAI</title>
 <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&family=Syne:wght@700;800&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet"/>
 <style>
-:root{--bg:#0d0d0d;--surface:#0f0f0f;--surface2:#141414;--card:#161616;--border:#1e1e1e;--border2:#2a2a2a;--muted:#1a1a1a;--sub:#8a8a84;--text:#e8e8e2;--text-dim:#5a5a55;--text-bright:#f9fafb;--accent:#c8f135;--accent-dim:rgba(200,241,53,0.15);--accent-soft:rgba(200,241,53,0.06);--cyan:#00d4ff;--green:#00ff88;--orange:#ff8c42;--coral:#ff6b6b;--purple:#a78bfa;--yellow:#eab308;--red:#ef4444;--blue:#00aaff;--safe-b:env(safe-area-inset-bottom,0px);--radius:6px;--radius-sm:3px;--mono:'JetBrains Mono',monospace;--display:'Syne',sans-serif;--body:'DM Sans',sans-serif}
+:root{--bg:#0d0d0d;--surface:#0f0f0f;--surface2:#141414;--card:#161616;--border:#1e1e1e;--border2:#2a2a2a;--muted:#1a1a1a;--sub:#8a8a84;--text:#e8e8e2;--text-dim:#5a5a55;--text-bright:#f9fafb;--accent:#c8f135;--accent-dim:rgba(200,241,53,0.15);--accent-soft:rgba(200,241,53,0.06);--cyan:#00d4ff;--green:#00ff88;--orange:#ff8c42;--coral:#ff6b6b;--purple:#a78bfa;--yellow:#eab308;--red:#ef4444;--blue:#00aaff;--region-love:#ff6b9d;--region-good:#c8f135;--region-needs:#00d4ff;--region-paid:#ffaa3d;--safe-b:env(safe-area-inset-bottom,0px);--radius:6px;--radius-sm:3px;--mono:'JetBrains Mono',monospace;--display:'Syne',sans-serif;--body:'DM Sans',sans-serif}
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
 html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--text);font-family:var(--body)}
 #app{display:flex;flex-direction:column;height:100%;height:100dvh}
@@ -28,9 +28,8 @@ html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--text);fon
 .nav-btn.active{color:var(--accent)}
 .nav-btn.active::before{content:'';position:absolute;top:0;left:15%;right:15%;height:2px;background:var(--accent);box-shadow:0 0 6px var(--accent)}
 .nav-icon{font-size:16px;line-height:1}
-.nav-overlay{color:var(--sub)}.nav-overlay:active{opacity:.7}
-.nav-overlay.panel-open{color:var(--orange)}
-.nav-overlay.panel-open::before{content:'';position:absolute;top:0;left:15%;right:15%;height:2px;background:var(--orange);box-shadow:0 0 8px var(--orange)}
+.nav-overlay{color:var(--sub)}
+.nav-overlay:active{opacity:.7}
 
 /* Cards & layout */
 .card{background:var(--card);border-radius:var(--radius);padding:14px;margin-bottom:10px;border:1px solid var(--border)}
@@ -96,7 +95,7 @@ textarea.inp{resize:vertical;min-height:60px;font-family:var(--body)}
 .task-check{width:18px;height:18px;border:1.5px solid var(--border2);border-radius:3px;flex-shrink:0;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .15s;margin-top:1px;background:var(--bg)}
 .task-check:hover{border-color:var(--accent)}
 .task-check.checked{background:var(--accent);border-color:var(--accent)}
-.task-check.checked::after{content:'✓';color:var(--bg);font-size:13px;font-weight:700}
+.task-check.checked::after{content:'\2713';color:var(--bg);font-size:13px;font-weight:700}
 .task-body{flex:1;min-width:0}
 .task-text{font-size:13px;line-height:1.5;color:var(--text);cursor:pointer}
 .task-meta{display:flex;gap:8px;margin-top:4px;font-family:var(--mono);font-size:9px;color:var(--text-dim);letter-spacing:.05em;align-items:center;flex-wrap:wrap}
@@ -105,6 +104,23 @@ textarea.inp{resize:vertical;min-height:60px;font-family:var(--body)}
 .task:hover .task-actions{opacity:1}
 .task-act{background:none;border:none;color:var(--sub);cursor:pointer;font-size:14px;padding:2px 6px;border-radius:3px}
 .task-act:hover{background:var(--muted);color:var(--text)}
+
+/* Region pills */
+.region-pill{display:inline-flex;align-items:center;gap:5px;padding:3px 9px;border-radius:12px;font-family:var(--mono);font-size:9px;letter-spacing:.1em;text-transform:uppercase;border:1px solid var(--border);background:var(--surface);color:var(--sub);margin-right:4px;margin-bottom:4px}
+.region-pill.lit{border-color:var(--region);color:var(--region);background:var(--region-bg);box-shadow:0 0 8px var(--region-shadow)}
+.region-pill.love{--region:var(--region-love);--region-bg:rgba(255,107,157,0.1);--region-shadow:rgba(255,107,157,0.2)}
+.region-pill.good_at{--region:var(--region-good);--region-bg:rgba(200,241,53,0.1);--region-shadow:rgba(200,241,53,0.2)}
+.region-pill.world_needs{--region:var(--region-needs);--region-bg:rgba(0,212,255,0.1);--region-shadow:rgba(0,212,255,0.2)}
+.region-pill.paid_for{--region:var(--region-paid);--region-bg:rgba(255,170,61,0.1);--region-shadow:rgba(255,170,61,0.2)}
+.region-pill.passion,.region-pill.mission,.region-pill.profession,.region-pill.vocation,.region-pill.centre{--region:var(--accent);--region-bg:rgba(200,241,53,0.08);--region-shadow:rgba(200,241,53,0.18)}
+.region-pill.centre{--region:var(--orange);--region-bg:rgba(255,140,66,0.12);--region-shadow:rgba(255,140,66,0.25);font-weight:700}
+
+/* Compound flash overlay */
+.compound-flash{position:fixed;bottom:90px;left:14px;right:14px;background:var(--card);border:1px solid var(--accent);border-radius:var(--radius);padding:14px 16px;z-index:9998;transform:translateY(120%);transition:transform .35s cubic-bezier(.4,0,.2,1);box-shadow:0 8px 32px rgba(200,241,53,0.18);max-width:480px;margin:0 auto}
+.compound-flash.show{transform:translateY(0)}
+.compound-flash-head{font-family:var(--mono);font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:var(--accent);margin-bottom:8px}
+.compound-flash-body{font-size:13px;line-height:1.5;color:var(--text)}
+.compound-flash-pills{display:flex;flex-wrap:wrap;gap:4px;margin-top:8px}
 
 /* Toast */
 .toast{position:fixed;bottom:80px;left:50%;transform:translateX(-50%) translateY(100px);background:var(--accent);color:var(--bg);padding:10px 18px;border-radius:6px;font-family:var(--mono);font-size:11px;font-weight:700;letter-spacing:.05em;z-index:9999;transition:transform .25s;text-transform:uppercase}
@@ -159,21 +175,36 @@ textarea.inp{resize:vertical;min-height:60px;font-family:var(--body)}
 .cap-quick .icon{font-size:24px;margin-bottom:8px;display:block}
 .cap-quick .text{font-family:var(--mono);font-size:10px;letter-spacing:.15em;text-transform:uppercase;color:var(--sub)}
 
-/* Timeline */
-.timeline-week{margin-bottom:18px}
-.timeline-week-head{font-family:var(--mono);font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:var(--accent);margin-bottom:8px}
-.timeline-bar{display:flex;background:var(--muted);height:36px;border-radius:var(--radius-sm);overflow:hidden;margin-bottom:8px}
-.timeline-seg{display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:10px;font-weight:600;color:var(--bg);overflow:hidden;white-space:nowrap;padding:0 6px}
-.timeline-seg.s0{background:var(--accent)}
-.timeline-seg.s1{background:var(--green)}
-.timeline-seg.s2{background:var(--orange)}
-.timeline-seg.s3{background:var(--cyan)}
-.timeline-seg.s4{background:var(--purple)}
-.timeline-seg.s5{background:var(--yellow)}
+/* Voice recording UI */
+.voice-rec{display:flex;align-items:center;gap:12px;padding:14px;background:var(--card);border:1px solid var(--border);border-radius:var(--radius);margin-bottom:10px}
+.voice-rec.active{border-color:var(--red);box-shadow:0 0 0 1px var(--red)}
+.voice-btn{width:44px;height:44px;border-radius:50%;border:none;background:var(--accent);color:var(--bg);font-size:20px;cursor:pointer;flex-shrink:0;transition:all .15s}
+.voice-btn:hover{transform:scale(1.05)}
+.voice-btn.recording{background:var(--red);color:#fff;animation:pulse-rec 1.5s ease-in-out infinite}
+@keyframes pulse-rec{0%,100%{box-shadow:0 0 0 0 rgba(239,68,68,0.5)}50%{box-shadow:0 0 0 12px rgba(239,68,68,0)}}
+.voice-status{flex:1;font-size:12px;color:var(--sub);font-family:var(--mono);letter-spacing:.05em}
+.voice-status.live{color:var(--red);font-weight:600}
 
-/* Help text */
-.help{padding:12px;background:var(--accent-soft);border:1px solid var(--accent-dim);border-radius:var(--radius);font-size:12px;line-height:1.6;color:var(--text);margin-bottom:14px}
-.help strong{color:var(--accent)}
+/* Lexicon */
+.lex-entry{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:14px;margin-bottom:10px}
+.lex-entry .term{font-family:var(--display);font-size:16px;font-weight:700;color:var(--accent);margin-bottom:4px}
+.lex-entry .lens{font-family:var(--mono);font-size:9px;letter-spacing:.15em;color:var(--sub);text-transform:uppercase;margin-bottom:8px}
+.lex-entry .body{font-size:13px;line-height:1.6;color:var(--text);margin-bottom:8px}
+.lex-entry .body p{margin-bottom:6px}
+.lex-entry .examples{font-size:12px;color:var(--sub);font-style:italic;line-height:1.6;border-left:2px solid var(--border);padding-left:10px;margin-top:8px}
+
+/* Region grid (Lens view) */
+.region-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px}
+.region-cell{padding:14px;border-radius:var(--radius);border:1px solid var(--border);background:var(--card);cursor:pointer;transition:all .15s}
+.region-cell:hover{border-color:var(--accent)}
+.region-cell .region-name{font-family:var(--display);font-size:14px;font-weight:700;margin-bottom:4px}
+.region-cell .region-count{font-family:var(--mono);font-size:11px;color:var(--accent);letter-spacing:.05em}
+.region-cell .region-fill{height:4px;background:var(--muted);border-radius:2px;margin-top:8px;overflow:hidden}
+.region-cell .region-fill-inner{height:100%;border-radius:2px;transition:width .5s ease}
+.region-cell.love .region-fill-inner{background:var(--region-love)}
+.region-cell.good_at .region-fill-inner{background:var(--region-good)}
+.region-cell.world_needs .region-fill-inner{background:var(--region-needs)}
+.region-cell.paid_for .region-fill-inner{background:var(--region-paid)}
 
 /* Filter chips */
 .chips{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px;overflow-x:auto;padding-bottom:4px}
@@ -195,7 +226,23 @@ textarea.inp{resize:vertical;min-height:60px;font-family:var(--body)}
 .switch input:checked + .switch-track{background:var(--accent-dim);border-color:var(--accent)}
 .switch input:checked + .switch-track:before{transform:translateX(20px);background:var(--accent)}
 
-@media(min-width:768px){.main{padding:18px 18px 10px}.kg{grid-template-columns:1fr 1fr 1fr 1fr}.kg3{grid-template-columns:repeat(3,1fr)}}
+/* Help text */
+.help{padding:12px;background:var(--accent-soft);border:1px solid var(--accent-dim);border-radius:var(--radius);font-size:12px;line-height:1.6;color:var(--text);margin-bottom:14px}
+.help strong{color:var(--accent)}
+.help.warn{background:rgba(255,140,66,0.06);border-color:rgba(255,140,66,0.25)}
+.help.warn strong{color:var(--orange)}
+
+/* Brusselbach SVG container */
+.brusselbach{display:flex;justify-content:center;padding:20px 0;background:var(--card);border:1px solid var(--border);border-radius:var(--radius);margin-bottom:14px}
+.brusselbach svg{max-width:280px;height:auto}
+
+/* Onboarding stepper */
+.onb-step{padding:18px;background:var(--card);border:1px solid var(--border);border-radius:var(--radius);margin-bottom:10px}
+.onb-step h4{font-family:var(--display);font-size:14px;font-weight:700;margin-bottom:6px}
+.onb-step .num{font-family:var(--mono);font-size:9px;letter-spacing:.18em;color:var(--accent);margin-bottom:6px;text-transform:uppercase}
+.onb-step p{font-size:12px;color:var(--sub);line-height:1.6;margin-bottom:10px}
+
+@media(min-width:768px){.main{padding:18px 18px 10px}.kg{grid-template-columns:1fr 1fr 1fr 1fr}.kg3{grid-template-columns:repeat(3,1fr)}.region-grid{grid-template-columns:repeat(3,1fr)}}
 </style>
 </head>
 <body>
@@ -204,34 +251,43 @@ textarea.inp{resize:vertical;min-height:60px;font-family:var(--body)}
   <div class="header">
     <div class="logo-dot"></div>
     <div class="logo-text">ikig<span class="accent">AI</span></div>
-    <div class="logo-sub" id="hdr-sub">// your brain, coached</div>
-    <div id="sync-status" style="font-size:9px;font-family:var(--mono);color:var(--sub);letter-spacing:.05em" onclick="openSettings()"></div>
+    <div class="logo-sub" id="hdr-sub">// the framework overlays</div>
+    <div id="sync-status" style="font-size:9px;font-family:var(--mono);color:var(--sub);letter-spacing:.05em;cursor:pointer" onclick="openSettings()"></div>
   </div>
   <div class="main" id="mc"></div>
   <nav class="nav">
-    <button class="nav-btn active" data-view="today" onclick="showV('today')"><span class="nav-icon">◐</span>Today</button>
-    <button class="nav-btn" data-view="roadmap" onclick="showV('roadmap')"><span class="nav-icon">▦</span>Roadmap</button>
-    <button class="nav-btn" data-view="tasks" onclick="showV('tasks')"><span class="nav-icon">☑</span>Tasks</button>
-    <button class="nav-btn" data-view="captures" onclick="showV('captures')"><span class="nav-icon">⊕</span>Captures</button>
-    <button class="nav-btn" data-view="timeline" onclick="showV('timeline')"><span class="nav-icon">▤</span>Timeline</button>
-    <button class="nav-btn" data-view="notes" onclick="showV('notes')"><span class="nav-icon">✎</span>Notes</button>
-    <button class="nav-btn nav-overlay" onclick="toggleDrawer()"><span class="nav-icon">⋯</span>More</button>
+    <button class="nav-btn active" data-view="today" onclick="showV('today')"><span class="nav-icon">\u25D0</span>Today</button>
+    <button class="nav-btn" data-view="roadmap" onclick="showV('roadmap')"><span class="nav-icon">\u25A6</span>Roadmap</button>
+    <button class="nav-btn" data-view="tasks" onclick="showV('tasks')"><span class="nav-icon">\u2611</span>Tasks</button>
+    <button class="nav-btn" data-view="capture" onclick="showV('capture')"><span class="nav-icon">\u2295</span>Capture</button>
+    <button class="nav-btn" data-view="lens" onclick="showV('lens')"><span class="nav-icon">\u2A02</span>Lens</button>
+    <button class="nav-btn" data-view="lexicon" onclick="showV('lexicon')"><span class="nav-icon">\u00A7</span>Lexicon</button>
+    <button class="nav-btn nav-overlay" onclick="toggleDrawer()"><span class="nav-icon">\u22EF</span>More</button>
   </nav>
 </div>
 
 <div class="toast"></div>
+<div class="compound-flash" id="compound-flash">
+  <div class="compound-flash-head" id="cf-head">// COMPOUNDING VISIBLE</div>
+  <div class="compound-flash-body" id="cf-body"></div>
+  <div class="compound-flash-pills" id="cf-pills"></div>
+</div>
 
 <div class="drawer-overlay" id="drawer-overlay" onclick="closeDrawer()"></div>
 <div class="drawer" id="drawer">
   <div class="drawer-grid">
-    <button class="drawer-btn" onclick="closeDrawer();openSettings()"><span class="drawer-icon">⚙</span>Settings</button>
-    <button class="drawer-btn" onclick="closeDrawer();driveSave()"><span class="drawer-icon">⬆</span>Push to Drive</button>
-    <button class="drawer-btn" onclick="closeDrawer();driveLoad()"><span class="drawer-icon">⬇</span>Pull from Drive</button>
-    <button class="drawer-btn" onclick="closeDrawer();exportJSON()"><span class="drawer-icon">⤓</span>Export JSON</button>
-    <button class="drawer-btn" onclick="closeDrawer();importJSON()"><span class="drawer-icon">⤒</span>Import JSON</button>
-    <button class="drawer-btn" onclick="window.open('roadmap-reference.html','_blank')"><span class="drawer-icon">📖</span>Spec Doc</button>
-    <button class="drawer-btn" onclick="closeDrawer();openAbout()"><span class="drawer-icon">ⓘ</span>About</button>
-    <button class="drawer-btn" onclick="closeDrawer();confirmReset()"><span class="drawer-icon">↺</span>Reset</button>
+    <button class="drawer-btn" onclick="closeDrawer();openOnboard()"><span class="drawer-icon">\u2766</span>Onboard</button>
+    <button class="drawer-btn" onclick="closeDrawer();showV('timeline')"><span class="drawer-icon">\u29FE</span>Timeline</button>
+    <button class="drawer-btn" onclick="closeDrawer();showV('notes')"><span class="drawer-icon">\u270E</span>Notes</button>
+    <button class="drawer-btn" onclick="closeDrawer();openSettings()"><span class="drawer-icon">\u2699</span>Settings</button>
+    <button class="drawer-btn" onclick="closeDrawer();driveSave()"><span class="drawer-icon">\u2B06</span>Push Drive</button>
+    <button class="drawer-btn" onclick="closeDrawer();driveLoad()"><span class="drawer-icon">\u2B07</span>Pull Drive</button>
+    <button class="drawer-btn" onclick="closeDrawer();exportJSON()"><span class="drawer-icon">\u2913</span>Export JSON</button>
+    <button class="drawer-btn" onclick="closeDrawer();importJSON()"><span class="drawer-icon">\u2912</span>Import JSON</button>
+    <button class="drawer-btn" onclick="window.open('roadmap-reference.html','_blank')"><span class="drawer-icon">\u270D</span>Spec Doc</button>
+    <button class="drawer-btn" onclick="closeDrawer();openAbout()"><span class="drawer-icon">\u24D8</span>About</button>
+    <button class="drawer-btn" onclick="closeDrawer();confirmReset()"><span class="drawer-icon">\u21BA</span>Reset</button>
+    <button class="drawer-btn" onclick="closeDrawer()"><span class="drawer-icon">\u2715</span>Close</button>
   </div>
 </div>
 
@@ -239,7 +295,7 @@ textarea.inp{resize:vertical;min-height:60px;font-family:var(--body)}
 <div class="sheet" id="sheet">
   <div class="sheet-head">
     <div class="sheet-title" id="sheet-title"></div>
-    <button class="sheet-close" onclick="closeSheet()">✕</button>
+    <button class="sheet-close" onclick="closeSheet()">\u2715</button>
   </div>
   <div class="sheet-body" id="sheet-body"></div>
 </div>
@@ -248,131 +304,110 @@ textarea.inp{resize:vertical;min-height:60px;font-family:var(--body)}
 
 <script>
 // ═══════════════════════════════════════════════════════════════════════════
-// IkigAI App — single-file SPA
-// State model forked from RenovAIter, repointed at the IkigAI roadmap.
+// IkigAI v0.3 — single-file SPA
+// Spine: framework overlays. compounding becomes visible. you remain the thinker.
 // ═══════════════════════════════════════════════════════════════════════════
 
-const SK = 'ikigai_v0_2';
+const SK = 'ikigai_v0_3';
 const DRIVE_FILE_NAME = 'ikigai-state.json';
-const SCHEMA_VERSION = 'v0.2';
+const SCHEMA_VERSION = 'v0.3';
 
 // ─── Stage definitions (canonical, from IkigAI Roadmap v1.0) ──────────────
 const STAGES_CANONICAL = [
   {
-    id: 's0',
-    num: '00',
-    title: 'Foundation',
-    when: 'Today',
-    effort: '2h',
-    deps: 'Nothing',
-    tagline: 'Schema, prompts, repo split. No infra yet. Validatable end-to-end through Claude manually.',
+    id: 's0', num: '00', title: 'Foundation', when: 'Today', effort: '2h', deps: 'Nothing',
+    tagline: 'Schema, prompts, repo split, lexicon. No infra yet. Validatable end-to-end through Claude manually.',
     components: [
       'Repo split: ikigAI-core/ (universal) and ikigAI-me/ (yours) as siblings',
-      'Schema v0.2: explicit ikigai_regions flat list, provenance fields, retrieval signals',
-      'Operation prompts: understand, retrieve, debaiser, phase-an-idea, brief, surface, lint',
-      'Page templates: source, entity, concept, project, idea, output (valid v0.2 frontmatter)',
+      'Schema v0.3: explicit ikigai_regions, lexicon awareness, ring/region duality, compounding ripples field',
+      'Operation prompts: understand, retrieve, debaiser, phase-an-idea, brief, surface, lint, onboard',
+      'Page templates: source, entity, concept, project, idea, output (valid v0.3 frontmatter)',
       'Ikigai dimension pages: 9 rollups (4 axes + 5 intersections)',
       'Personal vocabulary: CLAUDE.md populated with projects, people, tools, concepts',
-      'Ikigai aspiration: ikigai.md with current vs aspirational mapping',
+      'Lexicon: me/lexicon.md seeded with sovereignty (5 layers), AIthropologist, governance, agency, alignment, drift, compounding',
+      'Ikigai aspiration: ikigai.md with concentric rings (identity/principle/surfaces/funding) + four-circle test',
       'Config: config.yml with voice routing, brief cadence, daemon schedules'
     ],
-    checkpoint: 'You can read CLAUDE.md and recognise the contract. Pasting any source plus the understand prompt into Claude returns a properly-shaped page.',
-    deliverable: 'ikigAI-v0.2.zip — git-init-able bundle'
+    checkpoint: 'You can read CLAUDE.md and lexicon.md and recognise the contract. Pasting any source plus the understand prompt into Claude returns a properly-shaped page using YOUR semantic lens.',
+    deliverable: 'ikigAI v0.3 — full spec bundle with lexicon as first-class architecture'
   },
   {
-    id: 's1',
-    num: '01',
-    title: 'Single Round Trip',
-    when: 'Today (after S0)',
-    effort: '1h',
-    deps: 'S0',
+    id: 's1', num: '01', title: 'Single Round Trip', when: 'Today', effort: '1h', deps: 'S0',
     tagline: 'Validate the schema with one real source through the full pipeline manually before any infra. Catch schema bugs cheap.',
     components: [
       'Pick one real source (article, voice memo, chat-paste, or idea)',
-      'Drop in inbox/unsorted/ as markdown — no frontmatter needed',
-      'Run /understand manually through Claude with CLAUDE.md + ikigai.md context',
+      'Drop in inbox/unsorted/ as markdown',
+      'Run /understand manually through Claude with CLAUDE.md + ikigai.md + lexicon.md context',
+      'Verify regions tagged through your lens, not the source\u2019s encoded one',
       'Save the resulting page to wiki/sources/<id>.md',
       'Run /retrieve at all three gears against the corpus-of-one',
-      'Adjust schema if any field felt wrong; bump schema_hash',
-      'Commit to git: "S1 round trip: first real source ingested"'
+      'Adjust schema or lexicon if any field felt wrong; bump schema_hash',
+      'Commit to git: "S1 round trip: first real source ingested through your lens"'
     ],
-    checkpoint: 'You believe the foundation is right. You would bet S2 effort on this schema.',
-    deliverable: 'Schema v0.2.x post-feedback fixes, one real page committed'
+    checkpoint: 'You believe the foundation is right. The lexicon shaped the classification. You would bet S2 effort on this schema.',
+    deliverable: 'Schema v0.3.x post-feedback fixes, one real page committed, lexicon validated'
   },
   {
-    id: 's2',
-    num: '02',
-    title: 'NUC Live, Brain On',
-    when: 'This week',
-    effort: '6h',
-    deps: 'S1',
-    tagline: 'The heart of the build. Everything else depends on this. NUC running stateful. Reachable via Tailscale. Phase 0 brain dump complete.',
+    id: 's2', num: '02', title: 'NUC Live, Brain On', when: 'This weekend', effort: '6h', deps: 'S1',
+    tagline: 'The heart of the build. Audited infrastructure plugged in, not built. NUC running stateful. Reachable via Tailscale. Phase 0 brain dump complete.',
     components: [
       'Linux confirmed on NUC (Ubuntu LTS or current)',
       'Tailscale installed on NUC and your devices, mesh confirmed',
-      'Docker + Docker Compose for daemon containerisation',
-      'Ollama installed natively, llama3.2:latest pulled',
-      'Vault dir at ~/ikigAI-me/ with v0.2 layout, git-tracked',
-      'Vector index initialised (Chroma)',
+      'Docker + Docker Compose installed for daemon containerisation',
+      'Ollama installed natively, llama3.2:latest pulled (Model Wars winner)',
+      'Vault dir at ~/ikigAI-me/ with v0.3 layout, git-tracked',
+      'Vector index initialised (Chroma — local, swappable)',
       'Graph index initialised (NetworkX in state/graph.json)',
       'SSH config from Mac and laptop verified end-to-end',
-      'Canonicalisation engine containerised and configured',
-      'gargAIntuan orchestrator containerised',
-      'Context-injection synthesis engine containerised',
-      'inbox-watcher daemon (inotify on inbox/)',
-      'decay-keeper daemon (cron daily)',
+      'Engine: canonicalisation containerised (multi-key matching, confidence-scored)',
+      'Engine: gargAIntuan orchestrator containerised (parallel agent dispatch)',
+      'Engine: context-injection synthesis containerised (Gear 2/3 calls to Claude)',
+      'Daemon: THE WATCHER (inbox-watcher) — inotify on inbox/',
+      'Daemon: THE SCOUT (linkage-scout) — nightly graph walk, 02:00',
+      'Daemon: THE KEEPER (decay-keeper) — daily confidence + retrieval-score upkeep',
+      'Daemon: THE HERALD (brief-generator) — daily brief at 07:30',
+      'Daemon: THE DEBAISER — on-demand contrarian panel',
+      'Daemon: THE GATEKEEPER (gmail-watcher) — 15min poll on labelled folder',
+      'Daemon: THE SCRIBE (calendar-sync) — read 14d cache, write on accept',
       'MCP server: ikigai_capture, ikigai_retrieve, ikigai_phase_an_idea, ikigai_brief_today, ikigai_debaiser',
       'MCP configured in Claude Desktop and Claude Code',
       'Google Calendar OAuth two-way scope',
       'Gmail OAuth read-only on label IkigAI/Inbox',
-      'gmail-watcher and calendar-sync daemons running',
-      'Phase 0 brain dump: Chrome tabs from each device',
-      'Phase 0 brain dump: Saved Instagram/Twitter/LinkedIn',
-      'Phase 0 brain dump: Quotes from messaging apps (NEVER reference channel/sender/thread)',
-      'Phase 0 brain dump: Voice memos via whisper.cpp',
+      'Phase 0 dump: Chrome tabs from each device',
+      'Phase 0 dump: Saved Instagram/Twitter/LinkedIn',
+      'Phase 0 dump: Quotes from messaging apps (NEVER reference channel/sender/thread)',
+      'Phase 0 dump: Voice memos via whisper.cpp',
       'Watcher processes everything; canonicalisation merges duplicates'
     ],
     checkpoint: 'SSH into NUC, daemons healthy. Claude Desktop on phone runs ikigai_retrieve over the dump. New article in inbox processes within a minute. Query "what have I been thinking about Mac Studios" returns canonicalised pages from past dumps.',
     deliverable: 'A working brain. Real corpus. Reachable from every device.'
   },
   {
-    id: 's3',
-    num: '03',
-    title: 'Coach Experience',
-    when: 'This week (after S2)',
-    effort: '4h',
-    deps: 'S2',
-    tagline: 'When it stops being infrastructure and starts being a coach. Three retrieval gears. Web viewer. Daily brief. Coach voice. Productionised idea flow.',
+    id: 's3', num: '03', title: 'Coach Experience', when: 'This weekend', effort: '4h', deps: 'S2',
+    tagline: 'When it stops being infrastructure and starts being framework overlay made visible. Three retrieval gears. Web viewer. Daily brief. Productionised idea flow.',
     components: [
       'Gear inference from phrasing (rules + LLM classifier fallback)',
-      'Per-context gear preference learned (override remembered)',
-      'Gear 1 — local model, instant, free',
-      'Gear 2 — local draft + Claude polish (default)',
-      'Gear 3 — Debaiser-on-self panel via Claude',
+      'Per-context gear preference learned',
+      'Gear 1 — local model, links only, instant, free',
+      'Gear 2 — local draft + Claude polish (default), 5-section synthesis',
+      'Gear 3 — Debaiser-on-self panel via Claude (5 analyst voices)',
       'Web viewer static-served from NUC at http://nuc.tailnet/',
-      'ABENAKI-shaped sidebar nav over wiki structure',
       'Brusselbach Ikigai diagram interactive — click region, see all tagged',
       'Search across whole vault with snippet highlighting',
-      'ijneb.dev tokens applied (#0d0d0d, #c8f135, JetBrains + Syne)',
+      'ijneb.dev tokens applied throughout',
       'Brief panel always accessible — today\u2019s recommended work',
-      'brief-generator daemon scheduled at 07:30 local',
-      'Daily brief format: 3 stage options, recommendation with reasoning, calendar offer',
+      'Daily brief format: 3 stage options across projects, recommendation with reasoning, calendar offer',
       'Coach voice configured: helpful default, warm/aggressive/roasty/prepaired/etc selectable',
       'Idea page type live in wiki/ideas/',
-      '/phase-an-idea reads idea + vault + projects + ikigai + calendar, writes phased plan',
-      'Calendar offer mechanism: propose Phase 1 slots against real availability',
-      'Accept slot writes Google Calendar event with description linking to plan'
+      '/phase-an-idea reads idea + vault + projects + ikigai + lexicon + calendar, writes phased plan',
+      'Calendar offer: propose Phase 1 slots against real availability',
+      'Accept slot writes Google Calendar event linking to plan'
     ],
     checkpoint: 'Daily brief lands in your morning, recommends across projects, offers calendar slots. Drop fresh idea into inbox/ideas/, get phased plan within minutes. Click mission region in viewer, see everything ever sent that touched mission. Gear 3 retrieval surfaces something you missed.',
     deliverable: 'A coach. A real one. Yours.'
   },
   {
-    id: 's4',
-    num: '04',
-    title: 'Learning Loop',
-    when: 'Week 2',
-    effort: '3h',
-    deps: 'S3',
+    id: 's4', num: '04', title: 'Learning Loop', when: 'Week 2', effort: '3h', deps: 'S3',
     tagline: 'The system learns from how you use it. Application captured. Outcomes observed. Retrieval ranking moves with reality.',
     components: [
       'Application capture mechanic: explicit applied:<output-id> note',
@@ -384,26 +419,21 @@ const STAGES_CANONICAL = [
       'Citations in coach outputs reinforce; ignored surfaces decay',
       'Per-context modifiers learned (work-strategy vs creative differs)',
       'linkage-scout daemon active nightly — top discoveries surface in next brief',
-      'Debaiser auto-trigger on >5 reinforcements without contradiction'
+      'Debaiser auto-trigger on >5 reinforcements without contradiction',
+      'Lexicon evolution: when you disagree with a region tag, the system asks if the lexicon needs updating'
     ],
     checkpoint: 'A page cited two weeks ago shows visibly higher rank in fresh retrievals. System has caught at least one echo-chamber pattern. Linkage-scout proposed at least one connection that genuinely surprised you.',
     deliverable: 'A system that gets better the more you use it, without grading anything.'
   },
   {
-    id: 's5',
-    num: '05',
-    title: 'Friend-Ready',
-    when: 'Week 3',
-    effort: '2h',
-    deps: 'S4',
-    tagline: 'Onboarding conversation built. Bespoke proven scalable by spinning up a second me. Friend\u2019s first capture lands cleanly.',
+    id: 's5', num: '05', title: 'Friend-Ready', when: 'Week 3', effort: '2h', deps: 'S4',
+    tagline: 'Onboarding conversation built (always-on, not just first-run). Bespoke proven scalable by spinning up a second me. Friend\u2019s first capture lands cleanly.',
     components: [
-      'Conversational onboarder operation prompt',
-      'Walks user through current Ikigai → aspirational → vocabulary seed',
-      'Captures preferences → coach voice → brief cadence',
+      'Conversational onboarder operation prompt (already first-class from S0)',
+      'Walks user through: current Ikigai, aspirational Ikigai, vocabulary seed, lexicon entries, voice prefs',
       'Same conversation tree, depth follows user signal',
       'friend-me/ created next to ikigAI-me/ on shared infra (or own NUC)',
-      'Same core/ import; their vault, their tags, their voice',
+      'Same core/ import; their vault, their tags, their voice, their lexicon',
       'Multi-tenant MCP: server reads me from auth context',
       'Tailscale ACL keeps friend\u2019s vault isolated',
       'Daemons run per-vault',
@@ -411,6 +441,64 @@ const STAGES_CANONICAL = [
     ],
     checkpoint: 'Friend captures their first thing. Their first retrieval works. Their daily brief in their voice lands next morning. You haven\u2019t refactored anything in your own setup.',
     deliverable: 'Two people, one core, two brains. Bespoke scales.'
+  }
+];
+
+// ─── Lexicon seed (load-bearing terms from your transcript and framework doc) ───
+const LEXICON_SEED = [
+  {
+    term: 'Sovereignty',
+    lens: 'operating principle / 5 layers',
+    body: 'The thread through every project. Same idea applied at five different layers.\n\nData sovereignty — NUC, Tailscale, ERPNext, offline LLMs. Your data lives on hardware you own.\n\nCognitive sovereignty — the Digiquarium controls the information diet. You decide what shapes your thinking.\n\nTooling sovereignty — TheInstrumAInt as refusal to be a tenant. ERPNext over Odoo. Open source over SaaS lock-in.\n\nNarrative sovereignty — the AI naming convention is your lexicon, not theirs. The words for what things are belong to you.\n\nEpistemic sovereignty — DebAIser on yourself. The right to push back on your own conclusions before someone else does it for you.',
+    examples: 'When the system tags a source with sovereignty, it must specify which layer. A piece on Mastodon vs Twitter is tooling+narrative sovereignty. A piece on local LLMs is data+cognitive. A piece on personal AI is all five.'
+  },
+  {
+    term: 'AIthropologist',
+    lens: 'identity / Ring 1',
+    body: 'The Ring 1 identity. Everything in the portfolio expresses this. AIthropology is the discipline: what happens to AI specimens when they diverge from identical starting conditions in controlled information environments. The AIthropologist is the practitioner of that discipline, applied to themselves and to AI alike.',
+    examples: 'IkigAI is the AIthropologist applying the framework to themselves. The Digiquarium is the AIthropologist applying it to AI specimens. ijneb.dev is the AIthropologist talking publicly. PoliticalDebAIser is the AIthropologist analysing political discourse.'
+  },
+  {
+    term: 'Compounding',
+    lens: 'mechanism / what the system makes visible',
+    body: 'A single action lighting up multiple Ikigai regions simultaneously. Not addition. Not coincidence. Mechanism.\n\nDo one thing in good_at. If it\u2019s also love, that\u2019s passion. If it\u2019s also world_needs, that\u2019s mission. If it\u2019s also paid_for, that\u2019s vocation. If all four, centre.\n\nThe system\u2019s entire job is making this visible. Without the framework overlay, the compounding happens but you don\u2019t see it. With the overlay, every action shows its full footprint across regions.',
+    examples: 'Writing this very document compounds: love (you enjoy it), good_at (you can), world_needs (others might), paid_for (latent — could be productised). Centre case. The system flags it.'
+  },
+  {
+    term: 'Recursion',
+    lens: 'mechanism / how compounding extends',
+    body: 'Compounding\u2019s second-order effect. Action A lights up region X. The lit X feeds back into action B in region Y. Y feeds back into Z. Each step amplifies the next.\n\nNot a metaphor. The system literally tracks this — when a page reinforces a concept, that concept\u2019s confidence rises, which means it ranks higher in the next retrieval, which means the next action is shaped by it more strongly.',
+    examples: 'Capture an article on AIthropology. It reinforces the concept page. Tomorrow\u2019s brief surfaces the concept higher. You write a blog post citing it. The post reinforces both the concept and the source. Recursion.'
+  },
+  {
+    term: 'Drift',
+    lens: 'failure mode / what the system watches for',
+    body: 'When the stones you\u2019re placing build toward the wrong thought. The agent\u2019s interpretation of a load-bearing word slowly diverges from yours. Each step is small. The cumulative effect is the system thinking on your behalf in a way that no longer matches your actual thinking.\n\nThe lexicon exists to prevent drift. Define the load-bearing terms with your interpretive lens. Update them when your understanding evolves.',
+    examples: 'If "sovereignty" drifts from "freedom from tenancy" toward "control over others," every retrieval downstream has a slightly wrong stone. The drift is invisible until you read what the system has been doing in your name.'
+  },
+  {
+    term: 'Governance',
+    lens: 'principle for managing your life',
+    body: 'Governance as a principle for managing your life — not a tech-ops concept reapplied. The deliberate design of the systems you live inside, the rules they enforce on your behalf, the boundaries they maintain.\n\nIkigAI is governance over your own knowledge: what comes in, how it\u2019s classified, what gets retrieved when, what gets challenged. Without governance, the inputs run you. With governance, you run them.',
+    examples: 'Phase 0 brain dump as ceremony. Lexicon updates as legislative action. Confidence decay as audit. Debaiser as judicial review.'
+  },
+  {
+    term: 'Agency',
+    lens: 'what the system protects',
+    body: 'The capacity to choose. To decline a SaaS. To name your own things. To reject the encoded interpretation. To remain the thinker.\n\nThe industry erodes agency by making cognition convenient. The system defends agency by making compounding visible without making decisions for you.',
+    examples: 'Three retrieval gears, not one. You choose the depth. The Debaiser pushes back, doesn\u2019t conclude. The phased plan offers calendar slots, doesn\u2019t book them. Always: you remain the thinker.'
+  },
+  {
+    term: 'Alignment',
+    lens: 'goal vs reality',
+    body: 'The gap between your stated Ikigai (where you want to be) and your captured reality (where you actually are). The system\u2019s role is to surface the delta — without judgement, without prescription. Just visibility.\n\nAlignment is not "stay on track." Alignment is "see the divergence and decide what to do." Sometimes the right move is updating the goal, not closing the gap.',
+    examples: 'me/ikigai.md says you want to move toward centre via bAIj. The captures show you spent 12 hours on PrepAIred this week and zero on bAIj. The brief surfaces the gap. You decide whether to course-correct or update the aspirational ikigai.md.'
+  },
+  {
+    term: 'Expression Surfaces',
+    lens: 'Ring 3 / four channels',
+    body: 'The four channels through which the AIthropologist identity gets expressed in the world. Research (the Digiquarium, papers). Tooling (TheInstrumAInt, applied apps). Discourse (ijneb.dev, the blog, podcast, talks). Practice (the day-job).\n\nEach project lives on one or more surfaces. Tags get this explicitly. The brief generator can ask: "you fed mostly into Tooling this week. Discourse is quiet. Want to write something?"',
+    examples: 'IkigAI itself is Tooling. The roadmap document is Discourse. The Digiquarium paper is Research. Phriendly Phishing PO work is Practice.'
   }
 ];
 
@@ -439,17 +527,25 @@ function emptyData() {
       driveClientId: '',
       driveToken: null,
       driveSync: false,
-      onboardedAt: null
+      onboardedAt: null,
+      voiceTranscriptionEnabled: true
     },
     stages: STAGES_CANONICAL.map(s => ({
       id: s.id,
-      expanded: s.id === 's0' || s.id === 's1', // Today's stages expanded by default
+      expanded: s.id === 's0' || s.id === 's1',
       startedAt: null,
       completedAt: null
     })),
     tasks: tasks,
     captures: [],
     notes: [],
+    lexicon: LEXICON_SEED.slice(),
+    ikigai_state: {
+      // Live count of pages tagged in each region — populated as captures come in
+      // Used by Lens view and compounding flash
+      love: 0, good_at: 0, world_needs: 0, paid_for: 0,
+      passion: 0, mission: 0, profession: 0, vocation: 0, centre: 0
+    },
     meta: {
       schemaVersion: SCHEMA_VERSION,
       createdAt: Date.now(),
@@ -463,12 +559,27 @@ function loadS() {
     const raw = localStorage.getItem(SK);
     if (raw) {
       const d = JSON.parse(raw);
-      // Backfill any missing structure on schema bumps
+      // Backfill any missing structure
       if (!d.captures) d.captures = [];
       if (!d.notes) d.notes = [];
+      if (!d.lexicon) d.lexicon = LEXICON_SEED.slice();
+      if (!d.ikigai_state) d.ikigai_state = { love: 0, good_at: 0, world_needs: 0, paid_for: 0, passion: 0, mission: 0, profession: 0, vocation: 0, centre: 0 };
       if (!d.stages) d.stages = STAGES_CANONICAL.map(s => ({ id: s.id, expanded: false, startedAt: null, completedAt: null }));
       if (!d.meta) d.meta = { schemaVersion: SCHEMA_VERSION, createdAt: Date.now(), lastSyncedAt: null };
       return d;
+    }
+    // Migrate from v0.2 if present
+    const v02 = localStorage.getItem('ikigai_v0_2');
+    if (v02) {
+      try {
+        const d = JSON.parse(v02);
+        d.lexicon = LEXICON_SEED.slice();
+        d.ikigai_state = { love: 0, good_at: 0, world_needs: 0, paid_for: 0, passion: 0, mission: 0, profession: 0, vocation: 0, centre: 0 };
+        d.meta = d.meta || {};
+        d.meta.schemaVersion = SCHEMA_VERSION;
+        d.meta.migratedFromV02 = Date.now();
+        return d;
+      } catch (e) { /* fall through */ }
     }
   } catch (e) { console.error('loadS error:', e); }
   return emptyData();
@@ -478,6 +589,7 @@ function saveS() {
   try {
     localStorage.setItem(SK, JSON.stringify(S));
     syncToDrive();
+    updateSyncStatus();
   } catch (e) { toast('Save failed'); console.error(e); }
 }
 
@@ -485,6 +597,7 @@ let S = loadS();
 let CV = 'today';
 let _filterStage = 'all';
 let _filterStatus = 'all';
+let _voiceRecognition = null;
 
 // ─── Helpers ──────────────────────────────────────────────────────────────
 function uid() { return Date.now() + '-' + Math.floor(Math.random() * 1000); }
@@ -524,7 +637,6 @@ function totalProgress() {
   return Math.round((done / S.tasks.length) * 100);
 }
 function totalEffortRemaining() {
-  // Estimate from canonical effort strings; very rough
   let total = 0;
   STAGES_CANONICAL.forEach(s => {
     const p = stageProgress(s.id);
@@ -536,7 +648,6 @@ function totalEffortRemaining() {
   return Math.round(total * 10) / 10;
 }
 function currentStage() {
-  // First stage with incomplete tasks
   for (const s of STAGES_CANONICAL) {
     const p = stageProgress(s.id);
     if (p.pct < 100) return s;
@@ -545,6 +656,46 @@ function currentStage() {
 }
 function nextTask(stageId) {
   return S.tasks.find(t => t.stageId === stageId && t.status !== 'done');
+}
+
+// ─── Region inference (cheap heuristic — actual classification happens at NUC ingest) ─
+// For the local app, we infer regions from task text using keyword matching
+// against the user's lexicon and ikigai.md hints. Very rough, deliberately so —
+// the real classifier lives on the NUC.
+function inferRegionsFromText(text) {
+  if (!text) return [];
+  const t = text.toLowerCase();
+  const regions = new Set();
+  // love markers
+  if (/\b(love|enjoy|passion|excited|fascinat|hobby|creative|making|build|craft)\b/.test(t)) regions.add('love');
+  // good_at markers  
+  if (/\b(skill|good at|strong|expert|proficien|experienc|capable|deliver)\b/.test(t)) regions.add('good_at');
+  // world_needs markers
+  if (/\b(need|help|impact|community|social|public|world|society|sovereignty|open)\b/.test(t)) regions.add('world_needs');
+  // paid_for markers
+  if (/\b(paid|money|revenue|income|client|customer|business|commercial|monetis|sell)\b/.test(t)) regions.add('paid_for');
+  // Always-applicable for IkigAI build tasks
+  if (/\b(ikigai|coach|brain|self|sovereignty)\b/.test(t)) {
+    regions.add('love'); regions.add('good_at');
+  }
+  // Add intersections
+  const list = [...regions];
+  if (list.includes('love') && list.includes('good_at')) regions.add('passion');
+  if (list.includes('love') && list.includes('world_needs')) regions.add('mission');
+  if (list.includes('good_at') && list.includes('paid_for')) regions.add('profession');
+  if (list.includes('world_needs') && list.includes('paid_for')) regions.add('vocation');
+  if (list.includes('love') && list.includes('good_at') && list.includes('world_needs') && list.includes('paid_for')) regions.add('centre');
+  return [...regions];
+}
+
+function showCompoundFlash(text, regions) {
+  if (!regions || !regions.length) return;
+  const cf = document.getElementById('compound-flash');
+  document.getElementById('cf-body').textContent = text;
+  const pillsEl = document.getElementById('cf-pills');
+  pillsEl.innerHTML = regions.map(r => `<span class="region-pill ${r} lit">${r.replace('_', ' ')}</span>`).join('');
+  cf.classList.add('show');
+  setTimeout(() => cf.classList.remove('show'), 4000);
 }
 
 // ─── View router ──────────────────────────────────────────────────────────
@@ -559,14 +710,16 @@ function showV(v) {
     today: rToday,
     roadmap: rRoadmap,
     tasks: rTasks,
-    captures: rCaptures,
+    capture: rCapture,
+    lens: rLens,
+    lexicon: rLexicon,
     timeline: rTimeline,
     notes: rNotes
   };
   if (renderers[v]) renderers[v](mc);
 }
 
-// ─── TODAY view ───────────────────────────────────────────────────────────
+// ─── TODAY view — leads with overlap state, not progress percent ─────────
 function rToday(el) {
   const cs = currentStage();
   const total = totalProgress();
@@ -574,59 +727,97 @@ function rToday(el) {
   const today = new Date().toLocaleDateString('en-AU', { weekday: 'long', day: 'numeric', month: 'long' });
 
   let html = '<h1 class="view-title">Good morning.</h1>';
-  html += '<div class="view-sub">// ' + today + '</div>';
+  html += '<div class="view-sub">// ' + today + ' &middot; the framework overlays</div>';
 
-  // Overall progress KPIs
-  html += '<div class="kg3">';
-  html += '<div class="kpi"><div class="lbl">Progress</div><div class="val" style="color:var(--accent)">' + total + '%</div><div class="sub">overall</div></div>';
-  html += '<div class="kpi"><div class="lbl">Effort left</div><div class="val">' + remaining + 'h</div><div class="sub">est. remaining</div></div>';
-  html += '<div class="kpi"><div class="lbl">Tasks</div><div class="val">' + S.tasks.filter(t => t.status === 'done').length + '/' + S.tasks.length + '</div><div class="sub">complete</div></div>';
+  // ── Compounding state header (the key reframe — not progress percent first) ──
+  html += '<div class="card gc">';
+  html += '<div class="sl">// where the framework lights up today</div>';
+  // Show region distribution from completed tasks
+  const completedTasks = S.tasks.filter(t => t.status === 'done');
+  const regionCounts = { love: 0, good_at: 0, world_needs: 0, paid_for: 0 };
+  completedTasks.forEach(t => {
+    const regions = inferRegionsFromText(t.text);
+    regions.forEach(r => { if (regionCounts[r] !== undefined) regionCounts[r]++; });
+  });
+  html += '<div style="display:flex;flex-wrap:wrap;gap:6px;margin:4px 0 12px">';
+  ['love', 'good_at', 'world_needs', 'paid_for'].forEach(r => {
+    const lit = regionCounts[r] > 0;
+    html += `<span class="region-pill ${r} ${lit ? 'lit' : ''}">${r.replace('_', ' ')} ${regionCounts[r] || 0}</span>`;
+  });
+  html += '</div>';
+  if (completedTasks.length === 0) {
+    html += '<div style="font-size:12px;color:var(--sub);line-height:1.6">Nothing shipped yet. Each task you complete lights up the regions it touches. The system shows you the compounding.</div>';
+  } else {
+    html += '<div style="font-size:12px;color:var(--sub);line-height:1.6">' + completedTasks.length + ' tasks shipped. Heaviest region: <strong style="color:var(--accent)">' + (Object.entries(regionCounts).sort((a,b) => b[1]-a[1])[0][0].replace('_',' ')) + '</strong>. ';
+    const lightest = Object.entries(regionCounts).sort((a,b) => a[1]-b[1])[0];
+    if (lightest[1] === 0) html += 'Quietest: <strong style="color:var(--orange)">' + lightest[0].replace('_',' ') + '</strong> — drift signal.';
+    html += '</div>';
+  }
   html += '</div>';
 
-  // Current stage focus
+  // ── Quick stats ──
+  html += '<div class="kg3">';
+  html += '<div class="kpi"><div class="lbl">Progress</div><div class="val" style="color:var(--accent)">' + total + '%</div><div class="sub">overall</div></div>';
+  html += '<div class="kpi"><div class="lbl">Effort left</div><div class="val">' + remaining + 'h</div><div class="sub">est.</div></div>';
+  html += '<div class="kpi"><div class="lbl">Tasks</div><div class="val">' + S.tasks.filter(t => t.status === 'done').length + '/' + S.tasks.length + '</div><div class="sub">done</div></div>';
+  html += '</div>';
+
+  // ── Current stage focus ──
   if (cs) {
     const p = stageProgress(cs.id);
     const nt = nextTask(cs.id);
-    html += '<div class="card gc">';
-    html += '<div class="sl">Current stage</div>';
+    html += '<div class="card">';
+    html += '<div class="sl">// current stage</div>';
     html += '<div style="font-family:var(--display);font-size:20px;font-weight:700;margin-bottom:4px">' + escHtml(cs.title) + '</div>';
-    html += '<div style="font-family:var(--mono);font-size:10px;color:var(--sub);letter-spacing:.1em;margin-bottom:10px">STAGE ' + cs.num + ' · ' + escHtml(cs.when) + ' · ' + escHtml(cs.effort) + '</div>';
+    html += '<div style="font-family:var(--mono);font-size:10px;color:var(--sub);letter-spacing:.1em;margin-bottom:10px">STAGE ' + cs.num + ' &middot; ' + escHtml(cs.when) + ' &middot; ' + escHtml(cs.effort) + '</div>';
     html += '<div style="font-size:13px;line-height:1.6;margin-bottom:12px">' + escHtml(cs.tagline) + '</div>';
     html += '<div class="pb"><div class="pbi" style="width:' + p.pct + '%"></div></div>';
-    html += '<div style="font-family:var(--mono);font-size:10px;color:var(--sub);letter-spacing:.1em;margin-bottom:14px">' + p.done + ' / ' + p.total + ' tasks · ' + p.pct + '% complete</div>';
+    html += '<div style="font-family:var(--mono);font-size:10px;color:var(--sub);letter-spacing:.1em;margin-bottom:14px">' + p.done + ' / ' + p.total + ' tasks &middot; ' + p.pct + '%</div>';
 
     if (nt) {
-      html += '<div class="sl">Next task</div>';
+      html += '<div class="sl">// next</div>';
       html += '<div style="padding:10px;background:var(--surface);border-radius:var(--radius-sm);border:1px solid var(--border);margin-bottom:12px">';
       html += '<div style="font-size:13px;line-height:1.5">' + escHtml(nt.text) + '</div>';
+      const regions = inferRegionsFromText(nt.text);
+      if (regions.length) {
+        html += '<div style="margin-top:8px">';
+        regions.slice(0, 4).forEach(r => html += `<span class="region-pill ${r}">${r.replace('_', ' ')}</span>`);
+        html += '</div>';
+      }
       html += '</div>';
       html += '<div class="brow"><button class="btn btn-p" onclick="completeTask(\'' + nt.id + '\')">Mark Done</button>';
       html += '<button class="btn btn-g" onclick="showV(\'roadmap\');setTimeout(()=>expandStage(\'' + cs.id + '\'),50)">Open stage</button></div>';
-    } else {
-      html += '<div style="text-align:center;padding:14px;color:var(--green);font-family:var(--mono);font-size:11px">✓ Stage complete</div>';
     }
     html += '</div>';
   } else {
-    html += '<div class="card gg" style="text-align:center;padding:30px"><div style="font-size:42px;margin-bottom:10px">✦</div><h3 style="font-family:var(--display);font-size:18px;margin-bottom:6px">All stages complete</h3><p style="font-size:13px;color:var(--sub)">You\u2019ve shipped IkigAI. Use it for the rest of your life.</p></div>';
+    html += '<div class="card gg" style="text-align:center;padding:30px"><div style="font-size:42px;margin-bottom:10px">\u2726</div><h3 style="font-family:var(--display);font-size:18px;margin-bottom:6px">All stages complete</h3><p style="font-size:13px;color:var(--sub)">You shipped IkigAI. Use it for the rest of your life.</p></div>';
   }
 
-  // Quick actions
+  // ── Quick actions ──
   html += '<div class="card">';
-  html += '<div class="sl">Quick actions</div>';
+  html += '<div class="sl">// quick</div>';
   html += '<div class="brow">';
+  html += '<button class="btn btn-p" onclick="showV(\'capture\')">Capture</button>';
   html += '<button class="btn btn-g" onclick="showV(\'roadmap\')">Roadmap</button>';
-  html += '<button class="btn btn-g" onclick="showV(\'tasks\')">All tasks</button>';
-  html += '<button class="btn btn-g" onclick="showV(\'timeline\')">Timeline</button>';
-  html += '<button class="btn btn-g" onclick="openCapture()">Capture idea</button>';
+  html += '<button class="btn btn-g" onclick="showV(\'lens\')">Lens</button>';
+  html += '<button class="btn btn-g" onclick="openOnboard()">Onboard</button>';
   html += '</div>';
   html += '</div>';
 
-  // Recent captures preview
+  // ── Recent captures ──
   if (S.captures.length) {
     html += '<div class="card">';
-    html += '<div class="sl">Recent captures</div>';
-    S.captures.slice(0, 3).forEach(c => {
-      html += '<div style="padding:8px 0;border-bottom:1px solid var(--border);font-size:12px">' + escHtml(c.text.substring(0, 100)) + (c.text.length > 100 ? '…' : '') + '</div>';
+    html += '<div class="sl">// recent captures</div>';
+    S.captures.slice().reverse().slice(0, 3).forEach(c => {
+      html += '<div style="padding:10px 0;border-bottom:1px solid var(--border)">';
+      html += '<div style="font-size:12px;line-height:1.6">' + escHtml(c.text.substring(0, 140)) + (c.text.length > 140 ? '\u2026' : '') + '</div>';
+      const regions = inferRegionsFromText(c.text);
+      if (regions.length) {
+        html += '<div style="margin-top:6px">';
+        regions.slice(0, 4).forEach(r => html += `<span class="region-pill ${r} lit">${r.replace('_', ' ')}</span>`);
+        html += '</div>';
+      }
+      html += '</div>';
     });
     html += '</div>';
   }
@@ -637,9 +828,9 @@ function rToday(el) {
 // ─── ROADMAP view ─────────────────────────────────────────────────────────
 function rRoadmap(el) {
   let html = '<h1 class="view-title">Roadmap</h1>';
-  html += '<div class="view-sub">// 6 stages · ~18h total</div>';
+  html += '<div class="view-sub">// 6 stages &middot; ~18h &middot; framework-aware</div>';
 
-  html += '<div class="help">Tap any stage to expand. Tick components as you ship them. Each stage\u2019s checkpoint is the bar to clear before moving on.</div>';
+  html += '<div class="help">Tap any stage to expand. Tick components as you ship them. Each component lights up the regions it touches; the system shows you the compounding without telling you what to do.</div>';
 
   STAGES_CANONICAL.forEach(stage => {
     const state = getStageState(stage.id);
@@ -652,10 +843,10 @@ function rRoadmap(el) {
     html += '<div class="stage-num">S' + stage.num + '</div>';
     html += '<div style="flex:1">';
     html += '<div class="stage-title">' + escHtml(stage.title) + '</div>';
-    html += '<div class="stage-meta"><span>' + escHtml(stage.when) + '</span> · <span class="effort">' + escHtml(stage.effort) + '</span> · <span>deps: ' + escHtml(stage.deps) + '</span></div>';
+    html += '<div class="stage-meta"><span>' + escHtml(stage.when) + '</span> &middot; <span class="effort">' + escHtml(stage.effort) + '</span> &middot; <span>' + escHtml(stage.deps) + '</span></div>';
     html += '</div>';
     html += '<div class="stage-prog">' + p.pct + '%</div>';
-    html += '<div class="stage-chev">▸</div>';
+    html += '<div class="stage-chev">\u25B8</div>';
     html += '</div>';
 
     html += '<div class="stage-body">';
@@ -672,11 +863,11 @@ function rRoadmap(el) {
       html += '<div class="task-body">';
       html += '<div class="task-text" onclick="openTask(\'' + t.id + '\')">' + escHtml(t.text) + '</div>';
       const meta = [];
-      if (t.completedAt) meta.push('<span class="ts">✓ ' + fmtRel(t.completedAt) + '</span>');
-      if (t.notes) meta.push('<span class="ts">📝 has notes</span>');
-      if (meta.length) html += '<div class="task-meta">' + meta.join(' · ') + '</div>';
+      if (t.completedAt) meta.push('<span class="ts">\u2713 ' + fmtRel(t.completedAt) + '</span>');
+      if (t.notes) meta.push('<span class="ts">\u270E has notes</span>');
+      if (meta.length) html += '<div class="task-meta">' + meta.join(' &middot; ') + '</div>';
       html += '</div>';
-      html += '<div class="task-actions"><button class="task-act" onclick="openTask(\'' + t.id + '\')">⋯</button></div>';
+      html += '<div class="task-actions"><button class="task-act" onclick="openTask(\'' + t.id + '\')">\u22EF</button></div>';
       html += '</div>';
     });
     html += '</div>';
@@ -691,10 +882,9 @@ function rRoadmap(el) {
     html += '<div style="font-size:12px;color:var(--text);font-family:var(--mono);letter-spacing:.02em">' + escHtml(stage.deliverable) + '</div>';
     html += '</div>';
 
-    html += '<div style="margin-top:14px"><a href="roadmap-reference.html#' + stage.id + '" target="_blank" style="font-family:var(--mono);font-size:10px;color:var(--accent);text-decoration:none;letter-spacing:.1em">→ READ FULL SPEC</a></div>';
+    html += '<div style="margin-top:14px"><a href="roadmap-reference.html#' + stage.id + '" target="_blank" style="font-family:var(--mono);font-size:10px;color:var(--accent);text-decoration:none;letter-spacing:.1em">\u2192 READ FULL SPEC</a></div>';
 
-    html += '</div>'; // stage-body
-    html += '</div>'; // stage
+    html += '</div></div>';
   });
 
   el.innerHTML = html;
@@ -703,9 +893,8 @@ function rRoadmap(el) {
 // ─── TASKS view ───────────────────────────────────────────────────────────
 function rTasks(el) {
   let html = '<h1 class="view-title">Tasks</h1>';
-  html += '<div class="view-sub">// ' + S.tasks.length + ' total · ' + S.tasks.filter(t => t.status === 'done').length + ' done</div>';
+  html += '<div class="view-sub">// ' + S.tasks.length + ' total &middot; ' + S.tasks.filter(t => t.status === 'done').length + ' done</div>';
 
-  // Stage filter chips
   html += '<div class="chips">';
   html += '<div class="chip ' + (_filterStage === 'all' ? 'active' : '') + '" onclick="filterStage(\'all\')">All</div>';
   STAGES_CANONICAL.forEach(s => {
@@ -724,67 +913,257 @@ function rTasks(el) {
   if (_filterStatus !== 'all') filtered = filtered.filter(t => t.status === _filterStatus);
 
   if (!filtered.length) {
-    html += '<div class="empty"><div class="icon">∅</div><h3>No tasks match</h3><p>Try a different filter, or hit the + button to add a task.</p></div>';
+    html += '<div class="empty"><div class="icon">\u2205</div><h3>No tasks match</h3><p>Try a different filter, or hit + to add a custom task.</p></div>';
   } else {
-    // Group by stage
     const byStage = {};
     filtered.forEach(t => { (byStage[t.stageId] = byStage[t.stageId] || []).push(t); });
     Object.keys(byStage).forEach(sid => {
       const stage = getStage(sid);
       html += '<div class="card">';
-      html += '<div class="sl">S' + stage.num + ' · ' + escHtml(stage.title) + '</div>';
+      html += '<div class="sl">S' + stage.num + ' &middot; ' + escHtml(stage.title) + '</div>';
       byStage[sid].forEach(t => {
         const checked = t.status === 'done';
         html += '<div class="task' + (checked ? ' done' : '') + '">';
         html += '<div class="task-check' + (checked ? ' checked' : '') + '" onclick="toggleTaskInline(\'' + t.id + '\')"></div>';
         html += '<div class="task-body">';
         html += '<div class="task-text" onclick="openTask(\'' + t.id + '\')">' + escHtml(t.text) + '</div>';
-        if (t.completedAt) html += '<div class="task-meta"><span class="ts">✓ ' + fmtRel(t.completedAt) + '</span></div>';
+        if (t.completedAt) html += '<div class="task-meta"><span class="ts">\u2713 ' + fmtRel(t.completedAt) + '</span></div>';
         html += '</div>';
-        html += '<div class="task-actions"><button class="task-act" onclick="openTask(\'' + t.id + '\')">⋯</button></div>';
+        html += '<div class="task-actions"><button class="task-act" onclick="openTask(\'' + t.id + '\')">\u22EF</button></div>';
         html += '</div>';
       });
       html += '</div>';
     });
   }
 
-  // Add custom task button
   html += '<div style="margin-top:18px;text-align:center"><button class="btn btn-g" onclick="openAddTask()">+ Add custom task</button></div>';
-
   el.innerHTML = html;
 }
 
 function filterStage(s) { _filterStage = s; rTasks(document.getElementById('mc')); }
 function filterStatus(s) { _filterStatus = s; rTasks(document.getElementById('mc')); }
 
-// ─── CAPTURES view ────────────────────────────────────────────────────────
-function rCaptures(el) {
-  let html = '<h1 class="view-title">Captures</h1>';
+// ─── CAPTURE view — voice + text ──────────────────────────────────────────
+function rCapture(el) {
+  let html = '<h1 class="view-title">Capture</h1>';
   html += '<div class="view-sub">// inbox before the brain processes it</div>';
 
-  html += '<div class="cap-quick" onclick="openCapture()">';
-  html += '<span class="icon">⊕</span>';
-  html += '<div class="text">Capture something</div>';
+  // Voice button (Web Speech API)
+  const voiceSupported = ('webkitSpeechRecognition' in window) || ('SpeechRecognition' in window);
+  if (voiceSupported && S.settings.voiceTranscriptionEnabled) {
+    html += '<div class="voice-rec" id="voice-rec">';
+    html += '<button class="voice-btn" id="voice-btn" onclick="toggleVoiceRec()">\uD83C\uDFA4</button>';
+    html += '<div class="voice-status" id="voice-status">Tap to record &middot; transcribes live</div>';
+    html += '</div>';
+  }
+
+  // Quick capture form
+  html += '<div class="card">';
+  html += '<div class="sl">// new capture</div>';
+  html += '<label style="font-family:var(--mono);font-size:9px;letter-spacing:.15em;color:var(--sub);text-transform:uppercase;display:block;margin-bottom:6px">type</label>';
+  html += '<select class="inp" id="cap-type" style="margin-bottom:10px">';
+  ['idea', 'link', 'thought', 'quote', 'voice'].forEach(t => {
+    html += '<option value="' + t + '">' + t + '</option>';
+  });
+  html += '</select>';
+  html += '<textarea class="inp" id="cap-text" rows="6" placeholder="Brain fart, in. Anything goes — text or voice (above). The system will surface which Ikigai regions this lights up."></textarea>';
+  html += '<div style="margin-top:10px"><button class="btn btn-p" onclick="addCapture()">Capture</button></div>';
   html += '</div>';
 
-  html += '<div class="help">In S2, captures will flow to <strong>inbox/</strong> on your NUC and the watcher will run <strong>/understand</strong> on each one. For now, this is a local notepad.</div>';
+  html += '<div class="help">In S2, captures will flow to <strong>inbox/</strong> on your NUC and the watcher will run <strong>/understand</strong> on each one. For now, captures live in localStorage and sync to Drive.</div>';
 
   if (!S.captures.length) {
-    html += '<div class="empty"><div class="icon">⊕</div><h3>No captures yet</h3><p>Brain farts, links, voice transcripts, anything. Drop them here for the system to process when S2 is live.</p></div>';
+    html += '<div class="empty"><div class="icon">\u2295</div><h3>No captures yet</h3><p>Brain farts, links, voice transcripts, anything. The system makes their compounding visible.</p></div>';
   } else {
     S.captures.slice().reverse().forEach(c => {
       html += '<div class="card">';
       html += '<div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">';
       html += '<span class="tag tc">' + escHtml(c.type) + '</span>';
       html += '<span style="font-family:var(--mono);font-size:9px;color:var(--sub);letter-spacing:.1em">' + fmtRel(c.createdAt) + '</span>';
-      html += '<button class="task-act" style="margin-left:auto" onclick="deleteCapture(\'' + c.id + '\')">✕</button>';
+      html += '<button class="task-act" style="margin-left:auto" onclick="deleteCapture(\'' + c.id + '\')">\u2715</button>';
       html += '</div>';
       html += '<div style="font-size:13px;line-height:1.6;white-space:pre-wrap">' + escHtml(c.text) + '</div>';
+      const regions = c.regions || inferRegionsFromText(c.text);
+      if (regions.length) {
+        html += '<div style="margin-top:10px;padding-top:10px;border-top:1px solid var(--border)">';
+        regions.forEach(r => html += `<span class="region-pill ${r} lit">${r.replace('_', ' ')}</span>`);
+        html += '</div>';
+      }
       html += '</div>';
     });
   }
 
   el.innerHTML = html;
+}
+
+// ─── LENS view — Brusselbach Ikigai with live state ───────────────────────
+function rLens(el) {
+  let html = '<h1 class="view-title">Lens</h1>';
+  html += '<div class="view-sub">// the framework, with your captures lighting it up</div>';
+
+  // SVG Brusselbach
+  html += '<div class="brusselbach">';
+  html += `<svg viewBox="0 0 280 280" xmlns="http://www.w3.org/2000/svg">
+    <circle cx="115" cy="100" r="80" fill="rgba(255,107,157,0.25)" stroke="#ff6b9d" stroke-width="1"/>
+    <circle cx="165" cy="100" r="80" fill="rgba(0,212,255,0.25)" stroke="#00d4ff" stroke-width="1"/>
+    <circle cx="115" cy="150" r="80" fill="rgba(200,241,53,0.25)" stroke="#c8f135" stroke-width="1"/>
+    <circle cx="165" cy="150" r="80" fill="rgba(255,170,61,0.25)" stroke="#ffaa3d" stroke-width="1"/>
+    <text x="140" y="35" text-anchor="middle" fill="#ff6b9d" font-size="11" font-family="JetBrains Mono" font-weight="700">love</text>
+    <text x="42" y="135" text-anchor="middle" fill="#c8f135" font-size="11" font-family="JetBrains Mono" font-weight="700">good_at</text>
+    <text x="240" y="135" text-anchor="middle" fill="#00d4ff" font-size="11" font-family="JetBrains Mono" font-weight="700">world_needs</text>
+    <text x="140" y="265" text-anchor="middle" fill="#ffaa3d" font-size="11" font-family="JetBrains Mono" font-weight="700">paid_for</text>
+    <text x="90" y="100" text-anchor="middle" fill="#e8e8e2" font-size="9" font-family="JetBrains Mono">passion</text>
+    <text x="190" y="100" text-anchor="middle" fill="#e8e8e2" font-size="9" font-family="JetBrains Mono">mission</text>
+    <text x="90" y="160" text-anchor="middle" fill="#e8e8e2" font-size="9" font-family="JetBrains Mono">profession</text>
+    <text x="190" y="160" text-anchor="middle" fill="#e8e8e2" font-size="9" font-family="JetBrains Mono">vocation</text>
+    <text x="140" y="135" text-anchor="middle" fill="#c8f135" font-size="14" font-family="Syne" font-weight="800">CENTRE</text>
+  </svg>`;
+  html += '</div>';
+
+  // Compute region distribution from completed tasks AND captures
+  const allItems = [...S.tasks.filter(t => t.status === 'done'), ...S.captures];
+  const regionCounts = { love: 0, good_at: 0, world_needs: 0, paid_for: 0, passion: 0, mission: 0, profession: 0, vocation: 0, centre: 0 };
+  allItems.forEach(item => {
+    const text = item.text || '';
+    const regions = item.regions || inferRegionsFromText(text);
+    regions.forEach(r => { if (regionCounts[r] !== undefined) regionCounts[r]++; });
+  });
+
+  const total = allItems.length || 1;
+
+  html += '<div class="card">';
+  html += '<div class="sl">// the four axes</div>';
+  html += '<div class="region-grid">';
+  ['love', 'good_at', 'world_needs', 'paid_for'].forEach(r => {
+    const count = regionCounts[r] || 0;
+    const pct = Math.min(100, Math.round((count / total) * 100));
+    html += `<div class="region-cell ${r}" onclick="filterByRegion('${r}')">`;
+    html += `<div class="region-name">${r.replace('_', ' ')}</div>`;
+    html += `<div class="region-count">${count} ${count === 1 ? 'item' : 'items'}</div>`;
+    html += `<div class="region-fill"><div class="region-fill-inner" style="width:${pct}%"></div></div>`;
+    html += '</div>';
+  });
+  html += '</div>';
+  html += '</div>';
+
+  html += '<div class="card">';
+  html += '<div class="sl">// the five intersections</div>';
+  ['passion', 'mission', 'profession', 'vocation', 'centre'].forEach(r => {
+    const count = regionCounts[r] || 0;
+    html += '<div style="display:flex;align-items:center;gap:10px;padding:10px;border-bottom:1px solid var(--border)">';
+    html += `<div style="flex:1"><strong style="font-family:var(--display);font-size:14px">${r}</strong>`;
+    const labels = {
+      passion: 'love + good_at',
+      mission: 'love + world_needs',
+      profession: 'good_at + paid_for',
+      vocation: 'world_needs + paid_for',
+      centre: 'all four'
+    };
+    html += `<div style="font-family:var(--mono);font-size:9px;color:var(--sub);letter-spacing:.1em">${labels[r]}</div></div>`;
+    html += `<span class="region-pill ${r} ${count > 0 ? 'lit' : ''}">${count}</span>`;
+    html += '</div>';
+  });
+  html += '</div>';
+
+  // Drift detection
+  const lightest = Object.entries(regionCounts).filter(([k]) => ['love','good_at','world_needs','paid_for'].includes(k)).sort((a,b) => a[1]-b[1])[0];
+  if (lightest && lightest[1] === 0 && allItems.length > 3) {
+    html += '<div class="help warn"><strong>Drift signal:</strong> <code>' + lightest[0].replace('_',' ') + '</code> has zero items. The system surfaces this without telling you what to do. You decide if the gap matters or the goal needs revisiting.</div>';
+  }
+
+  html += '<div class="help">Click any region above to filter captures and tasks by what touches it. The Lens is observational — it shows where your effort is landing across the framework, never tells you what to do about it.</div>';
+
+  el.innerHTML = html;
+}
+
+function filterByRegion(r) {
+  toast('Region: ' + r.replace('_',' '));
+  // TODO: implement region filter view; for now just inform
+}
+
+// ─── LEXICON view ─────────────────────────────────────────────────────────
+function rLexicon(el) {
+  let html = '<h1 class="view-title">Lexicon</h1>';
+  html += '<div class="view-sub">// load-bearing terms with your interpretive lens</div>';
+
+  html += '<div class="help">The lexicon prevents drift. Define each load-bearing term with the lens you apply to it. The ingest pipeline reads this when classifying — so when a source uses "sovereignty," it gets tagged through <strong>your</strong> reading, not the source\u2019s encoded one.</div>';
+
+  html += '<div style="margin-bottom:14px"><button class="btn btn-p" onclick="openAddLexicon()">+ Add term</button></div>';
+
+  S.lexicon.forEach((entry, i) => {
+    html += '<div class="lex-entry">';
+    html += '<div class="term">' + escHtml(entry.term) + '</div>';
+    html += '<div class="lens">' + escHtml(entry.lens) + '</div>';
+    html += '<div class="body">' + escHtml(entry.body).replace(/\n\n/g, '</p><p>').replace(/^/, '<p>').replace(/$/, '</p>') + '</div>';
+    if (entry.examples) {
+      html += '<div class="examples">' + escHtml(entry.examples) + '</div>';
+    }
+    html += '<div style="margin-top:10px;display:flex;gap:6px">';
+    html += '<button class="btn btn-sm btn-g" onclick="openEditLexicon(' + i + ')">Edit</button>';
+    html += '<button class="btn btn-sm btn-g" onclick="deleteLexicon(' + i + ')" style="color:var(--red);border-color:rgba(239,68,68,0.3)">Delete</button>';
+    html += '</div>';
+    html += '</div>';
+  });
+
+  el.innerHTML = html;
+}
+
+function openAddLexicon() {
+  let html = '';
+  html += '<label>Term</label>';
+  html += '<input type="text" class="inp" id="lx-term" placeholder="e.g. Sovereignty"/>';
+  html += '<label>Lens (short type/category)</label>';
+  html += '<input type="text" class="inp" id="lx-lens" placeholder="e.g. operating principle / 5 layers"/>';
+  html += '<label>Body — your interpretive definition</label>';
+  html += '<textarea class="inp" id="lx-body" rows="6" placeholder="What does this word mean to you? Use multiple paragraphs separated by blank lines."></textarea>';
+  html += '<label>Examples (optional)</label>';
+  html += '<textarea class="inp" id="lx-examples" rows="3" placeholder="How the system should apply this lens"></textarea>';
+  html += '<div style="margin-top:18px"><button class="btn btn-p" onclick="addLexicon()">Add term</button></div>';
+  openSheet('Add lexicon term', html);
+}
+
+function addLexicon() {
+  const term = document.getElementById('lx-term').value.trim();
+  const lens = document.getElementById('lx-lens').value.trim();
+  const body = document.getElementById('lx-body').value.trim();
+  const examples = document.getElementById('lx-examples').value.trim();
+  if (!term || !body) { toast('Term and body required'); return; }
+  S.lexicon.push({ term, lens, body, examples });
+  saveS();
+  closeSheet();
+  toast('Term added');
+  showV(CV);
+}
+
+function openEditLexicon(idx) {
+  const e = S.lexicon[idx];
+  let html = '';
+  html += '<label>Term</label><input type="text" class="inp" id="lx-term" value="' + escHtml(e.term) + '"/>';
+  html += '<label>Lens</label><input type="text" class="inp" id="lx-lens" value="' + escHtml(e.lens) + '"/>';
+  html += '<label>Body</label><textarea class="inp" id="lx-body" rows="8">' + escHtml(e.body) + '</textarea>';
+  html += '<label>Examples</label><textarea class="inp" id="lx-examples" rows="3">' + escHtml(e.examples || '') + '</textarea>';
+  html += '<div style="margin-top:18px;display:flex;gap:8px"><button class="btn btn-p" onclick="saveEditLexicon(' + idx + ')">Save</button><button class="btn btn-r" onclick="deleteLexicon(' + idx + ');closeSheet()">Delete</button></div>';
+  openSheet('Edit term', html);
+}
+
+function saveEditLexicon(idx) {
+  S.lexicon[idx] = {
+    term: document.getElementById('lx-term').value.trim(),
+    lens: document.getElementById('lx-lens').value.trim(),
+    body: document.getElementById('lx-body').value.trim(),
+    examples: document.getElementById('lx-examples').value.trim()
+  };
+  saveS();
+  closeSheet();
+  toast('Saved');
+  showV(CV);
+}
+
+function deleteLexicon(idx) {
+  if (!confirm('Delete "' + S.lexicon[idx].term + '"?')) return;
+  S.lexicon.splice(idx, 1);
+  saveS();
+  showV(CV);
 }
 
 // ─── TIMELINE view ────────────────────────────────────────────────────────
@@ -792,61 +1171,44 @@ function rTimeline(el) {
   let html = '<h1 class="view-title">Timeline</h1>';
   html += '<div class="view-sub">// 18h across 3 weeks</div>';
 
-  // Compute hours per stage
   const stageHours = STAGES_CANONICAL.map(s => ({ id: s.id, num: s.num, title: s.title, h: parseFloat(s.effort) || 0 }));
   const totalH = stageHours.reduce((a, s) => a + s.h, 0);
 
-  // Visual stack of stages as blocks
   html += '<div class="card">';
-  html += '<div class="sl">Effort distribution</div>';
-  html += '<div class="timeline-bar">';
-  stageHours.forEach(s => {
+  html += '<div class="sl">// effort distribution</div>';
+  html += '<div style="display:flex;background:var(--muted);height:36px;border-radius:var(--radius-sm);overflow:hidden;margin-bottom:8px">';
+  const colors = ['var(--accent)', 'var(--green)', 'var(--orange)', 'var(--cyan)', 'var(--purple)', 'var(--yellow)'];
+  stageHours.forEach((s, i) => {
     const w = (s.h / totalH) * 100;
-    html += '<div class="timeline-seg ' + s.id + '" style="width:' + w + '%" title="S' + s.num + ' ' + escHtml(s.title) + ' (' + s.h + 'h)">S' + s.num + '</div>';
+    html += `<div style="width:${w}%;background:${colors[i]};display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:10px;font-weight:700;color:var(--bg);overflow:hidden;white-space:nowrap;padding:0 6px" title="S${s.num} ${s.title}">S${s.num}</div>`;
   });
   html += '</div>';
-  html += '<div style="font-family:var(--mono);font-size:10px;color:var(--sub);letter-spacing:.1em;margin-top:8px">' + totalH + 'h total</div>';
+  html += '<div style="font-family:var(--mono);font-size:10px;color:var(--sub);letter-spacing:.1em">' + totalH + 'h total</div>';
   html += '</div>';
 
-  // Per-week breakdown
-  html += '<div class="timeline-week">';
-  html += '<div class="timeline-week-head">▸ Today</div>';
-  ['s0', 's1'].forEach(sid => html += renderTimelineRow(sid));
-  html += '</div>';
-
-  html += '<div class="timeline-week">';
-  html += '<div class="timeline-week-head">▸ This week</div>';
-  ['s2', 's3'].forEach(sid => html += renderTimelineRow(sid));
-  html += '</div>';
-
-  html += '<div class="timeline-week">';
-  html += '<div class="timeline-week-head">▸ Week 2</div>';
-  ['s4'].forEach(sid => html += renderTimelineRow(sid));
-  html += '</div>';
-
-  html += '<div class="timeline-week">';
-  html += '<div class="timeline-week-head">▸ Week 3</div>';
-  ['s5'].forEach(sid => html += renderTimelineRow(sid));
-  html += '</div>';
+  ['Today', 'This weekend', 'Week 2', 'Week 3'].forEach(when => {
+    const inWeek = STAGES_CANONICAL.filter(s => s.when === when);
+    if (!inWeek.length) return;
+    html += '<div style="margin-bottom:18px">';
+    html += '<div style="font-family:var(--mono);font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:var(--accent);margin-bottom:8px">\u25B8 ' + when + '</div>';
+    inWeek.forEach(stage => {
+      const p = stageProgress(stage.id);
+      html += '<div class="card" style="margin-bottom:6px">';
+      html += '<div style="display:flex;align-items:center;gap:10px">';
+      html += '<div style="width:32px;height:32px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:10px;font-weight:700;background:var(--accent);color:var(--bg)">' + stage.num + '</div>';
+      html += '<div style="flex:1">';
+      html += '<div style="font-family:var(--display);font-size:14px;font-weight:700">' + escHtml(stage.title) + '</div>';
+      html += '<div style="font-family:var(--mono);font-size:10px;color:var(--sub);letter-spacing:.1em">' + escHtml(stage.effort) + ' &middot; ' + p.done + '/' + p.total + '</div>';
+      html += '</div>';
+      html += '<div style="font-family:var(--mono);font-size:11px;color:var(--accent);font-weight:700">' + p.pct + '%</div>';
+      html += '</div>';
+      html += '<div class="pb" style="margin-top:8px"><div class="pbi" style="width:' + p.pct + '%"></div></div>';
+      html += '</div>';
+    });
+    html += '</div>';
+  });
 
   el.innerHTML = html;
-}
-
-function renderTimelineRow(sid) {
-  const stage = getStage(sid);
-  const p = stageProgress(sid);
-  let row = '<div class="card" style="margin-bottom:6px">';
-  row += '<div style="display:flex;align-items:center;gap:10px">';
-  row += '<div style="width:32px;height:32px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:10px;font-weight:700;background:var(--' + sid + '-color,var(--accent));color:var(--bg)" class="timeline-seg ' + sid + '" title="S' + stage.num + '">' + stage.num + '</div>';
-  row += '<div style="flex:1">';
-  row += '<div style="font-family:var(--display);font-size:14px;font-weight:700">' + escHtml(stage.title) + '</div>';
-  row += '<div style="font-family:var(--mono);font-size:10px;color:var(--sub);letter-spacing:.1em">' + escHtml(stage.effort) + ' · ' + p.done + '/' + p.total + ' tasks</div>';
-  row += '</div>';
-  row += '<div style="font-family:var(--mono);font-size:11px;color:var(--accent);font-weight:700">' + p.pct + '%</div>';
-  row += '</div>';
-  row += '<div class="pb" style="margin-top:8px"><div class="pbi" style="width:' + p.pct + '%"></div></div>';
-  row += '</div>';
-  return row;
 }
 
 // ─── NOTES view ───────────────────────────────────────────────────────────
@@ -857,7 +1219,7 @@ function rNotes(el) {
   html += '<div style="margin-bottom:18px"><button class="btn btn-p" onclick="openAddNote()">+ New note</button></div>';
 
   if (!S.notes.length) {
-    html += '<div class="empty"><div class="icon">✎</div><h3>No notes yet</h3><p>Free-form scratch. Stage observations, design decisions, anything that doesn\u2019t fit a task.</p></div>';
+    html += '<div class="empty"><div class="icon">\u270E</div><h3>No notes yet</h3><p>Stage observations, design decisions, anything that doesn\u2019t fit a task.</p></div>';
   } else {
     S.notes.slice().reverse().forEach(n => {
       const stage = n.stageId ? getStage(n.stageId) : null;
@@ -865,8 +1227,8 @@ function rNotes(el) {
       html += '<div class="note-head">';
       if (stage) html += '<span class="tag tc">S' + stage.num + '</span>';
       html += '<span>' + fmtRel(n.createdAt) + '</span>';
-      if (n.title) html += '<span style="color:var(--text);text-transform:none;letter-spacing:0;font-family:var(--body);font-size:13px;font-weight:600">· ' + escHtml(n.title) + '</span>';
-      html += '<button class="task-act" style="margin-left:auto" onclick="deleteNote(\'' + n.id + '\')">✕</button>';
+      if (n.title) html += '<span style="color:var(--text);text-transform:none;letter-spacing:0;font-family:var(--body);font-size:13px;font-weight:600">&middot; ' + escHtml(n.title) + '</span>';
+      html += '<button class="task-act" style="margin-left:auto" onclick="deleteNote(\'' + n.id + '\')">\u2715</button>';
       html += '</div>';
       html += '<div class="note-body">' + escHtml(n.body) + '</div>';
       html += '</div>';
@@ -874,6 +1236,62 @@ function rNotes(el) {
   }
 
   el.innerHTML = html;
+}
+
+// ─── Voice transcription (Web Speech API) ─────────────────────────────────
+function toggleVoiceRec() {
+  if (_voiceRecognition) {
+    _voiceRecognition.stop();
+    _voiceRecognition = null;
+    document.getElementById('voice-btn').classList.remove('recording');
+    document.getElementById('voice-rec').classList.remove('active');
+    document.getElementById('voice-status').classList.remove('live');
+    document.getElementById('voice-status').textContent = 'Tap to record \u00B7 transcribes live';
+    return;
+  }
+  const SR = window.webkitSpeechRecognition || window.SpeechRecognition;
+  if (!SR) { toast('Voice not supported in this browser'); return; }
+  const r = new SR();
+  r.continuous = true;
+  r.interimResults = true;
+  r.lang = 'en-AU';
+  let finalText = '';
+  r.onresult = (e) => {
+    let interim = '';
+    for (let i = e.resultIndex; i < e.results.length; i++) {
+      if (e.results[i].isFinal) {
+        finalText += e.results[i][0].transcript + ' ';
+      } else {
+        interim += e.results[i][0].transcript;
+      }
+    }
+    const ta = document.getElementById('cap-text');
+    if (ta) {
+      ta.value = (finalText + interim).trim();
+    }
+    document.getElementById('voice-status').textContent = '\u25CF LIVE \u00B7 ' + (finalText.length + interim.length) + ' chars';
+  };
+  r.onerror = (e) => {
+    console.error('Voice error:', e);
+    toast('Voice: ' + e.error);
+    toggleVoiceRec();
+  };
+  r.onend = () => {
+    if (_voiceRecognition === r) {
+      _voiceRecognition = null;
+      document.getElementById('voice-btn').classList.remove('recording');
+      document.getElementById('voice-rec').classList.remove('active');
+      document.getElementById('voice-status').classList.remove('live');
+      document.getElementById('voice-status').textContent = 'Tap to record \u00B7 transcribes live';
+    }
+  };
+  r.start();
+  _voiceRecognition = r;
+  document.getElementById('voice-btn').classList.add('recording');
+  document.getElementById('voice-rec').classList.add('active');
+  document.getElementById('voice-status').classList.add('live');
+  document.getElementById('voice-status').textContent = '\u25CF LIVE \u00B7 listening';
+  document.getElementById('cap-type').value = 'voice';
 }
 
 // ─── Task interactions ────────────────────────────────────────────────────
@@ -904,26 +1322,28 @@ function toggleTaskInline(id) {
   } else {
     t.status = 'done';
     t.completedAt = Date.now();
-    // Mark stage started if not already
     const state = getStageState(t.stageId);
     if (!state.startedAt) state.startedAt = Date.now();
-    // Check if stage now complete
     const p = stageProgress(t.stageId);
     if (p.pct === 100 && !state.completedAt) {
       state.completedAt = Date.now();
-      toast('Stage ' + getStage(t.stageId).num + ' complete ✓');
+      toast('Stage ' + getStage(t.stageId).num + ' complete \u2713');
     } else {
-      toast('Task complete ✓');
+      toast('Done \u2713');
+    }
+    // Compounding flash — Option B: surfaced at retrieval moments, quiet at action time
+    // Action-time gets a small region pill confirmation; retrieval-time gets the deeper overlay.
+    const regions = inferRegionsFromText(t.text);
+    if (regions.length > 1) {
+      // Quiet confirmation only for now — not the full overlay
+      // The full overlay surfaces when you visit Lens, Today, or run a retrieval
     }
   }
   saveS();
-  // Re-render current view
   showV(CV);
 }
 
-function completeTask(id) {
-  toggleTaskInline(id);
-}
+function completeTask(id) { toggleTaskInline(id); }
 
 function openTask(id) {
   const t = S.tasks.find(x => x.id === id);
@@ -931,30 +1351,29 @@ function openTask(id) {
   const stage = getStage(t.stageId);
   let html = '';
   html += '<label>Stage</label>';
-  html += '<div style="font-family:var(--mono);font-size:11px;color:var(--accent);letter-spacing:.1em;margin-bottom:14px">S' + stage.num + ' · ' + escHtml(stage.title) + '</div>';
-
+  html += '<div style="font-family:var(--mono);font-size:11px;color:var(--accent);letter-spacing:.1em;margin-bottom:14px">S' + stage.num + ' &middot; ' + escHtml(stage.title) + '</div>';
   html += '<label>Task</label>';
   html += '<textarea class="inp" id="t-text" rows="3">' + escHtml(t.text) + '</textarea>';
-
+  const regions = inferRegionsFromText(t.text);
+  if (regions.length) {
+    html += '<label>Regions this lights up</label>';
+    html += '<div>';
+    regions.forEach(r => html += `<span class="region-pill ${r} lit">${r.replace('_', ' ')}</span>`);
+    html += '</div>';
+  }
   html += '<label>Notes</label>';
-  html += '<textarea class="inp" id="t-notes" rows="6" placeholder="Decisions, observations, blockers, links...">' + escHtml(t.notes || '') + '</textarea>';
-
+  html += '<textarea class="inp" id="t-notes" rows="6" placeholder="Decisions, observations, blockers, links\u2026">' + escHtml(t.notes || '') + '</textarea>';
   html += '<label>Status</label>';
   html += '<div class="brow">';
   html += '<button class="btn ' + (t.status === 'pending' ? 'btn-p' : 'btn-g') + '" onclick="setTaskStatus(\'' + t.id + '\',\'pending\')">Pending</button>';
   html += '<button class="btn ' + (t.status === 'in-progress' ? 'btn-p' : 'btn-g') + '" onclick="setTaskStatus(\'' + t.id + '\',\'in-progress\')">In Progress</button>';
   html += '<button class="btn ' + (t.status === 'done' ? 'btn-p' : 'btn-g') + '" onclick="setTaskStatus(\'' + t.id + '\',\'done\')">Done</button>';
   html += '</div>';
-
-  if (t.completedAt) {
-    html += '<div style="margin-top:14px;font-family:var(--mono);font-size:10px;color:var(--sub);letter-spacing:.1em">Completed ' + fmtRel(t.completedAt) + '</div>';
-  }
-
+  if (t.completedAt) html += '<div style="margin-top:14px;font-family:var(--mono);font-size:10px;color:var(--sub);letter-spacing:.1em">Completed ' + fmtRel(t.completedAt) + '</div>';
   html += '<div style="margin-top:24px;display:flex;gap:8px">';
   html += '<button class="btn btn-p" onclick="saveTask(\'' + t.id + '\')">Save</button>';
   html += '<button class="btn btn-r" onclick="deleteTask(\'' + t.id + '\')">Delete</button>';
   html += '</div>';
-
   openSheet('Task', html);
 }
 
@@ -964,7 +1383,6 @@ function setTaskStatus(id, st) {
   t.status = st;
   if (st === 'done' && !t.completedAt) t.completedAt = Date.now();
   if (st !== 'done') t.completedAt = null;
-  // Reflect in sheet without closing
   saveTask(id, false);
 }
 
@@ -987,7 +1405,6 @@ function deleteTask(id) {
   S.tasks = S.tasks.filter(x => x.id !== id);
   saveS();
   closeSheet();
-  toast('Deleted');
   showV(CV);
 }
 
@@ -995,16 +1412,11 @@ function openAddTask() {
   let html = '';
   html += '<label>Stage</label>';
   html += '<select class="inp" id="add-stage">';
-  STAGES_CANONICAL.forEach(s => {
-    html += '<option value="' + s.id + '">S' + s.num + ' — ' + escHtml(s.title) + '</option>';
-  });
+  STAGES_CANONICAL.forEach(s => html += '<option value="' + s.id + '">S' + s.num + ' \u2014 ' + escHtml(s.title) + '</option>');
   html += '</select>';
-
   html += '<label>Task</label>';
   html += '<textarea class="inp" id="add-text" rows="3" placeholder="What needs doing?"></textarea>';
-
   html += '<div style="margin-top:24px"><button class="btn btn-p" onclick="addTask()">Add task</button></div>';
-
   openSheet('Add custom task', html);
 }
 
@@ -1012,56 +1424,28 @@ function addTask() {
   const stageId = document.getElementById('add-stage').value;
   const text = document.getElementById('add-text').value.trim();
   if (!text) { toast('Task text required'); return; }
-  S.tasks.push({
-    id: uid(),
-    stageId,
-    text,
-    status: 'pending',
-    priority: 'normal',
-    notes: '',
-    createdAt: Date.now(),
-    completedAt: null,
-    custom: true
-  });
+  S.tasks.push({ id: uid(), stageId, text, status: 'pending', priority: 'normal', notes: '', createdAt: Date.now(), completedAt: null, custom: true });
   saveS();
   closeSheet();
   toast('Task added');
   showV(CV);
 }
 
-// ─── Captures ─────────────────────────────────────────────────────────────
-function openCapture() {
-  let html = '';
-  html += '<label>Type</label>';
-  html += '<select class="inp" id="cap-type">';
-  ['idea', 'link', 'thought', 'quote', 'voice'].forEach(t => {
-    html += '<option value="' + t + '">' + t + '</option>';
-  });
-  html += '</select>';
-
-  html += '<label>Content</label>';
-  html += '<textarea class="inp" id="cap-text" rows="6" placeholder="Brain fart, in. Anything goes."></textarea>';
-
-  html += '<div style="margin-top:18px"><button class="btn btn-p" onclick="addCapture()">Capture</button></div>';
-  html += '<div class="help" style="margin-top:14px">In S2, this writes to <strong>inbox/</strong> on the NUC and triggers /understand. For now, captures live in localStorage and can be exported with the rest of your data.</div>';
-
-  openSheet('Capture', html);
-}
-
 function addCapture() {
   const type = document.getElementById('cap-type').value;
   const text = document.getElementById('cap-text').value.trim();
   if (!text) { toast('Content required'); return; }
-  S.captures.push({
-    id: uid(),
-    type,
-    text,
-    createdAt: Date.now()
-  });
+  const regions = inferRegionsFromText(text);
+  S.captures.push({ id: uid(), type, text, regions, createdAt: Date.now() });
   saveS();
-  closeSheet();
-  toast('Captured');
-  showV(CV);
+  // Compounding flash — surface at retrieval/capture moments (Option B)
+  if (regions.length >= 2) {
+    showCompoundFlash('You just captured something that lights up ' + regions.length + ' regions.', regions);
+  } else {
+    toast('Captured');
+  }
+  document.getElementById('cap-text').value = '';
+  setTimeout(() => showV(CV), 1200);
 }
 
 function deleteCapture(id) {
@@ -1071,25 +1455,16 @@ function deleteCapture(id) {
   showV(CV);
 }
 
-// ─── Notes ────────────────────────────────────────────────────────────────
 function openAddNote() {
   let html = '';
   html += '<label>Stage (optional)</label>';
   html += '<select class="inp" id="n-stage">';
-  html += '<option value="">— None —</option>';
-  STAGES_CANONICAL.forEach(s => {
-    html += '<option value="' + s.id + '">S' + s.num + ' — ' + escHtml(s.title) + '</option>';
-  });
+  html += '<option value="">\u2014 None \u2014</option>';
+  STAGES_CANONICAL.forEach(s => html += '<option value="' + s.id + '">S' + s.num + ' \u2014 ' + escHtml(s.title) + '</option>');
   html += '</select>';
-
-  html += '<label>Title (optional)</label>';
-  html += '<input type="text" class="inp" id="n-title" placeholder="Short title"/>';
-
-  html += '<label>Body</label>';
-  html += '<textarea class="inp" id="n-body" rows="8" placeholder="Free-form. Decisions, observations, links."></textarea>';
-
+  html += '<label>Title</label><input type="text" class="inp" id="n-title" placeholder="Short title"/>';
+  html += '<label>Body</label><textarea class="inp" id="n-body" rows="8" placeholder="Free-form."></textarea>';
   html += '<div style="margin-top:18px"><button class="btn btn-p" onclick="addNote()">Save note</button></div>';
-
   openSheet('New note', html);
 }
 
@@ -1098,16 +1473,10 @@ function addNote() {
   const title = document.getElementById('n-title').value.trim();
   const body = document.getElementById('n-body').value.trim();
   if (!body) { toast('Body required'); return; }
-  S.notes.push({
-    id: uid(),
-    stageId: stageId || null,
-    title,
-    body,
-    createdAt: Date.now()
-  });
+  S.notes.push({ id: uid(), stageId: stageId || null, title, body, createdAt: Date.now() });
   saveS();
   closeSheet();
-  toast('Note saved');
+  toast('Saved');
   showV(CV);
 }
 
@@ -1115,6 +1484,62 @@ function deleteNote(id) {
   if (!confirm('Delete this note?')) return;
   S.notes = S.notes.filter(x => x.id !== id);
   saveS();
+  showV(CV);
+}
+
+// ─── Onboarding (always-on, not just first-run) ──────────────────────────
+function openOnboard() {
+  let html = '';
+  html += '<div class="help">The framework overlays. Tell it what you know about yourself and where you\u2019re going. Run this any time your understanding evolves \u2014 your Ikigai is not a static thing.</div>';
+  html += '<div class="onb-step">';
+  html += '<div class="num">// 01</div>';
+  html += '<h4>Current Ikigai</h4>';
+  html += '<p>Where are you now across the four axes?</p>';
+  html += '<label>What do you love doing?</label><textarea class="inp" id="onb-love" rows="2" placeholder="Activities, topics, work that pulls you"></textarea>';
+  html += '<label>What are you good at?</label><textarea class="inp" id="onb-good" rows="2" placeholder="Durable skills, accumulated experience"></textarea>';
+  html += '<label>What does the world need (that you can address)?</label><textarea class="inp" id="onb-world" rows="2" placeholder="Be honest. Don\u2019t tag generously."></textarea>';
+  html += '<label>What can you be paid for?</label><textarea class="inp" id="onb-paid" rows="2" placeholder="Current and credibly-near"></textarea>';
+  html += '</div>';
+
+  html += '<div class="onb-step">';
+  html += '<div class="num">// 02</div>';
+  html += '<h4>Aspirational Ikigai</h4>';
+  html += '<p>Where do you want to be in 12 months?</p>';
+  html += '<label>The shift</label><textarea class="inp" id="onb-shift" rows="3" placeholder="From: e.g. profession-heavy. To: e.g. centre-weighted via bAIj and IkigAI."></textarea>';
+  html += '</div>';
+
+  html += '<div class="onb-step">';
+  html += '<div class="num">// 03</div>';
+  html += '<h4>Voice preference</h4>';
+  html += '<p>How should the system speak when it points things out?</p>';
+  html += '<select class="inp" id="onb-voice">';
+  ['warm', 'helpful', 'aggressive', 'roasty', 'prepaired', 'accountantability', 'ijneb-dev'].forEach(v => {
+    const sel = S.settings.voicePref === v ? ' selected' : '';
+    html += '<option value="' + v + '"' + sel + '>' + v + '</option>';
+  });
+  html += '</select>';
+  html += '</div>';
+
+  html += '<div style="margin-top:20px"><button class="btn btn-p" onclick="saveOnboard()">Save onboarding</button></div>';
+
+  openSheet('Onboard', html);
+}
+
+function saveOnboard() {
+  const love = document.getElementById('onb-love').value.trim();
+  const good = document.getElementById('onb-good').value.trim();
+  const world = document.getElementById('onb-world').value.trim();
+  const paid = document.getElementById('onb-paid').value.trim();
+  const shift = document.getElementById('onb-shift').value.trim();
+  const voice = document.getElementById('onb-voice').value;
+  // Save as a structured note
+  const body = `# Onboarding snapshot\n\n## Current Ikigai\n\n**love** \u2014 ${love || '(blank)'}\n\n**good_at** \u2014 ${good || '(blank)'}\n\n**world_needs** \u2014 ${world || '(blank)'}\n\n**paid_for** \u2014 ${paid || '(blank)'}\n\n## Aspirational\n\n${shift || '(blank)'}`;
+  S.notes.push({ id: uid(), stageId: null, title: 'Onboarding ' + new Date().toLocaleDateString('en-AU'), body, createdAt: Date.now() });
+  S.settings.voicePref = voice;
+  S.settings.onboardedAt = Date.now();
+  saveS();
+  closeSheet();
+  toast('Onboarded');
   showV(CV);
 }
 
@@ -1132,7 +1557,7 @@ function closeSheet() {
 function toggleDrawer() {
   const o = document.getElementById('drawer-overlay');
   const d = document.getElementById('drawer');
-  if (d.classList.contains('show')) { closeDrawer(); }
+  if (d.classList.contains('show')) closeDrawer();
   else { o.classList.add('show'); d.classList.add('show'); }
 }
 function closeDrawer() {
@@ -1143,10 +1568,9 @@ function closeDrawer() {
 // ─── Settings ─────────────────────────────────────────────────────────────
 function openSettings() {
   let html = '';
-
   html += '<div class="setting-row">';
   html += '<div class="label">Coach voice</div>';
-  html += '<div class="desc">How responses are toned in S3 retrieval. Doesn\u2019t affect this app yet.</div>';
+  html += '<div class="desc">How responses are toned in S3 retrieval.</div>';
   html += '<select class="inp" id="set-voice">';
   ['warm', 'helpful', 'aggressive', 'roasty', 'prepaired', 'accountantability', 'ijneb-dev'].forEach(v => {
     const sel = S.settings.voicePref === v ? ' selected' : '';
@@ -1156,10 +1580,19 @@ function openSettings() {
   html += '</div>';
 
   html += '<div class="setting-row">';
+  html += '<div class="label">Voice transcription</div>';
+  html += '<div class="desc">Web Speech API \u2014 on-device, free, no key. Works in Chrome and Safari.</div>';
+  html += '<label style="display:flex;align-items:center;gap:10px;cursor:pointer;font-family:var(--body);font-size:13px;text-transform:none;letter-spacing:0;color:var(--text)">';
+  html += '<span class="switch"><input type="checkbox" id="set-voice-tx"' + (S.settings.voiceTranscriptionEnabled ? ' checked' : '') + ' onchange="toggleVoiceTx()"/><span class="switch-track"></span></span>';
+  html += 'Show voice button in Capture';
+  html += '</label>';
+  html += '</div>';
+
+  html += '<div class="setting-row">';
   html += '<div class="label">Google Drive sync</div>';
-  html += '<div class="desc">Sync app state to a single file in your Drive (drive.file scope; we only see the file we create). Requires a Google Cloud OAuth Client ID.</div>';
+  html += '<div class="desc">drive.file scope. We only see the file we create.</div>';
   if (S.settings.driveToken) {
-    html += '<div style="font-family:var(--mono);font-size:10px;color:var(--green);letter-spacing:.1em;margin-bottom:10px">✓ CONNECTED</div>';
+    html += '<div style="font-family:var(--mono);font-size:10px;color:var(--green);letter-spacing:.1em;margin-bottom:10px">\u2713 CONNECTED</div>';
     html += '<label style="display:flex;align-items:center;gap:10px;cursor:pointer;font-family:var(--body);font-size:13px;text-transform:none;letter-spacing:0;color:var(--text)">';
     html += '<span class="switch"><input type="checkbox" id="set-sync"' + (S.settings.driveSync ? ' checked' : '') + ' onchange="toggleDriveSync()"/><span class="switch-track"></span></span>';
     html += 'Auto-sync after every change';
@@ -1176,39 +1609,39 @@ function openSettings() {
     html += '<button class="btn btn-g" onclick="saveDriveClientId()">Save Client ID</button>';
     if (S.settings.driveClientId) html += '<button class="btn btn-p" onclick="driveAuth()">Connect Drive</button>';
     html += '</div>';
-    html += '<div class="help" style="margin-top:10px;font-size:11px">Create a Client ID at <a href="https://console.cloud.google.com" target="_blank" style="color:var(--accent)">console.cloud.google.com</a> → APIs &amp; Services → Credentials → OAuth client ID (Web). Add this URL to authorised redirect URIs.</div>';
+    html += '<div class="help" style="margin-top:10px;font-size:11px"><a href="https://console.cloud.google.com" target="_blank" style="color:var(--accent)">console.cloud.google.com</a> \u2192 APIs &amp; Services \u2192 Credentials \u2192 OAuth client ID (Web). Add this URL to authorised redirect URIs.</div>';
   }
   html += '</div>';
 
   html += '<div class="setting-row">';
-  html += '<div class="label">Manual JSON export/import</div>';
-  html += '<div class="desc">Bypass Drive entirely. Export to file, drop wherever you want, import on any device.</div>';
-  html += '<div class="brow">';
-  html += '<button class="btn btn-g" onclick="exportJSON()">Export JSON</button>';
-  html += '<button class="btn btn-g" onclick="importJSON()">Import JSON</button>';
-  html += '</div>';
+  html += '<div class="label">Manual JSON</div>';
+  html += '<div class="desc">Bypass Drive entirely. Export to file, drop wherever, import on any device.</div>';
+  html += '<div class="brow"><button class="btn btn-g" onclick="exportJSON()">Export</button><button class="btn btn-g" onclick="importJSON()">Import</button></div>';
   html += '</div>';
 
   html += '<div class="setting-row">';
   html += '<div class="label">Data</div>';
-  html += '<div class="desc">' + S.tasks.length + ' tasks · ' + S.captures.length + ' captures · ' + S.notes.length + ' notes</div>';
-  html += '<div class="desc">Schema ' + S.meta.schemaVersion + ' · created ' + fmtDate(S.meta.createdAt) + '</div>';
+  html += '<div class="desc">' + S.tasks.length + ' tasks &middot; ' + S.captures.length + ' captures &middot; ' + S.notes.length + ' notes &middot; ' + S.lexicon.length + ' lexicon entries</div>';
+  html += '<div class="desc">Schema ' + S.meta.schemaVersion + ' &middot; created ' + fmtDate(S.meta.createdAt) + '</div>';
   if (S.meta.lastSyncedAt) html += '<div class="desc">Last synced ' + fmtRel(S.meta.lastSyncedAt) + '</div>';
-  html += '<div style="margin-top:10px"><button class="btn btn-r" onclick="confirmReset()">Reset all data</button></div>';
+  html += '<div style="margin-top:10px"><button class="btn btn-r" onclick="confirmReset()">Reset all</button></div>';
   html += '</div>';
 
   openSheet('Settings', html);
 
-  // Wire voice change
   setTimeout(() => {
     const v = document.getElementById('set-voice');
     if (v) v.onchange = () => { S.settings.voicePref = v.value; saveS(); toast('Voice saved'); };
   }, 50);
 }
 
+function toggleVoiceTx() {
+  S.settings.voiceTranscriptionEnabled = document.getElementById('set-voice-tx').checked;
+  saveS();
+}
+
 function saveDriveClientId() {
-  const v = document.getElementById('set-clientid').value.trim();
-  S.settings.driveClientId = v;
+  S.settings.driveClientId = document.getElementById('set-clientid').value.trim();
   saveS();
   toast('Client ID saved');
   openSettings();
@@ -1221,15 +1654,15 @@ function toggleDriveSync() {
 }
 
 function driveDisconnect() {
-  if (!confirm('Disconnect Drive? Your local data stays. You can reconnect anytime.')) return;
+  if (!confirm('Disconnect Drive? Your local data stays.')) return;
   S.settings.driveToken = null;
   S.settings.driveSync = false;
   saveS();
-  toast('Drive disconnected');
+  toast('Disconnected');
   openSettings();
 }
 
-// ─── Drive sync (forked from RenovAIter, adapted) ─────────────────────────
+// ─── Drive sync (forked from RenovAIter) ──────────────────────────────────
 function driveAuth() {
   const clientId = S.settings.driveClientId;
   if (!clientId) { toast('Save a Client ID first'); return; }
@@ -1271,11 +1704,10 @@ async function driveFindFile() {
 
 async function driveSave() {
   if (!S.settings.driveToken) { toast('Connect Drive first'); return; }
-  toast('Saving to Drive…');
+  toast('Saving to Drive\u2026');
   const exportData = JSON.parse(JSON.stringify(S));
-  delete exportData.settings.driveToken; // don't save the token to Drive
+  delete exportData.settings.driveToken;
   const content = JSON.stringify(exportData, null, 2);
-
   const fileId = await driveFindFile();
   try {
     if (fileId) {
@@ -1284,8 +1716,8 @@ async function driveSave() {
         headers: { 'Authorization': 'Bearer ' + S.settings.driveToken, 'Content-Type': 'application/json' },
         body: content
       });
-      if (res.ok) { S.meta.lastSyncedAt = Date.now(); saveS(); toast('Saved to Drive'); }
-      else { toast('Drive save failed'); }
+      if (res.ok) { S.meta.lastSyncedAt = Date.now(); saveS(); toast('Saved'); }
+      else toast('Save failed');
     } else {
       const metadata = { name: DRIVE_FILE_NAME, mimeType: 'application/json' };
       const form = new FormData();
@@ -1296,23 +1728,23 @@ async function driveSave() {
         headers: { 'Authorization': 'Bearer ' + S.settings.driveToken },
         body: form
       });
-      if (res.ok) { S.meta.lastSyncedAt = Date.now(); saveS(); toast('Saved to Drive'); }
-      else { toast('Drive save failed'); }
+      if (res.ok) { S.meta.lastSyncedAt = Date.now(); saveS(); toast('Saved'); }
+      else toast('Save failed');
     }
   } catch (e) { console.error(e); toast('Drive error'); }
 }
 
 async function driveLoad() {
   if (!S.settings.driveToken) { toast('Connect Drive first'); return; }
-  if (!confirm('Replace local data with Drive data? Your current local state will be overwritten.')) return;
-  toast('Loading from Drive…');
+  if (!confirm('Replace local data with Drive data?')) return;
+  toast('Loading\u2026');
   const fileId = await driveFindFile();
-  if (!fileId) { toast('No sync file on Drive yet'); return; }
+  if (!fileId) { toast('No sync file on Drive'); return; }
   try {
     const res = await fetch('https://www.googleapis.com/drive/v3/files/' + fileId + '?alt=media', {
       headers: { 'Authorization': 'Bearer ' + S.settings.driveToken }
     });
-    if (!res.ok) { toast('Drive load failed'); return; }
+    if (!res.ok) { toast('Load failed'); return; }
     const data = await res.json();
     if (data.tasks && data.stages) {
       const token = S.settings.driveToken;
@@ -1323,8 +1755,8 @@ async function driveLoad() {
       S.meta.lastSyncedAt = Date.now();
       saveS();
       showV('today');
-      toast('Loaded from Drive');
-    } else { toast('Invalid Drive data'); }
+      toast('Loaded');
+    } else toast('Invalid data');
   } catch (e) { console.error(e); toast('Drive error'); }
 }
 
@@ -1334,7 +1766,7 @@ function syncToDrive() {
   window._driveSyncTimer = setTimeout(() => driveSave().catch(() => {}), 5000);
 }
 
-// ─── Manual JSON export/import ────────────────────────────────────────────
+// ─── JSON export/import ───────────────────────────────────────────────────
 function exportJSON() {
   const exportData = JSON.parse(JSON.stringify(S));
   delete exportData.settings.driveToken;
@@ -1352,9 +1784,7 @@ function exportJSON() {
   toast('Exported');
 }
 
-function importJSON() {
-  document.getElementById('file-import').click();
-}
+function importJSON() { document.getElementById('file-import').click(); }
 
 function handleImport(ev) {
   const file = ev.target.files[0];
@@ -1380,7 +1810,7 @@ function handleImport(ev) {
 }
 
 function confirmReset() {
-  if (!confirm('Reset everything? This wipes tasks, captures, notes, settings. There is no undo unless you have an export.')) return;
+  if (!confirm('Reset everything? This wipes tasks, captures, notes, lexicon, settings.')) return;
   if (!confirm('Really? Last chance.')) return;
   localStorage.removeItem(SK);
   S = emptyData();
@@ -1397,23 +1827,25 @@ function openAbout() {
   html += '<div style="font-family:var(--display);font-size:32px;font-weight:800;letter-spacing:-0.02em">ikig<span style="color:var(--accent)">AI</span></div>';
   html += '<div style="font-family:var(--mono);font-size:10px;color:var(--sub);letter-spacing:.2em;margin-top:4px">// SCHEMA ' + SCHEMA_VERSION + '</div>';
   html += '</div>';
-  html += '<div style="font-size:13px;line-height:1.7;margin-bottom:14px">A self-owned coach grounded in everything you know. This app tracks the build itself. Once shipped, the app you\u2019ll use day-to-day lives on your NUC.</div>';
-  html += '<div style="font-size:13px;line-height:1.7;margin-bottom:14px">Built with the bones of <a href="https://github.com/ijnebzor/RenovAIter" target="_blank" style="color:var(--accent)">RenovAIter</a>. Source on <a href="https://github.com/ijnebzor/IkigAI" target="_blank" style="color:var(--accent)">GitHub</a>.</div>';
-  html += '<div style="font-family:var(--mono);font-size:10px;color:var(--sub);letter-spacing:.1em;text-align:center;margin-top:24px">// CAPTURE · UNDERSTAND · RETAIN · SURFACE · GROW</div>';
+  html += '<div style="font-size:13px;line-height:1.7;margin-bottom:14px">A tool I built for myself, to make myself better. You can have it too.</div>';
+  html += '<div style="font-size:13px;line-height:1.7;margin-bottom:14px">The framework overlays. Compounding becomes visible. You remain the thinker.</div>';
+  html += '<div style="font-size:13px;line-height:1.7;margin-bottom:14px">Built with the bones of <a href="https://github.com/ijnebzor/RenovAIter" target="_blank" style="color:var(--accent)">RenovAIter</a>. The Digiquarium daemon naming. PoliticalDebAIser reframed inward. ABENAKI cognitive loop. Source on <a href="https://github.com/ijnebzor/IkigAI" target="_blank" style="color:var(--accent)">GitHub</a>.</div>';
+  html += '<div style="font-family:var(--mono);font-size:10px;color:var(--sub);letter-spacing:.1em;text-align:center;margin-top:24px">// CAPTURE \u00B7 UNDERSTAND \u00B7 RETAIN \u00B7 SURFACE \u00B7 GROW</div>';
   openSheet('About', html);
 }
 
 // ─── Init ─────────────────────────────────────────────────────────────────
 function updateSyncStatus() {
   const el = document.getElementById('sync-status');
+  if (!el) return;
   if (S.settings.driveToken && S.settings.driveSync) {
-    el.textContent = '⟳ SYNC';
+    el.textContent = '\u27F3 SYNC';
     el.style.color = 'var(--green)';
   } else if (S.settings.driveToken) {
-    el.textContent = '⟳ ON';
+    el.textContent = '\u27F3 ON';
     el.style.color = 'var(--sub)';
   } else {
-    el.textContent = '○ LOCAL';
+    el.textContent = '\u25CB LOCAL';
     el.style.color = 'var(--sub)';
   }
 }
@@ -1421,10 +1853,6 @@ function updateSyncStatus() {
 handleDriveCallback();
 showV('today');
 updateSyncStatus();
-
-// Re-render sync status after every save
-const _origSave = saveS;
-saveS = function() { _origSave(); updateSyncStatus(); };
 
 // PWA service worker
 if ('serviceWorker' in navigator) {

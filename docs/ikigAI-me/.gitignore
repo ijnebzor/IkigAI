@@ -1,16 +1,39 @@
-# Indexes are computed; don't commit
-state/indexes/
-state/cache/
-graph/graph.json
+# Runtime state — regenerable, sometimes large
+state/*
+!state/README.md
+log.md
+feedback.jsonl
 
-# Inbox files that have been ingested can be archived
-inbox/_archived/
+# Inbox — temporary, processed asynchronously by THE WATCHER
+inbox/**/*.md
+inbox/**/*.txt
+inbox/**/*.html
+!inbox/README.md
+inbox/**/.processed/
 
-# Secrets
-.env
-*.key
-*.pem
+# Calendar pulls — re-pullable from Google Calendar; can grow large
+wiki/calendar/
 
-# OS noise
+# Brief outputs (regenerable; can flood with daily files)
+# Comment out the next line if you want to keep brief history in git
+# wiki/outputs/brief-*.md
+
+# Secrets, OAuth tokens, API keys
+**/secrets.yml
+**/secrets.json
+**/oauth_token.json
+**/*-token.json
+**/*-credentials.json
+**/.env
+**/*.key
+**/*.pem
+
+# Temp / OS
 .DS_Store
 Thumbs.db
+*.swp
+*.swo
+
+# Vector index (when run locally rather than on NUC)
+**/chroma/
+**/graph.json
