@@ -256,13 +256,12 @@ textarea.inp{resize:vertical;min-height:60px;font-family:var(--body)}
   </div>
   <div class="main" id="mc"></div>
   <nav class="nav">
-    <button class="nav-btn active" data-view="today" onclick="showV('today')"><span class="nav-icon">\u25D0</span>Today</button>
-    <button class="nav-btn" data-view="roadmap" onclick="showV('roadmap')"><span class="nav-icon">\u25A6</span>Roadmap</button>
-    <button class="nav-btn" data-view="tasks" onclick="showV('tasks')"><span class="nav-icon">\u2611</span>Tasks</button>
-    <button class="nav-btn" data-view="capture" onclick="showV('capture')"><span class="nav-icon">\u2295</span>Capture</button>
-    <button class="nav-btn" data-view="lens" onclick="showV('lens')"><span class="nav-icon">\u2A02</span>Lens</button>
-    <button class="nav-btn" data-view="lexicon" onclick="showV('lexicon')"><span class="nav-icon">\u00A7</span>Lexicon</button>
-    <button class="nav-btn nav-overlay" onclick="toggleDrawer()"><span class="nav-icon">\u22EF</span>More</button>
+    <button class="nav-btn active" data-view="today" onclick="showV('today')"><span class="nav-icon">◐</span>Today</button>
+    <button class="nav-btn" data-view="capture" onclick="showV('capture')"><span class="nav-icon">⊕</span>Capture</button>
+    <button class="nav-btn" data-view="lens" onclick="showV('lens')"><span class="nav-icon">⨂</span>Lens</button>
+    <button class="nav-btn" data-view="brief" onclick="showV('brief')"><span class="nav-icon">⧾</span>Brief</button>
+    <button class="nav-btn" data-view="lexicon" onclick="showV('lexicon')"><span class="nav-icon">§</span>Lexicon</button>
+    <button class="nav-btn nav-overlay" onclick="toggleDrawer()"><span class="nav-icon">⋯</span>More</button>
   </nav>
 </div>
 
@@ -277,6 +276,8 @@ textarea.inp{resize:vertical;min-height:60px;font-family:var(--body)}
 <div class="drawer" id="drawer">
   <div class="drawer-grid">
     <button class="drawer-btn" onclick="closeDrawer();openOnboard()"><span class="drawer-icon">\u2766</span>Onboard</button>
+    <button class="drawer-btn" onclick="closeDrawer();showV('roadmap')"><span class="drawer-icon">\u25A6</span>Roadmap</button>
+    <button class="drawer-btn" onclick="closeDrawer();showV('tasks')"><span class="drawer-icon">\u2611</span>Tasks</button>
     <button class="drawer-btn" onclick="closeDrawer();showV('timeline')"><span class="drawer-icon">\u29FE</span>Timeline</button>
     <button class="drawer-btn" onclick="closeDrawer();showV('notes')"><span class="drawer-icon">\u270E</span>Notes</button>
     <button class="drawer-btn" onclick="closeDrawer();openSettings()"><span class="drawer-icon">\u2699</span>Settings</button>
@@ -708,118 +709,101 @@ function showV(v) {
   });
   const renderers = {
     today: rToday,
-    roadmap: rRoadmap,
-    tasks: rTasks,
     capture: rCapture,
     lens: rLens,
+    brief: rBrief,
     lexicon: rLexicon,
+    roadmap: rRoadmap,
+    tasks: rTasks,
     timeline: rTimeline,
     notes: rNotes
   };
   if (renderers[v]) renderers[v](mc);
 }
 
-// ─── TODAY view — leads with overlap state, not progress percent ─────────
+// ─── TODAY view — the app's actual home, not a build-tracker ──────────────
 function rToday(el) {
-  const cs = currentStage();
-  const total = totalProgress();
-  const remaining = totalEffortRemaining();
   const today = new Date().toLocaleDateString('en-AU', { weekday: 'long', day: 'numeric', month: 'long' });
+  const captureCount = S.captures.length;
+  const completedCount = S.tasks.filter(t => t.status === 'done').length;
 
   let html = '<h1 class="view-title">Good morning.</h1>';
   html += '<div class="view-sub">// ' + today + ' &middot; the framework overlays</div>';
 
-  // ── Compounding state header (the key reframe — not progress percent first) ──
-  html += '<div class="card gc">';
-  html += '<div class="sl">// where the framework lights up today</div>';
-  // Show region distribution from completed tasks
-  const completedTasks = S.tasks.filter(t => t.status === 'done');
-  const regionCounts = { love: 0, good_at: 0, world_needs: 0, paid_for: 0 };
-  completedTasks.forEach(t => {
-    const regions = inferRegionsFromText(t.text);
+  // ── Region snapshot lead ──
+  const allItems = [...S.captures, ...S.tasks.filter(t => t.status === 'done')];
+  const regionCounts = { love: 0, good_at: 0, world_needs: 0, paid_for: 0, passion: 0, mission: 0, profession: 0, vocation: 0, centre: 0 };
+  allItems.forEach(item => {
+    const text = item.text || '';
+    const regions = item.regions || inferRegionsFromText(text);
     regions.forEach(r => { if (regionCounts[r] !== undefined) regionCounts[r]++; });
   });
+  const total = allItems.length || 1;
+
+  html += '<div class="card gc">';
+  html += '<div class="sl">// where the framework lights up</div>';
   html += '<div style="display:flex;flex-wrap:wrap;gap:6px;margin:4px 0 12px">';
   ['love', 'good_at', 'world_needs', 'paid_for'].forEach(r => {
     const lit = regionCounts[r] > 0;
-    html += `<span class="region-pill ${r} ${lit ? 'lit' : ''}">${r.replace('_', ' ')} ${regionCounts[r] || 0}</span>`;
+    html += '<span class="region-pill ' + r + ' ' + (lit ? 'lit' : '') + '" onclick="showV(\'lens\')">' + r.replace('_', ' ') + ' ' + regionCounts[r] + '</span>';
   });
   html += '</div>';
-  if (completedTasks.length === 0) {
-    html += '<div style="font-size:12px;color:var(--sub);line-height:1.6">Nothing shipped yet. Each task you complete lights up the regions it touches. The system shows you the compounding.</div>';
+
+  if (allItems.length === 0) {
+    html += '<div style="font-size:13px;color:var(--sub);line-height:1.6">Nothing in the vault yet. <strong style="color:var(--accent)">Drop your first capture</strong> — paste a Chrome tab, a thought, anything. The system shows you which regions it touches.</div>';
+    html += '<div style="margin-top:12px"><button class="btn btn-p" onclick="showV(\'capture\')">Open Capture</button></div>';
   } else {
-    html += '<div style="font-size:12px;color:var(--sub);line-height:1.6">' + completedTasks.length + ' tasks shipped. Heaviest region: <strong style="color:var(--accent)">' + (Object.entries(regionCounts).sort((a,b) => b[1]-a[1])[0][0].replace('_',' ')) + '</strong>. ';
-    const lightest = Object.entries(regionCounts).sort((a,b) => a[1]-b[1])[0];
-    if (lightest[1] === 0) html += 'Quietest: <strong style="color:var(--orange)">' + lightest[0].replace('_',' ') + '</strong> — drift signal.';
+    const sorted = Object.entries(regionCounts).filter(([k]) => ['love','good_at','world_needs','paid_for'].includes(k)).sort((a,b) => b[1]-a[1]);
+    const heaviest = sorted[0];
+    const lightest = sorted[sorted.length - 1];
+    html += '<div style="font-size:12px;color:var(--sub);line-height:1.6">';
+    html += allItems.length + ' ' + (allItems.length === 1 ? 'item' : 'items') + ' in vault. Heaviest: <strong style="color:var(--accent)">' + heaviest[0].replace('_',' ') + '</strong>. ';
+    if (lightest[1] === 0) html += 'Quietest: <strong style="color:var(--orange)">' + lightest[0].replace('_',' ') + '</strong> — drift signal. ';
+    html += '<a onclick="showV(\'lens\')" style="color:var(--accent);cursor:pointer;text-decoration:underline">See the Lens →</a>';
     html += '</div>';
   }
   html += '</div>';
 
-  // ── Quick stats ──
-  html += '<div class="kg3">';
-  html += '<div class="kpi"><div class="lbl">Progress</div><div class="val" style="color:var(--accent)">' + total + '%</div><div class="sub">overall</div></div>';
-  html += '<div class="kpi"><div class="lbl">Effort left</div><div class="val">' + remaining + 'h</div><div class="sub">est.</div></div>';
-  html += '<div class="kpi"><div class="lbl">Tasks</div><div class="val">' + S.tasks.filter(t => t.status === 'done').length + '/' + S.tasks.length + '</div><div class="sub">done</div></div>';
-  html += '</div>';
-
-  // ── Current stage focus ──
-  if (cs) {
-    const p = stageProgress(cs.id);
-    const nt = nextTask(cs.id);
-    html += '<div class="card">';
-    html += '<div class="sl">// current stage</div>';
-    html += '<div style="font-family:var(--display);font-size:20px;font-weight:700;margin-bottom:4px">' + escHtml(cs.title) + '</div>';
-    html += '<div style="font-family:var(--mono);font-size:10px;color:var(--sub);letter-spacing:.1em;margin-bottom:10px">STAGE ' + cs.num + ' &middot; ' + escHtml(cs.when) + ' &middot; ' + escHtml(cs.effort) + '</div>';
-    html += '<div style="font-size:13px;line-height:1.6;margin-bottom:12px">' + escHtml(cs.tagline) + '</div>';
-    html += '<div class="pb"><div class="pbi" style="width:' + p.pct + '%"></div></div>';
-    html += '<div style="font-family:var(--mono);font-size:10px;color:var(--sub);letter-spacing:.1em;margin-bottom:14px">' + p.done + ' / ' + p.total + ' tasks &middot; ' + p.pct + '%</div>';
-
-    if (nt) {
-      html += '<div class="sl">// next</div>';
-      html += '<div style="padding:10px;background:var(--surface);border-radius:var(--radius-sm);border:1px solid var(--border);margin-bottom:12px">';
-      html += '<div style="font-size:13px;line-height:1.5">' + escHtml(nt.text) + '</div>';
-      const regions = inferRegionsFromText(nt.text);
-      if (regions.length) {
-        html += '<div style="margin-top:8px">';
-        regions.slice(0, 4).forEach(r => html += `<span class="region-pill ${r}">${r.replace('_', ' ')}</span>`);
-        html += '</div>';
-      }
-      html += '</div>';
-      html += '<div class="brow"><button class="btn btn-p" onclick="completeTask(\'' + nt.id + '\')">Mark Done</button>';
-      html += '<button class="btn btn-g" onclick="showV(\'roadmap\');setTimeout(()=>expandStage(\'' + cs.id + '\'),50)">Open stage</button></div>';
-    }
-    html += '</div>';
-  } else {
-    html += '<div class="card gg" style="text-align:center;padding:30px"><div style="font-size:42px;margin-bottom:10px">\u2726</div><h3 style="font-family:var(--display);font-size:18px;margin-bottom:6px">All stages complete</h3><p style="font-size:13px;color:var(--sub)">You shipped IkigAI. Use it for the rest of your life.</p></div>';
-  }
-
-  // ── Quick actions ──
+  // ── Quick actions: the verbs ──
   html += '<div class="card">';
-  html += '<div class="sl">// quick</div>';
-  html += '<div class="brow">';
+  html += '<div class="sl">// today\'s moves</div>';
+  html += '<div class="brow" style="flex-wrap:wrap;gap:8px">';
   html += '<button class="btn btn-p" onclick="showV(\'capture\')">Capture</button>';
-  html += '<button class="btn btn-g" onclick="showV(\'roadmap\')">Roadmap</button>';
   html += '<button class="btn btn-g" onclick="showV(\'lens\')">Lens</button>';
+  html += '<button class="btn btn-g" onclick="showV(\'brief\')">Brief</button>';
+  html += '<button class="btn btn-g" onclick="showV(\'lexicon\')">Lexicon</button>';
   html += '<button class="btn btn-g" onclick="openOnboard()">Onboard</button>';
-  html += '</div>';
-  html += '</div>';
+  html += '</div></div>';
 
-  // ── Recent captures ──
+  // ── Recent captures (the actual content) ──
   if (S.captures.length) {
     html += '<div class="card">';
     html += '<div class="sl">// recent captures</div>';
-    S.captures.slice().reverse().slice(0, 3).forEach(c => {
+    S.captures.slice().reverse().slice(0, 5).forEach(c => {
       html += '<div style="padding:10px 0;border-bottom:1px solid var(--border)">';
-      html += '<div style="font-size:12px;line-height:1.6">' + escHtml(c.text.substring(0, 140)) + (c.text.length > 140 ? '\u2026' : '') + '</div>';
-      const regions = inferRegionsFromText(c.text);
+      html += '<div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">';
+      html += '<span class="tag tc">' + escHtml(c.type || 'capture') + '</span>';
+      html += '<span style="font-family:var(--mono);font-size:9px;color:var(--sub);letter-spacing:.1em">' + fmtRel(c.createdAt) + '</span>';
+      html += '</div>';
+      html += '<div style="font-size:12px;line-height:1.6">' + escHtml(c.text.substring(0, 160)) + (c.text.length > 160 ? '…' : '') + '</div>';
+      const regions = c.regions || inferRegionsFromText(c.text);
       if (regions.length) {
         html += '<div style="margin-top:6px">';
-        regions.slice(0, 4).forEach(r => html += `<span class="region-pill ${r} lit">${r.replace('_', ' ')}</span>`);
+        regions.slice(0, 4).forEach(r => html += '<span class="region-pill ' + r + ' lit">' + r.replace('_', ' ') + '</span>');
         html += '</div>';
       }
       html += '</div>';
     });
+    if (S.captures.length > 5) {
+      html += '<div style="margin-top:10px;text-align:center"><button class="btn btn-g btn-sm" onclick="showV(\'capture\')">All ' + S.captures.length + ' captures</button></div>';
+    }
     html += '</div>';
+  }
+
+  // ── Build status (small, demoted, optional) ──
+  const buildPct = totalProgress();
+  if (buildPct < 100) {
+    html += '<div class="help" style="font-size:11px">Build progress: <strong>' + buildPct + '%</strong> across S0–S5. <a onclick="showV(\'roadmap\')" style="color:var(--accent);cursor:pointer">Roadmap →</a></div>';
   }
 
   el.innerHTML = html;
@@ -957,9 +941,23 @@ function rCapture(el) {
     html += '</div>';
   }
 
+  // ── Bulk paste card (for Chrome tab dumps, lists of links) ──
+  html += '<div class="card">';
+  html += '<div class="sl">// bulk paste &middot; one per line</div>';
+  html += '<textarea class="inp" id="bulk-text" rows="8" placeholder="Paste 50 Chrome tabs here. One URL or thought per line. The system tags each one with the regions it touches."></textarea>';
+  html += '<div style="margin-top:10px;display:flex;gap:8px;align-items:center;flex-wrap:wrap">';
+  html += '<select class="inp" id="bulk-type" style="flex:0 1 140px">';
+  ['link', 'thought', 'idea', 'quote'].forEach(t => {
+    html += '<option value="' + t + '">' + t + '</option>';
+  });
+  html += '</select>';
+  html += '<button class="btn btn-p" onclick="bulkCapture()">Bulk Capture</button>';
+  html += '<span id="bulk-count" style="font-family:var(--mono);font-size:10px;color:var(--sub);letter-spacing:.1em"></span>';
+  html += '</div></div>';
+
   // Quick capture form
   html += '<div class="card">';
-  html += '<div class="sl">// new capture</div>';
+  html += '<div class="sl">// single capture</div>';
   html += '<label style="font-family:var(--mono);font-size:9px;letter-spacing:.15em;color:var(--sub);text-transform:uppercase;display:block;margin-bottom:6px">type</label>';
   html += '<select class="inp" id="cap-type" style="margin-bottom:10px">';
   ['idea', 'link', 'thought', 'quote', 'voice'].forEach(t => {
@@ -998,87 +996,217 @@ function rCapture(el) {
 
 // ─── LENS view — Brusselbach Ikigai with live state ───────────────────────
 function rLens(el) {
-  let html = '<h1 class="view-title">Lens</h1>';
-  html += '<div class="view-sub">// the framework, with your captures lighting it up</div>';
-
-  // SVG Brusselbach
-  html += '<div class="brusselbach">';
-  html += `<svg viewBox="0 0 280 280" xmlns="http://www.w3.org/2000/svg">
-    <circle cx="115" cy="100" r="80" fill="rgba(255,107,157,0.25)" stroke="#ff6b9d" stroke-width="1"/>
-    <circle cx="165" cy="100" r="80" fill="rgba(0,212,255,0.25)" stroke="#00d4ff" stroke-width="1"/>
-    <circle cx="115" cy="150" r="80" fill="rgba(200,241,53,0.25)" stroke="#c8f135" stroke-width="1"/>
-    <circle cx="165" cy="150" r="80" fill="rgba(255,170,61,0.25)" stroke="#ffaa3d" stroke-width="1"/>
-    <text x="140" y="35" text-anchor="middle" fill="#ff6b9d" font-size="11" font-family="JetBrains Mono" font-weight="700">love</text>
-    <text x="42" y="135" text-anchor="middle" fill="#c8f135" font-size="11" font-family="JetBrains Mono" font-weight="700">good_at</text>
-    <text x="240" y="135" text-anchor="middle" fill="#00d4ff" font-size="11" font-family="JetBrains Mono" font-weight="700">world_needs</text>
-    <text x="140" y="265" text-anchor="middle" fill="#ffaa3d" font-size="11" font-family="JetBrains Mono" font-weight="700">paid_for</text>
-    <text x="90" y="100" text-anchor="middle" fill="#e8e8e2" font-size="9" font-family="JetBrains Mono">passion</text>
-    <text x="190" y="100" text-anchor="middle" fill="#e8e8e2" font-size="9" font-family="JetBrains Mono">mission</text>
-    <text x="90" y="160" text-anchor="middle" fill="#e8e8e2" font-size="9" font-family="JetBrains Mono">profession</text>
-    <text x="190" y="160" text-anchor="middle" fill="#e8e8e2" font-size="9" font-family="JetBrains Mono">vocation</text>
-    <text x="140" y="135" text-anchor="middle" fill="#c8f135" font-size="14" font-family="Syne" font-weight="800">CENTRE</text>
-  </svg>`;
-  html += '</div>';
-
-  // Compute region distribution from completed tasks AND captures
-  const allItems = [...S.tasks.filter(t => t.status === 'done'), ...S.captures];
+  // Compute region counts once
+  const allItems = [...S.captures, ...S.tasks.filter(t => t.status === 'done')];
   const regionCounts = { love: 0, good_at: 0, world_needs: 0, paid_for: 0, passion: 0, mission: 0, profession: 0, vocation: 0, centre: 0 };
   allItems.forEach(item => {
     const text = item.text || '';
     const regions = item.regions || inferRegionsFromText(text);
     regions.forEach(r => { if (regionCounts[r] !== undefined) regionCounts[r]++; });
   });
-
   const total = allItems.length || 1;
+  const mode = S.settings.lensMode || 'venn';
 
-  html += '<div class="card">';
-  html += '<div class="sl">// the four axes</div>';
-  html += '<div class="region-grid">';
-  ['love', 'good_at', 'world_needs', 'paid_for'].forEach(r => {
-    const count = regionCounts[r] || 0;
-    const pct = Math.min(100, Math.round((count / total) * 100));
-    html += `<div class="region-cell ${r}" onclick="filterByRegion('${r}')">`;
-    html += `<div class="region-name">${r.replace('_', ' ')}</div>`;
-    html += `<div class="region-count">${count} ${count === 1 ? 'item' : 'items'}</div>`;
-    html += `<div class="region-fill"><div class="region-fill-inner" style="width:${pct}%"></div></div>`;
-    html += '</div>';
+  let html = '<h1 class="view-title">Lens</h1>';
+  html += '<div class="view-sub">// the framework, with your captures lighting it up</div>';
+
+  // ── View mode toggle: sovereignty includes how you see your own data ──
+  html += '<div class="card" style="padding:10px 14px">';
+  html += '<div class="sl">// view</div>';
+  html += '<div style="display:flex;gap:6px;flex-wrap:wrap">';
+  ['venn','bars','markdown','json','audio'].forEach(m => {
+    const active = m === mode;
+    html += '<button class="btn ' + (active ? 'btn-p' : 'btn-g') + ' btn-sm" onclick="setLensMode(\'' + m + '\')">' + m + '</button>';
   });
-  html += '</div>';
-  html += '</div>';
+  html += '</div></div>';
 
-  html += '<div class="card">';
-  html += '<div class="sl">// the five intersections</div>';
-  ['passion', 'mission', 'profession', 'vocation', 'centre'].forEach(r => {
-    const count = regionCounts[r] || 0;
-    html += '<div style="display:flex;align-items:center;gap:10px;padding:10px;border-bottom:1px solid var(--border)">';
-    html += `<div style="flex:1"><strong style="font-family:var(--display);font-size:14px">${r}</strong>`;
-    const labels = {
-      passion: 'love + good_at',
-      mission: 'love + world_needs',
-      profession: 'good_at + paid_for',
-      vocation: 'world_needs + paid_for',
-      centre: 'all four'
-    };
-    html += `<div style="font-family:var(--mono);font-size:9px;color:var(--sub);letter-spacing:.1em">${labels[r]}</div></div>`;
-    html += `<span class="region-pill ${r} ${count > 0 ? 'lit' : ''}">${count}</span>`;
+  if (mode === 'venn') {
+    // ── Brusselbach Venn (default) ──
+    const op = (count) => 0.15 + Math.min(0.5, (count / total) * 0.7);
+    html += '<div class="brusselbach">';
+    html += '<svg viewBox="0 0 280 280" xmlns="http://www.w3.org/2000/svg">';
+    html += '<circle cx="115" cy="100" r="80" fill="rgba(255,107,157,' + op(regionCounts.love) + ')" stroke="#ff6b9d" stroke-width="1"/>';
+    html += '<circle cx="165" cy="100" r="80" fill="rgba(0,212,255,' + op(regionCounts.world_needs) + ')" stroke="#00d4ff" stroke-width="1"/>';
+    html += '<circle cx="115" cy="150" r="80" fill="rgba(200,241,53,' + op(regionCounts.good_at) + ')" stroke="#c8f135" stroke-width="1"/>';
+    html += '<circle cx="165" cy="150" r="80" fill="rgba(255,170,61,' + op(regionCounts.paid_for) + ')" stroke="#ffaa3d" stroke-width="1"/>';
+    html += '<text x="140" y="35" text-anchor="middle" fill="#ff6b9d" font-size="11" font-family="JetBrains Mono" font-weight="700">love</text>';
+    html += '<text x="42" y="135" text-anchor="middle" fill="#c8f135" font-size="11" font-family="JetBrains Mono" font-weight="700">good_at</text>';
+    html += '<text x="240" y="135" text-anchor="middle" fill="#00d4ff" font-size="11" font-family="JetBrains Mono" font-weight="700">world_needs</text>';
+    html += '<text x="140" y="265" text-anchor="middle" fill="#ffaa3d" font-size="11" font-family="JetBrains Mono" font-weight="700">paid_for</text>';
+    html += '<text x="140" y="135" text-anchor="middle" fill="#c8f135" font-size="14" font-family="Syne" font-weight="800">CENTRE</text>';
+    html += '</svg></div>';
+  }
+
+  if (mode === 'bars' || mode === 'venn') {
+    html += '<div class="card">';
+    html += '<div class="sl">// the four axes</div>';
+    html += '<div class="region-grid">';
+    ['love', 'good_at', 'world_needs', 'paid_for'].forEach(r => {
+      const count = regionCounts[r] || 0;
+      const pct = Math.min(100, Math.round((count / total) * 100));
+      html += '<div class="region-cell ' + r + '" onclick="filterByRegion(\'' + r + '\')">';
+      html += '<div class="region-name">' + r.replace('_', ' ') + '</div>';
+      html += '<div class="region-count">' + count + ' ' + (count === 1 ? 'item' : 'items') + '</div>';
+      html += '<div class="region-fill"><div class="region-fill-inner" style="width:' + pct + '%"></div></div>';
+      html += '</div>';
+    });
+    html += '</div></div>';
+
+    html += '<div class="card">';
+    html += '<div class="sl">// the five intersections</div>';
+    ['passion', 'mission', 'profession', 'vocation', 'centre'].forEach(r => {
+      const count = regionCounts[r] || 0;
+      const labels = { passion: 'love + good_at', mission: 'love + world_needs', profession: 'good_at + paid_for', vocation: 'world_needs + paid_for', centre: 'all four' };
+      html += '<div style="display:flex;align-items:center;gap:10px;padding:10px;border-bottom:1px solid var(--border)">';
+      html += '<div style="flex:1"><strong style="font-family:var(--display);font-size:14px">' + r + '</strong>';
+      html += '<div style="font-family:var(--mono);font-size:9px;color:var(--sub);letter-spacing:.1em">' + labels[r] + '</div></div>';
+      html += '<span class="region-pill ' + r + ' ' + (count > 0 ? 'lit' : '') + '">' + count + '</span>';
+      html += '</div>';
+    });
     html += '</div>';
-  });
-  html += '</div>';
+  }
 
-  // Drift detection
+  if (mode === 'markdown') {
+    let md = '# Lens — ' + new Date().toISOString().split('T')[0] + '\n\n';
+    md += '**Total items:** ' + allItems.length + '\n\n';
+    md += '## Four axes\n\n';
+    ['love', 'good_at', 'world_needs', 'paid_for'].forEach(r => {
+      const pct = Math.round((regionCounts[r] / total) * 100);
+      md += '- **' + r.replace('_',' ') + ':** ' + regionCounts[r] + ' (' + pct + '%)\n';
+    });
+    md += '\n## Five intersections\n\n';
+    ['passion', 'mission', 'profession', 'vocation', 'centre'].forEach(r => {
+      md += '- **' + r + ':** ' + regionCounts[r] + '\n';
+    });
+    html += '<div class="card"><pre style="font-size:12px;line-height:1.7;white-space:pre-wrap;margin:0">' + escHtml(md) + '</pre>';
+    html += '<div style="margin-top:10px"><button class="btn btn-g btn-sm" onclick="copyToClipboard(' + JSON.stringify(JSON.stringify(md)) + ')">Copy</button></div></div>';
+  }
+
+  if (mode === 'json') {
+    const obj = { date: new Date().toISOString(), total: allItems.length, regions: regionCounts };
+    const j = JSON.stringify(obj, null, 2);
+    html += '<div class="card"><pre style="font-size:11px;line-height:1.6;white-space:pre-wrap;margin:0;font-family:var(--mono)">' + escHtml(j) + '</pre>';
+    html += '<div style="margin-top:10px"><button class="btn btn-g btn-sm" onclick="copyToClipboard(' + JSON.stringify(JSON.stringify(j)) + ')">Copy</button></div></div>';
+  }
+
+  if (mode === 'audio') {
+    const sorted = Object.entries(regionCounts).filter(([k]) => ['love','good_at','world_needs','paid_for'].includes(k)).sort((a,b) => b[1]-a[1]);
+    const speech = 'You have ' + allItems.length + ' items in your vault. Heaviest region is ' + sorted[0][0].replace('_',' ') + ' with ' + sorted[0][1] + ' items. ' +
+      (sorted[3][1] === 0 ? 'Quietest region is ' + sorted[3][0].replace('_',' ') + '. The system surfaces this without telling you what to do.' : 'No empty regions.');
+    html += '<div class="card">';
+    html += '<div class="sl">// speak the lens</div>';
+    html += '<div style="font-size:13px;line-height:1.7;margin-bottom:12px">' + escHtml(speech) + '</div>';
+    html += '<div class="brow"><button class="btn btn-p" onclick="speakText(' + JSON.stringify(JSON.stringify(speech)) + ')">Speak</button>';
+    html += '<button class="btn btn-g btn-sm" onclick="window.speechSynthesis.cancel()">Stop</button></div>';
+    html += '</div>';
+  }
+
+  // Drift detection (always shown)
   const lightest = Object.entries(regionCounts).filter(([k]) => ['love','good_at','world_needs','paid_for'].includes(k)).sort((a,b) => a[1]-b[1])[0];
   if (lightest && lightest[1] === 0 && allItems.length > 3) {
     html += '<div class="help warn"><strong>Drift signal:</strong> <code>' + lightest[0].replace('_',' ') + '</code> has zero items. The system surfaces this without telling you what to do. You decide if the gap matters or the goal needs revisiting.</div>';
   }
 
-  html += '<div class="help">Click any region above to filter captures and tasks by what touches it. The Lens is observational — it shows where your effort is landing across the framework, never tells you what to do about it.</div>';
-
   el.innerHTML = html;
 }
+
+function setLensMode(m) {
+  S.settings.lensMode = m;
+  saveS();
+  showV('lens');
+}
+
+function copyToClipboard(jsonStr) {
+  const text = JSON.parse(jsonStr);
+  navigator.clipboard.writeText(text).then(() => toast('Copied'));
+}
+
+function speakText(jsonStr) {
+  const text = JSON.parse(jsonStr);
+  if (!('speechSynthesis' in window)) { toast('Speech not supported'); return; }
+  window.speechSynthesis.cancel();
+  const u = new SpeechSynthesisUtterance(text);
+  u.rate = 1.0; u.pitch = 1.0;
+  window.speechSynthesis.speak(u);
+}
+
 
 function filterByRegion(r) {
   toast('Region: ' + r.replace('_',' '));
   // TODO: implement region filter view; for now just inform
+}
+
+// ─── BRIEF view — what the system would tell you today ────────────────────
+function rBrief(el) {
+  const today = new Date().toLocaleDateString('en-AU', { weekday: 'long', day: 'numeric', month: 'long' });
+  const allItems = [...S.captures, ...S.tasks.filter(t => t.status === 'done')];
+
+  let html = '<h1 class="view-title">Brief</h1>';
+  html += '<div class="view-sub">// ' + today + ' &middot; daily synthesis</div>';
+
+  if (allItems.length === 0) {
+    html += '<div class="empty"><div class="icon">⧾</div><h3>Nothing to brief on yet</h3><p>The brief synthesises across your captures, tasks, and the framework lens. Drop something in <a onclick="showV(\'capture\')" style="color:var(--accent);cursor:pointer">Capture</a> first.</p></div>';
+    el.innerHTML = html;
+    return;
+  }
+
+  // Region distribution
+  const regionCounts = { love: 0, good_at: 0, world_needs: 0, paid_for: 0 };
+  allItems.forEach(item => {
+    const text = item.text || '';
+    const regions = item.regions || inferRegionsFromText(text);
+    regions.forEach(r => { if (regionCounts[r] !== undefined) regionCounts[r]++; });
+  });
+
+  // 1. Where you've been
+  html += '<div class="card gc">';
+  html += '<div class="sl">// where you\'ve been</div>';
+  html += '<div style="font-size:13px;line-height:1.7">Across <strong>' + allItems.length + '</strong> items in the vault, your effort lands heaviest in ';
+  const sorted = Object.entries(regionCounts).sort((a,b) => b[1]-a[1]);
+  html += '<strong style="color:var(--accent)">' + sorted[0][0].replace('_',' ') + '</strong>';
+  if (sorted[1][1] > 0) html += ' and <strong>' + sorted[1][0].replace('_',' ') + '</strong>';
+  html += '.</div>';
+  if (sorted[3][1] === 0 && allItems.length > 3) {
+    html += '<div style="font-size:12px;color:var(--orange);margin-top:8px">Drift signal: <strong>' + sorted[3][0].replace('_',' ') + '</strong> is empty. Not telling you to act on it. Just surfacing.</div>';
+  }
+  html += '</div>';
+
+  // 2. Today's recent activity
+  const last24h = allItems.filter(i => (Date.now() - (i.createdAt || i.completedAt || 0)) < 86400000);
+  if (last24h.length) {
+    html += '<div class="card">';
+    html += '<div class="sl">// last 24h</div>';
+    last24h.slice(0, 5).forEach(item => {
+      html += '<div style="padding:8px 0;border-bottom:1px solid var(--border)">';
+      html += '<div style="font-size:12px;line-height:1.6">' + escHtml((item.text || '').substring(0, 140)) + ((item.text || '').length > 140 ? '…' : '') + '</div>';
+      const regions = item.regions || inferRegionsFromText(item.text || '');
+      if (regions.length) {
+        html += '<div style="margin-top:4px">';
+        regions.slice(0, 3).forEach(r => html += '<span class="region-pill ' + r + ' lit">' + r.replace('_', ' ') + '</span>');
+        html += '</div>';
+      }
+      html += '</div>';
+    });
+    html += '</div>';
+  }
+
+  // 3. Synthesis prompt — surfaces the meta question
+  html += '<div class="card">';
+  html += '<div class="sl">// the synthesis question</div>';
+  html += '<div style="font-size:13px;line-height:1.7;margin-bottom:10px">';
+  if (regionCounts.love + regionCounts.good_at > regionCounts.world_needs + regionCounts.paid_for) {
+    html += 'Your captures lean inward (love + good_at). What would <strong>world_needs</strong> or <strong>paid_for</strong> look like for these?';
+  } else if (regionCounts.paid_for > regionCounts.love) {
+    html += 'Your captures lean toward the work that pays. The system surfaces this without judging it. <strong>Love</strong> is quieter than <strong>paid_for</strong>.';
+  } else {
+    html += 'Even distribution across the four axes. The system has nothing to flag. Maintain.';
+  }
+  html += '</div></div>';
+
+  // 4. The disclaimer
+  html += '<div class="help"><strong>Note:</strong> This brief is local-only synthesis. After S2 (NUC live), THE HERALD will generate richer briefs from your full corpus, scout discoveries, and external feeds. Right now: pattern recognition over what\'s in localStorage.</div>';
+
+  el.innerHTML = html;
 }
 
 // ─── LEXICON view ─────────────────────────────────────────────────────────
@@ -1435,6 +1563,33 @@ function addCapture() {
   const type = document.getElementById('cap-type').value;
   const text = document.getElementById('cap-text').value.trim();
   if (!text) { toast('Content required'); return; }
+
+function bulkCapture() {
+  const ta = document.getElementById('bulk-text');
+  const type = document.getElementById('bulk-type').value;
+  const lines = (ta.value || '').split(/\r?\n/).map(s => s.trim()).filter(Boolean);
+  if (!lines.length) { toast('Nothing to capture'); return; }
+  let added = 0;
+  lines.forEach(line => {
+    const regions = inferRegionsFromText(line);
+    S.captures.push({
+      id: uid(),
+      type: type,
+      text: line,
+      regions: regions,
+      createdAt: Date.now()
+    });
+    added++;
+  });
+  saveS();
+  ta.value = '';
+  document.getElementById('bulk-count').textContent = added + ' captured';
+  toast(added + ' captures added');
+  // Re-render to show them
+  setTimeout(() => showV('capture'), 600);
+}
+
+
   const regions = inferRegionsFromText(text);
   S.captures.push({ id: uid(), type, text, regions, createdAt: Date.now() });
   saveS();
@@ -1580,6 +1735,34 @@ function openSettings() {
   html += '</div>';
 
   html += '<div class="setting-row">';
+  html += '<div class="label">LLM provider</div>';
+  html += '<div class="desc">Sovereignty includes tooling. Pick where retrieval and synthesis runs. <strong>None</strong> = local-only (regex inference + Web Speech). <strong>Local</strong> assumes Ollama on this device or NUC. The others are BYOK.</div>';
+  html += '<select class="inp" id="set-llm" onchange="setLLMProvider(this.value)">';
+  ['none', 'local-ollama', 'anthropic-claude', 'openai-gpt', 'groq', 'google-gemini'].forEach(p => {
+    const sel = (S.settings.llmProvider || 'none') === p ? ' selected' : '';
+    html += '<option value="' + p + '"' + sel + '>' + p + '</option>';
+  });
+  html += '</select>';
+  if (S.settings.llmProvider && S.settings.llmProvider !== 'none' && S.settings.llmProvider !== 'local-ollama') {
+    html += '<input type="password" class="inp" id="set-llm-key" placeholder="API key (BYOK — stored locally)" value="' + escHtml(S.settings.llmKey || '') + '" oninput="S.settings.llmKey=this.value;saveS()" style="margin-top:10px"/>';
+  }
+  if (S.settings.llmProvider === 'local-ollama') {
+    html += '<input type="text" class="inp" id="set-llm-host" placeholder="Ollama host (default http://localhost:11434)" value="' + escHtml(S.settings.llmHost || '') + '" oninput="S.settings.llmHost=this.value;saveS()" style="margin-top:10px"/>';
+  }
+  html += '</div>';
+
+  html += '<div class="setting-row">';
+  html += '<div class="label">Lens default view</div>';
+  html += '<div class="desc">How the Lens renders by default. Sovereignty over how you see your own data.</div>';
+  html += '<select class="inp" id="set-lens-mode" onchange="S.settings.lensMode=this.value;saveS();toast(\'Lens default: \'+this.value)">';
+  ['venn', 'bars', 'markdown', 'json', 'audio'].forEach(m => {
+    const sel = (S.settings.lensMode || 'venn') === m ? ' selected' : '';
+    html += '<option value="' + m + '"' + sel + '>' + m + '</option>';
+  });
+  html += '</select>';
+  html += '</div>';
+
+  html += '<div class="setting-row">';
   html += '<div class="label">Voice transcription</div>';
   html += '<div class="desc">Web Speech API \u2014 on-device, free, no key. Works in Chrome and Safari.</div>';
   html += '<label style="display:flex;align-items:center;gap:10px;cursor:pointer;font-family:var(--body);font-size:13px;text-transform:none;letter-spacing:0;color:var(--text)">';
@@ -1633,6 +1816,14 @@ function openSettings() {
     const v = document.getElementById('set-voice');
     if (v) v.onchange = () => { S.settings.voicePref = v.value; saveS(); toast('Voice saved'); };
   }, 50);
+}
+
+
+function setLLMProvider(p) {
+  S.settings.llmProvider = p;
+  saveS();
+  toast('LLM provider: ' + p);
+  openSettings(); // re-render to show key/host fields
 }
 
 function toggleVoiceTx() {
